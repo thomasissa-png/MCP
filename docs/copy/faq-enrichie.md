@@ -11,7 +11,7 @@ FAQ enrichie au-delà des 5 questions déjà publiées en homepage (`docs/copy/h
 
 ---
 
-## 1. Le mécanisme de parrainage
+## 1. Le mécanisme du registre de parrainage vérifié
 
 Q : Comment fonctionne un lien de parrainage sur Parrainly ?
 R : "Un lien de parrainage Parrainly redirige vers le programme concerné (Trade Republic, Qonto, Kraken, etc.) en associant votre visite à Thomas ou Emmanuel, détenteurs réels du lien. Si vous ouvrez un compte ou souscrivez au produit dans les conditions publiées par le programme, le parrain perçoit l'avantage prévu et vous, le filleul, recevez l'avantage publié par le programme s'il en propose un."
@@ -24,7 +24,7 @@ R : "Chaque offre porte un statut (actif, en attente, retiré) qui reflète sa d
 
 ---
 
-## 2. La vérification et la fraîcheur des offres
+## 2. La vérification et la fraîcheur des offres : parrainage fintech vérifié
 
 Q : À quelle fréquence une offre est-elle revérifiée ?
 R : "Chaque offre affiche sa date de dernière vérification, contrôlée manuellement par Thomas ou Emmanuel. Une offre n'est pas revérifiée à intervalle fixe universel : elle l'est notamment dès qu'un signalement ou un changement de condition est détecté, et à chaque nouvelle consultation significative."
@@ -60,7 +60,7 @@ R : "Non. Le clic ouvre l'accès au parcours d'ouverture du programme concerné.
 
 ---
 
-## 5. La fiabilité des codes et liens
+## 5. La fiabilité des codes et liens de parrainage (ex. code parrainage Trade Republic)
 
 Q : Un programme utilise-t-il un lien ou un code de parrainage ?
 R : "Cela dépend du programme. Certains fonctionnent uniquement par lien direct, d'autres demandent la saisie manuelle d'un code lors de l'inscription. Le mode utilisé (lien, code, ou les deux) est indiqué sur la fiche du programme concerné, avec la même date de vérification que le reste de l'offre."
@@ -100,10 +100,12 @@ R : "Non. Parrainly documente des parrainages, il ne fournit aucun conseil perso
 
 **Vérifié :** `Grep "le meilleur|n°1|top|rendement|garanti|exclusif|recommandé pour vous" docs/copy/faq-enrichie.md` : la question §6 contient "meilleur" (posée volontairement pour y répondre par la négative, même logique que `homepage-copy.md` §5), 0 occurrence dans une réponse affirmative. `Grep` de recoupement entre les 5 questions homepage et les 18 questions de ce fichier : 0 question identique verbatim, confirmant l'absence de doublon.
 
+**Vérifié (correctif audit-phase3.md, action 6, 2026-07-20) :** `Grep "absent à ce jour|keyword-map.*absent" docs/copy/faq-enrichie.md` : 0 occurrence, la note périmée sur `keyword-map.md` absent est retirée du handoff. `Grep "registre de parrainage vérifié|parrainage fintech vérifié|code parrainage Trade Republic" docs/copy/faq-enrichie.md` : 3 occurrences, une dans chacun des intitulés §1, §2 et §5 (lignes 14, 27, 63), confirmant l'enrichissement par des mots-clés exacts de `docs/seo/keyword-map.md` §1/§2 sans altération du sens ni de la posture non-conseil. §3/§4/§6 volontairement non modifiés (aucun mot-clé de la carte ne s'y intègre naturellement).
+
 ---
 **Handoff → @seo, @geo, @fullstack**
 - Fichiers produits : `/home/user/MCP/docs/copy/faq-enrichie.md`
 - Décisions prises : 18 questions réparties en 6 thèmes (mécanisme, vérification, divulgation, attribution, fiabilité codes/liens, posture non-conseil) ; question "meilleur parrainage pour moi" traitée sous un angle différent et complémentaire de `homepage-copy.md` (mécanisme de comparaison factuelle plutôt que simple affirmation de posture) ; mécanisme d'attribution décrit au niveau utilisateur sans exposer de détail d'implémentation technique non public.
-- Points d'attention : @geo structure ces 18 Q/R en objets `FAQPage` schema.org (6 groupes possibles ou liste plate selon la page cible) ; @seo intègre les mots-clés du futur `keyword-map.md` (absent à ce jour) dans les intitulés de question sans en changer le sens factuel ; @fullstack : la Q/R §5 sur "lien ou code" doit être vérifiée programme par programme une fois l'export CSV/JSON de la base réelle disponible (champ `code_parrainage` du schéma Emmanuel), pour confirmer qu'aucun programme du catalogue ne contredit la réponse générique donnée ici.
+- Points d'attention : @geo structure ces 18 Q/R en objets `FAQPage` schema.org (6 groupes possibles ou liste plate selon la page cible) ; `docs/seo/keyword-map.md` est désormais disponible (§1/§2/§3) : les intitulés des thèmes §1, §2 et §5 ont été enrichis le 2026-07-20 avec des mots-clés exacts (§1 "registre de parrainage vérifié", "parrainage fintech vérifié" ; §2 "code parrainage Trade Republic", illustratif), §3/§4/§6 laissés inchangés faute d'un mot-clé de la carte s'y intégrant naturellement (règle "ne pas forcer") ; @fullstack : la Q/R §5 sur "lien ou code" doit être vérifiée programme par programme une fois l'export CSV/JSON de la base réelle disponible (champ `code_parrainage` du schéma Emmanuel), pour confirmer qu'aucun programme du catalogue ne contredit la réponse générique donnée ici.
 - **Actions infra requises** : aucune action Cloudflare/GitHub directe (livrable éditorial).
 ---
