@@ -23,9 +23,9 @@ Fichiers audités : `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/offres/[s
 **Findings actionnables** :
 1. **Ajouter `alternates: { canonical: absUrl(path) }` sur les 4 générateurs de métadonnées (`layout.tsx`, `page.tsx`, `offres/[slug]/page.tsx`, `categories/[slug]/page.tsx`)**, critère de fait : chaque route publique retourne une URL canonique absolue explicite dans sa balise `<link rel="canonical">`. Bloquant pour Bing (pas de fallback intelligent, cf. contrainte multi-moteurs).
 2. **Surcharger `openGraph.title`/`openGraph.description` dans `generateMetadata` de `offres/[slug]/page.tsx` et `categories/[slug]/page.tsx`**, critère : chaque partage social d'une fiche offre affiche le nom du programme, pas le titre de la homepage.
-3. **Réécrire `CATEGORY_META` pour intégrer le mot-clé "parrainage" dans `nom`/title et `description`** (ex. title `"Parrainage {catégorie} : offres vérifiées"`, cf. `keyword-map.md` §3), critère : Grep du mot "parrainage" positif sur les 6 title/description de catégorie.
+3. **Réécrire `CATEGORY_META` (title + description) en reprenant tel quel le mot-clé principal défini par `keyword-map.md` §3 pour chaque catégorie** (source unique de vérité, ex. Crypto → `parrainage plateforme crypto`, Investissement → `parrainage plateforme d'investissement`, etc. — pas un format générique recalculé côté code type `"Parrainage {catégorie}"`, qui entrerait en contradiction avec les mots-clés spécifiques déjà tranchés), critère : Grep du mot-clé principal exact de `keyword-map.md` §3 positif sur chacune des 6 pages catégorie (title + description).
 4. **Modifier le H1 de `offres/[slug]/page.tsx`** de `{offre.nomProgramme}` vers `Parrainage {offre.nomProgramme} vérifié` (ou formulation équivalente sans superlatif), critère : Grep "parrainage" positif sur le H1 des 9 pages offre, cohérent avec le title déjà conforme.
-5. **Modifier le H1 de `categories/[slug]/page.tsx`** de `{data.categorie}` vers `Parrainage {data.categorie}`, même critère.
+5. **Modifier le H1 de `categories/[slug]/page.tsx`** de `{data.categorie}` vers le mot-clé principal exact de la catégorie défini par `keyword-map.md` §3 (même source unique qu'au point 3, ex. Crypto → H1 `Parrainage plateforme crypto`), même critère.
 6. **Ajouter `robots: { index: false }` à `export const metadata` de `rgpd/demande/page.tsx`**, critère : défense en profondeur (le disallow robots.txt seul n'empêche pas une désindexation si la page était déjà indexée par un lien externe).
 
 ## 3. Sitemap et robots
@@ -102,7 +102,7 @@ Signaux sociaux (facteur de ranking direct Bing) et backlinks .edu/.gov : hors p
 
 1. `alternates.canonical` explicite sur les 4 types de route (§2.1) — P0 Bing.
 2. `lastModified` du sitemap stable sur pages statiques/catégories (§3) — P0 Bing (signal de spam actuel).
-3. Mot-clé "parrainage" dans title/H1/description des 6 pages catégorie + H1 des 9 pages offre (§2.3-5) — P0 Bing.
+3. Mot-clé principal exact de `keyword-map.md` §3 dans title/H1/description des 6 pages catégorie (source unique, pas de format générique) + mot-clé "parrainage" dans le H1 des 9 pages offre (§2.3-5) — P0 Bing.
 4. Image OG 1200×630 par gabarit de page + `twitter.images` (§5) — P1 (social + Bing).
 5. `openGraph` surchargé par page offre/catégorie (§2.2) — P1 (qualité de partage, actuellement toutes les fiches partagent l'OG de la homepage).
 6. Logo `Organization` en raster PNG (§4) — P1 (Knowledge Panel Google).
@@ -118,9 +118,9 @@ Signaux sociaux (facteur de ranking direct Bing) et backlinks .edu/.gov : hors p
 - **G1** : 9 sections, 0 section < 2 lignes, 0 `[TODO]`. PASS.
 - **G3** : bloc Handoff en fin de document. PASS.
 - **G5** : conflit potentiel SEO/perf (ISR vs fraîcheur affichée en `force-dynamic`) tranché en §6 avec justification (le champ `date_verification` reste correct indépendamment du mode de rendu). PASS.
-- **G7** : cohérent avec `keyword-map.md` (mots-clés recommandés identiques) et `seo-strategy.md` (priorisation des pages offre). PASS.
+- **G7** : cohérent avec `keyword-map.md` (mots-clés recommandés identiques, y compris la correction Crypto `parrainage plateforme crypto`) et `seo-strategy.md` (priorisation des pages offre). Correction 2026-07-20 : §2 findings 3/5 réécrits pour renvoyer explicitement au mot-clé principal de `keyword-map.md` §3 (source unique) au lieu d'un format générique `"Parrainage {catégorie}"` qui contredisait les mots-clés catégorie déjà tranchés. PASS.
 - **G12** : chaque finding formulé en verbe + objet + critère de fait vérifiable (§2, §5, §6, §9). PASS.
-- **G13** : 1 hypothèse marquée (§1, version Next.js exacte non vérifiable), 0 métrique de trafic inventée. PASS.
+- **G13** : 1 hypothèse marquée (§1, version Next.js exacte non vérifiable), 0 métrique de trafic inventée, 0 mot-clé recalculé en doublon avec `keyword-map.md` (référence directe, pas de reformulation concurrente). PASS.
 - **G15** : Grep `[À REMPLIR`, `[PLACEHOLDER`, `[TODO`, `[XX`, `[INSÉRER` : 0 occurrence. PASS.
 - **G17** : audit fondé sur lecture directe du code réel (chemins de fichiers cités systématiquement), non générique, non reproductible sur un autre projet sans le même code. PASS.
 - **G_PROOF** : voir bloc `Vérifié :` ci-dessous.
@@ -133,6 +133,7 @@ Signaux sociaux (facteur de ranking direct Bing) et backlinks .edu/.gov : hors p
 - Lecture directe de `src/app/sitemap.ts` : `lastModified: now` confirmé littéralement sur `staticPages` et `categoryPages` (lignes 19-33), `date_verification` réelle confirmée sur `offrePages` (ligne 37).
 - Lecture directe de `src/app/offres/[slug]/page.tsx` ligne 82 : `<h1>{offre.nomProgramme}</h1>` confirmé sans le mot "parrainage".
 - Lecture directe de `src/lib/offres.ts` lignes 23-30 (`CATEGORY_META`) : aucune des 6 descriptions ne contient le mot "parrainage".
+- Re-vérification 2026-07-20 : `grep -n "Parrainage {catégorie}" docs/seo/audit-technique.md` : 2 occurrences (finding §2.3 et gate G7), toutes deux dans une négation explicite (« pas un format générique ... type `"Parrainage {catégorie}"` ») citée uniquement pour documenter le format écarté, plus aucune occurrence en tant que prescription active. `grep -c "keyword-map.md" docs/seo/audit-technique.md` : 6 occurrences (findings §2.3, §2.5, §9, gate G7 x2, plus la présente ligne), confirme que `keyword-map.md` §3 est bien la référence unique désormais citée partout où un mot-clé catégorie est prescrit.
 
 ---
 **Handoff → @fullstack (technique), @social (assets OG), @geo (schema Person, coordination citation)**

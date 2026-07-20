@@ -57,9 +57,11 @@ Rôle : capter l'intention de découverte/comparaison d'une verticale et **rabat
 | Gestion de patrimoine | `gestion-de-patrimoine` | `parrainage agrégateur de patrimoine` | `code parrainage gestion de patrimoine` | Informationnelle → transactionnelle | `/categories/gestion-de-patrimoine` |
 | Placement trésorerie | `placement-tresorerie` | `parrainage placement de trésorerie` | `code parrainage trésorerie entreprise`, `parrainage compte rémunéré pro` | Informationnelle → transactionnelle | `/categories/placement-tresorerie` |
 | Services entrepreneur | `services-entrepreneur` | `parrainage banque pro` | `code parrainage compta en ligne`, `parrainage outil entrepreneur` | Informationnelle → transactionnelle | `/categories/services-entrepreneur` |
-| Crypto | `crypto` | `parrainage exchange crypto` | `code parrainage crypto`, `parrainage plateforme crypto vérifié` | Informationnelle → transactionnelle | `/categories/crypto` |
+| Crypto | `crypto` | `parrainage plateforme crypto` | `code parrainage crypto`, `parrainage plateforme crypto vérifié` | Informationnelle → transactionnelle | `/categories/crypto` |
 
 **Important** : ces mots-clés catégorie ne visent PAS « meilleure néobanque » / « meilleure banque pro » (terrain des comparateurs généralistes, constat n°3 du test empirique, saturé et hors stratégie posture non-conseil de la marque). Ils restent sur l'intention « parrainage » où Parrainly a un droit d'entrée démontré.
+
+**[CORRECTION 2026-07-20, décision fondateur]** : mot-clé principal Crypto initialement fixé à `parrainage exchange crypto` (anglicisme, jamais testé dans les 11 requêtes de `test-citation-ia.md`) corrigé en `parrainage plateforme crypto`, registre francophone cohérent avec le reste de la marque et aligné sur le H1 déployé côté copy (`docs/copy/fiches-categories.md` §6, même valeur). Aucune autre ligne de ce document n'est affectée.
 
 ---
 
@@ -71,7 +73,7 @@ Rôle : capter l'intention de découverte/comparaison d'une verticale et **rabat
 
 ## 5. Vérification de non-cannibalisation
 
-Grep manuel des mots-clés principaux du §2 et §3 : chaque chaîne `parrainage {X}` n'apparaît comme mot-clé PRINCIPAL que sur une seule ligne de ce document. Aucun doublon entre une catégorie et une offre (les catégories portent un mot-clé de verticale, jamais un nom d'enseigne). PASS.
+Grep manuel des mots-clés principaux du §2 et §3 : chaque chaîne `parrainage {X}` n'apparaît comme mot-clé PRINCIPAL que sur une seule ligne de ce document. Aucun doublon entre une catégorie et une offre (les catégories portent un mot-clé de verticale, jamais un nom d'enseigne). Le mot-clé Crypto corrigé (`parrainage plateforme crypto`) a été re-testé après correction : aucune collision avec un mot-clé principal offre (aucune des 9 enseignes ne s'appelle « plateforme crypto ») ni avec une autre catégorie. PASS.
 
 ---
 
@@ -80,14 +82,14 @@ Grep manuel des mots-clés principaux du §2 et §3 : chaque chaîne `parrainage
 - **G1** : 5 sections + tableaux complets, 0 `[TODO]`. PASS.
 - **G3** : bloc Handoff en fin de document. PASS.
 - **G5** : intentions calées sur persona A1/A2 (transactionnel = passage à l'action de parrainage, cf. `project-context.md`). PASS.
-- **G7** : aligné `brand-platform.md` (mot-clé de marque), `test-citation-ia.md` (priorisation « parrainage {enseigne} »), zéro superlatif dans les libellés de mots-clés. PASS.
+- **G7** : aligné `brand-platform.md` (mot-clé de marque), `test-citation-ia.md` (priorisation « parrainage {enseigne} »), zéro superlatif dans les libellés de mots-clés. Correction 2026-07-20 : mot-clé Crypto anglicisant (`parrainage exchange crypto`, jamais présent dans les 11 requêtes du test empirique) remplacé par `parrainage plateforme crypto` (registre francophone, aligné H1 déployé côté copy). PASS.
 - **G12** : chaque ligne = mot-clé + URL cible directement exploitable par `@fullstack` en `generateMetadata`. PASS.
 - **G13** : 0 donnée de volume/difficulté inventée, limite signalée en méthodologie. PASS.
 - **G15** : Grep `[À REMPLIR`, `[PLACEHOLDER`, `[TODO`, `[XX`, `[INSÉRER` : 0 occurrence. PASS.
 - **G17** : mapping taillé sur les 9 programmes réels + 6 catégories réelles, non générique. PASS.
 - **G_PROOF** : voir bloc `Vérifié :` ci-dessous.
 
-**Vérifié :** `Grep "parrainage " docs/seo/keyword-map.md` recoupé manuellement colonne « Mot-clé principal » : 15 mots-clés principaux (9 offres + 6 catégories), 0 doublon inter-URL. Slugs recalculés depuis `src/lib/slug.ts` (fonction `slugify`, déterministe) et confirmés cohérents avec `src/app/offres/[slug]/page.tsx` / `src/app/categories/[slug]/page.tsx` (résolution par `slugify(nom)`).
+**Vérifié :** Re-grep du 2026-07-20 (post-correction) : `awk -F'|' '/^\| / && NF>5 {print $4}' docs/seo/keyword-map.md` retourne 15 valeurs de colonne « Mot-clé principal » (9 offres + 6 catégories), aucun doublon, `parrainage plateforme crypto` présent une seule fois. `grep "exchange" docs/seo/keyword-map.md` (hors bloc `[CORRECTION]` explicatif) : 0 occurrence résiduelle en mot-clé actif, confirme le retrait complet de l'anglicisme. Slugs recalculés depuis `src/lib/slug.ts` (fonction `slugify`, déterministe) et confirmés cohérents avec `src/app/offres/[slug]/page.tsx` / `src/app/categories/[slug]/page.tsx` (résolution par `slugify(nom)`).
 
 ---
 **Handoff → @seo (auto, suite du run) puis @fullstack**
