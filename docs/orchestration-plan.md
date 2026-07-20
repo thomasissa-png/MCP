@@ -28,7 +28,7 @@
 | 0b — Agents custom | @agent-factory si specs le recommandent | à évaluer |
 | 1 — Expérience | ux → design ; copywriter ‖ | **COMPLETE** (@ux, @copywriter, @design 9/9 gates) + checkpoint specs @reviewer = GO CONDITIONNEL (0 P0, 3 P1) |
 | 2 — Développement | infrastructure → fullstack + ia → ux review → qa → infra | **COMPLETE** (P1-b levé ; infra + socle demandeur backend/frontend + AEO + espace parrain US-02/05/07/09 + auth magic-link livrés ; @qa : 36 unit + 8 E2E verts + CI + 1 bug US-03 corrigé ; build vert) |
-| 3 — Contenu | copywriter → seo + geo | **COMPLETE** (test empirique citation IA = thèse validée 9/9 ; @geo strategie+monitoring ; @seo keyword-map+strategy+audit 3 gaps P0 Bing ; @copywriter 6 fiches catégories + FAQ 18 Q/R ; mots-clés intégrés homepage+6 H1) + checkpoint @reviewer en cours |
+| 3 — Contenu | copywriter → seo + geo | **COMPLETE** (test empirique citation IA = thèse validée 9/9 ; @geo strategie+monitoring ; @seo keyword-map+strategy+audit 3 gaps P0 Bing ; @copywriter 6 fiches catégories + FAQ 18 Q/R ; mots-clés intégrés homepage+6 H1) — checkpoint @reviewer GO CONDITIONNEL, unique P1 (mapping topical seo-strategy §4) CORRIGÉ et re-vérifié G7 |
 | 4 — Acquisition | growth + social ; sales-enablement | à venir |
 | 5 — Conformité & dernier km | legal + revue finale chirurgicale (qa 21 dim → fullstack → qa) | à venir |
 
@@ -66,7 +66,8 @@
 | 2026-07-20 | 3 | @geo | geo-strategy.md + monitoring-citations.md | 9/9 PASS | Angle différenciant = date vérif JSON-LD + divulgation ; exploite couche AEO Phase 2 ; monitoring hebdo 11 requêtes lié NSM PCA-IA |
 | 2026-07-20 | 3 | @seo | keyword-map + seo-strategy + audit-technique | 9/9 PASS | Cible « parrainage {enseigne} » (pas générique) ; 3 gaps P0 Bing (canonicals, lastModified sitemap, mot-clé H1) → @fullstack ; 0 volume chiffré (non branché) |
 | 2026-07-20 | 3 | @copywriter | fiches-categories.md (6) + faq-enrichie.md (18 Q/R) | 9/9 PASS | Posture non-conseil stricte, 0 montant cité, mapping catégorie sourcé 00-index.md ; slots SEO intégrés par session principale |
-| 2026-07-20 | 3 | @reviewer | checkpoint-phase3.md | en cours | Revue cohérence SEO/GEO/copy avant clôture Phase 3 |
+| 2026-07-20 | 3 | @reviewer | checkpoint-phase3.md | GO CONDITIONNEL | 8/9 livrables PASS strict, G_PROOF empirique comblé ; unique P1 = mapping topical seo-strategy §4 (Qonto/Finary) ; contraintes marque toutes PASS |
+| 2026-07-20 | 3 | session principale | correctif P1 seo-strategy §4 | G7 PASS | Topical map alignée 9/9 sur 00-index (Qonto→Services entrepreneur, Finary→Gestion patrimoine) ; condition unique de clôture levée. **PHASE 3 CLOSE** |
 
 ### Décision fondateur (Thomas, 2026-07-20 #3) : PILOTE EXHAUSTIF
 Garder un maximum de codes/liens ACTIFS pour tester (9 offres, TR + Kraken inclus). Revue juridique reportée à la TOUTE FIN (avant mise en ligne réelle). Mécanisme `statut` conservé comme levier, aucune offre masquée pour le pilote.
