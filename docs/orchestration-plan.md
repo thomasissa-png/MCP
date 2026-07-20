@@ -28,7 +28,7 @@
 | 0b — Agents custom | @agent-factory si specs le recommandent | à évaluer |
 | 1 — Expérience | ux → design ; copywriter ‖ | **COMPLETE** (@ux, @copywriter, @design 9/9 gates) + checkpoint specs @reviewer = GO CONDITIONNEL (0 P0, 3 P1) |
 | 2 — Développement | infrastructure → fullstack + ia → ux review → qa → infra | **COMPLETE** (P1-b levé ; infra + socle demandeur backend/frontend + AEO + espace parrain US-02/05/07/09 + auth magic-link livrés ; @qa : 36 unit + 8 E2E verts + CI + 1 bug US-03 corrigé ; build vert) |
-| 3 — Contenu | copywriter → seo + geo | à venir (critique) |
+| 3 — Contenu | copywriter → seo + geo | **COMPLETE** (test empirique citation IA = thèse validée 9/9 ; @geo strategie+monitoring ; @seo keyword-map+strategy+audit 3 gaps P0 Bing ; @copywriter 6 fiches catégories + FAQ 18 Q/R ; mots-clés intégrés homepage+6 H1) + checkpoint @reviewer en cours |
 | 4 — Acquisition | growth + social ; sales-enablement | à venir |
 | 5 — Conformité & dernier km | legal + revue finale chirurgicale (qa 21 dim → fullstack → qa) | à venir |
 
@@ -62,13 +62,19 @@
 | 2026-07-20 | 2-audit | @reviewer | audit-phase2.md (scorecard /10) | 8/10 GO Phase 3 | 3 blockers mise en ligne (email placeholder, analytics stub, sécurité fail-open) |
 | 2026-07-20 | 2-audit | @fullstack/@legal/@qa | itérations 10/10 (sécurité, analytics, légal, a11y, E2E US-02/05/07) | VERT | 36 unit + 27 E2E, /internal fail-closed, rate-limit, sink pluggable, a11y axe-core |
 | 2026-07-20 | 2-audit | @reviewer | re-vérif finale audit-phase2.md | **9,7/10 GO Phase 3** | 7/8 points 10/10 puis résidus levés (screenshots TR, LegalShell) = tous 10/10 |
+| 2026-07-20 | 3 | session principale | docs/geo/test-citation-ia.md | THÈSE VALIDÉE | 11 requêtes réelles A1/A2 ; agrégateurs parrainage cités 9/9 sur intention parrainage, comparateurs sur générique ; comble G_PROOF empirique hérité (baseline, re-test post-déploiement) |
+| 2026-07-20 | 3 | @geo | geo-strategy.md + monitoring-citations.md | 9/9 PASS | Angle différenciant = date vérif JSON-LD + divulgation ; exploite couche AEO Phase 2 ; monitoring hebdo 11 requêtes lié NSM PCA-IA |
+| 2026-07-20 | 3 | @seo | keyword-map + seo-strategy + audit-technique | 9/9 PASS | Cible « parrainage {enseigne} » (pas générique) ; 3 gaps P0 Bing (canonicals, lastModified sitemap, mot-clé H1) → @fullstack ; 0 volume chiffré (non branché) |
+| 2026-07-20 | 3 | @copywriter | fiches-categories.md (6) + faq-enrichie.md (18 Q/R) | 9/9 PASS | Posture non-conseil stricte, 0 montant cité, mapping catégorie sourcé 00-index.md ; slots SEO intégrés par session principale |
+| 2026-07-20 | 3 | @reviewer | checkpoint-phase3.md | en cours | Revue cohérence SEO/GEO/copy avant clôture Phase 3 |
 
 ### Décision fondateur (Thomas, 2026-07-20 #3) : PILOTE EXHAUSTIF
 Garder un maximum de codes/liens ACTIFS pour tester (9 offres, TR + Kraken inclus). Revue juridique reportée à la TOUTE FIN (avant mise en ligne réelle). Mécanisme `statut` conservé comme levier, aucune offre masquée pour le pilote.
 
 ## Reprise (multi-sessions)
 Commande : « Lis project-context.md et docs/orchestration-plan.md, continue où on s'est arrêté. »
-Phase en cours : **2 (Développement) COMPLETE → prête pour PHASE 3 (Contenu/SEO/GEO, critique).** Fait Phase 2 : P1-b levé (analytics + @reviewer PASS), P1-c légal, infra Next.js, socle demandeur (backend + frontend + boucle visuelle), couche AEO @ia, P1-a (UX + implémentation magic-link), espace parrain US-02/05/07/09, @qa (36 unit + 8 E2E + CI, 1 bug US-03 corrigé). Pilote fonctionnel de bout en bout, 9 offres réelles testables.
+Phase en cours : **3 (Contenu/SEO/GEO) livrée → checkpoint @reviewer en cours, puis PHASE 4 (Acquisition) ou déploiement infra.** Fait Phase 3 : test empirique citation IA (thèse validée 9/9), @geo (geo-strategy + monitoring-citations), @seo (keyword-map + seo-strategy + audit-technique, 3 gaps P0 Bing → @fullstack), @copywriter (6 fiches catégories + FAQ 18 Q/R), intégration mots-clés homepage + 6 H1 catégorie. Rappel Phase 2 : pilote fonctionnel bout en bout, 9 offres réelles, couche AEO posée.
+**Prochaines actions (hors scope Phase 3, à cadrer avec Thomas) :** (a) @fullstack applique les 3 gaps P0 Bing de `docs/seo/audit-technique.md` ; (b) provisioning Cloudflare + indexation puis RE-TEST citation réelle de Parrainly (transforme le baseline en G_PROOF distribution complet) ; (c) Phase 4 acquisition + Phase 5 revue juridique finale (arbitrage diffusion TR/Kraken).
 
 ### CAP PRODUIT (rappel fondateur Thomas) : SITE AI-FIRST
 Parrainly est un site **AI-first** : sa raison d'être est d'être LA source que les assistants IA citent. Toute décision Phase 3+ se juge à l'aune de « est-ce que ça augmente la citabilité/fiabilité vue par une IA ? » avant le clic humain. La couche AEO (JSON-LD, miroir `/api/v1/offres`, `llms.txt`, robots 19 crawlers IA, divulgation embarquée) est le socle ; la Phase 3 l'exploite et la pousse.
