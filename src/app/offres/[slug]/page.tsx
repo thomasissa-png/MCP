@@ -7,6 +7,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllOffres, getOffreBySlug, isServable, riskTextForCategory } from '@/lib/offres';
 import { slugify } from '@/lib/slug';
+import { toPublicOffre } from '@/lib/ai/public-offre';
+import { offreJsonLd, breadcrumbJsonLd, jsonLdString } from '@/lib/ai/jsonld';
 import { formatDateFr } from '@/lib/format';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { CategoryBadge } from '@/components/ui/CategoryBadge';
@@ -43,8 +45,25 @@ export default async function OffrePage({ params }: { params: Promise<{ slug: st
     .filter((o) => o.id !== offre.id && o.categorie === offre.categorie)
     .slice(0, 3);
 
+  // JSON-LD (AEO/GEO) : Product/Offer avec divulgation + risque embarques, et fil d'ariane structure.
+  // Injecte uniquement pour une offre servable (donnee citable = offre reellement diffusable).
+  const publicOffre = servable ? toPublicOffre(offre) : null;
+  const jsonLd = publicOffre
+    ? [
+        offreJsonLd(publicOffre),
+        breadcrumbJsonLd([
+          { name: 'Accueil', path: '/' },
+          { name: offre.categorie, path: `/categories/${slugify(offre.categorie)}` },
+          { name: offre.nomProgramme, path: `/offres/${slug}` },
+        ]),
+      ]
+    : null;
+
   return (
     <main className="mx-auto max-w-container px-md py-lg lg:px-xl">
+      {jsonLd ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
+      ) : null}
       {/* Zone 2 — Fil d'Ariane */}
       <Breadcrumb
         trail={[

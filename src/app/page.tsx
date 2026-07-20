@@ -6,6 +6,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getAllOffres, getCategoriesWithCount, sortForCatalogue } from '@/lib/offres';
 import { CatalogueSearch } from '@/components/catalogue/CatalogueSearch';
+import { listPublicOffres } from '@/lib/ai/public-offre';
+import { organizationJsonLd, webSiteJsonLd, itemListJsonLd, faqPageJsonLd, jsonLdString } from '@/lib/ai/jsonld';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,11 +40,14 @@ const FAQ = [
 export default async function HomePage() {
   const [offres, categories] = await Promise.all([getAllOffres(), getCategoriesWithCount()]);
   const catalogue = sortForCatalogue(offres);
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
-  };
+  // JSON-LD (AEO/GEO) : identite de marque (Organization/WebSite), catalogue citable (ItemList) et FAQ.
+  const publicOffres = listPublicOffres();
+  const jsonLd = [
+    organizationJsonLd(),
+    webSiteJsonLd(),
+    itemListJsonLd(publicOffres, 'Catalogue des parrainages verifies Parrainly'),
+    faqPageJsonLd(FAQ),
+  ];
 
   return (
     <main>
@@ -155,7 +160,7 @@ export default async function HomePage() {
         </section>
       </div>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
     </main>
   );
 }

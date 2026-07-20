@@ -4,10 +4,12 @@
  */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getOffresByCategorieSlug, CATEGORY_META } from '@/lib/offres';
+import { getOffresByCategorieSlug, CATEGORY_META, isServable } from '@/lib/offres';
 import { slugify } from '@/lib/slug';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { OfferCard } from '@/components/ui/OfferCard';
+import { toPublicOffre } from '@/lib/ai/public-offre';
+import { itemListJsonLd, breadcrumbJsonLd, jsonLdString } from '@/lib/ai/jsonld';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,8 +25,19 @@ export default async function CategoriePage({ params }: { params: Promise<{ slug
   if (!data) notFound();
   const meta = CATEGORY_META.find((c) => c.nom === data.categorie);
 
+  // JSON-LD (AEO/GEO) : fil d'ariane + liste des offres servables de la categorie.
+  const publicOffres = data.offres.filter((o) => isServable(o.statut)).map(toPublicOffre);
+  const jsonLd = [
+    breadcrumbJsonLd([
+      { name: 'Accueil', path: '/' },
+      { name: data.categorie, path: `/categories/${slug}` },
+    ]),
+    itemListJsonLd(publicOffres, `Parrainages verifies : ${data.categorie}`),
+  ];
+
   return (
     <main className="mx-auto max-w-container px-md py-lg lg:px-xl">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       <Breadcrumb trail={[{ href: '/', label: 'Accueil' }]} current={data.categorie} />
       <header className="animate-fade-up mt-lg mb-xl">
         <h1 className="text-2xl font-bold text-content-primary">{data.categorie}</h1>
