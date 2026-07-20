@@ -24,7 +24,7 @@
 ## Suivi des phases
 | Phase | Contenu | Statut |
 |---|---|---|
-| 0 — Fondations | creative-strategy → product-manager → data-analyst ; legal ‖ | **EN COURS — vague A lancée : @creative-strategy + @legal** |
+| 0 — Fondations | creative-strategy → product-manager → data-analyst ; legal ‖ | **COMPLETE** (9/9 gates par livrable, cohérence 11 critères PASS) — checkpoint en attente de validation utilisateur |
 | 0b — Agents custom | @agent-factory si specs le recommandent | à évaluer |
 | 1 — Expérience | ux → design ; copywriter ‖ | à venir |
 | 2 — Développement | infrastructure → fullstack + ia → ux review → qa → infra | à venir |
@@ -36,8 +36,14 @@
 | Date | Phase | Agent | Livrable | Verdict | Décisions clés |
 |---|---|---|---|---|---|
 | 2026-07-20 | 0 | @orchestrator | project-context (cadrage autopilot) + ce plan | OK | D1-D5 posées en hypothèses |
+| 2026-07-20 | 0 | @legal | docs/legal/legal-strategy.md | 9/9 PASS | POC hors-régulé lançable sans statut ; banque V1 = IOBSP/ORIAS |
+| 2026-07-20 | 0 | @creative-strategy | docs/strategy/brand-platform.md | 9/9 PASS | Catégorie "registre de confiance" ; tagline "Le parrainage, vérifié avant d'être cité" ; persona Karim |
+| 2026-07-20 | 0 | @product-manager | product-vision + roadmap + functional-specs | 9/9 PASS | 8 épics, mécanique rotation FIFO pondérée, hors V1 = banque/MCP |
+| 2026-07-20 | 0 | @data-analyst | kpi-framework + tracking-plan | 9/9 PASS | NSM = PCA-IA/mois ; attribution via /r/{token} + confirmation déclarative |
+| 2026-07-20 | 0 | @product-manager (corrective) | functional-specs US-09 + events | 9/9 PASS | Confirmation de conversion + /r/{token} ; cohérence n°4 bidirectionnelle PASS |
 
 ## Reprise (multi-sessions)
 Commande : « Lis project-context.md et docs/orchestration-plan.md, continue où on s'est arrêté. »
-Phase en cours : **0 — EN COURS**, dernier agent lancé : @creative-strategy + @legal (vague A).
-Prochaine action : à leur retour → @product-manager (Phase 0 vague B), puis @data-analyst (vague C), puis **checkpoint Phase 0**.
+Phase en cours : **0 — COMPLETE, CHECKPOINT en attente de validation utilisateur.**
+Prochaine action : dès validation utilisateur (persona, positionnement, KPI, scope V1 + 5 hypothèses D1-D5) → lancer **Phase 1 (Expérience)** : @ux → @design ; @copywriter ‖.
+Points à trancher par Thomas au checkpoint : nom de marque, verticales exactes hors-régulé, mécanique de commission, plafonds par enseigne, opportunité du test H1.

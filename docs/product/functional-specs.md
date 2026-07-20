@@ -1,11 +1,12 @@
-<!-- Version: 2026-07-20T00:00 — @product-manager — Specs fonctionnelles Phase 0 (parcours critiques marketplace à rotation de parrains) -->
+<!-- Version: 2026-07-20T01:00 — @product-manager — Specs fonctionnelles Phase 0 + corrective événements de conversion (retour @data-analyst, tracking-plan.md) -->
 
 # Specs fonctionnelles — Parrainage-IA
 
 ## Résumé exécutif
 
-- 8 user stories : 4 parcours critiques minimum (US-01 à US-04, template complet) + 4 stories de couverture du parcours marketplace (US-05 à US-08, template allégé où pertinent).
+- 9 user stories : 4 parcours critiques minimum (US-01 à US-04, template complet) + 5 stories de couverture du parcours marketplace (US-05 à US-09, template allégé où pertinent).
 - Triage par complexité appliqué : les stories sans UI (moteur de rotation, retrait automatique) utilisent le template allégé (JTBD + critères + payload + events).
+- **Corrective 2026-07-20T01:00** : ajout de US-09 (confirmation de conversion par le parrain) + intégration de l'étape de redirection trackée `/r/{token}` dans US-01, suite au gap signalé par @data-analyst (tracking-plan.md §2.3) — les events `lien_redirection_suivie` et `attribution_confirmee` n'avaient aucun équivalent dans cette version des specs, rendant le NSM (PCA-IA) non déclenchable côté produit.
 - Checklist de couverture du parcours (§ fin de document) : chaque point de la checklist bloquante a une story ou une exclusion documentée avec raison business.
 - Divulgation d'affiliation traitée comme exigence produit non négociable (US-01, DoD transversal), conformément à legal-strategy.md §3.
 - DoR/DoD en fin de document pour que @fullstack code sans poser de question.
@@ -20,7 +21,7 @@
 En tant que Léa, je veux consulter la fiche de parrainage d'une enseigne et récupérer un lien attribué afin d'obtenir un parrainage vérifié sans chercher ailleurs (lié au KPI North Star : parrainages confirmés attribués à une réponse IA/mois).
 
 #### Contexte de navigation
-Origine : citation par un assistant IA (lien direct vers la page enseigne) ou accès direct au catalogue. Déclencheur : clic sur le lien cité par l'IA, ou clic sur le CTA "Obtenir mon lien de parrainage" depuis la fiche enseigne. Destination succès : lien attribué affiché + redirection vers la page de souscription officielle de l'enseigne (paramètre de tracking d'attribution dans l'URL). Destination échec : message "Aucune offre disponible" avec CTA vers le catalogue général.
+Origine : citation par un assistant IA (lien direct vers la page enseigne) ou accès direct au catalogue. Déclencheur : clic sur le lien cité par l'IA, ou clic sur le CTA "Obtenir mon lien de parrainage" depuis la fiche enseigne. Destination succès : lien attribué affiché sous la forme `https://{domaine}/r/{token}` (token dans le CHEMIN de l'URL, pas en query param — survit à la copie/troncature, cf. tracking-plan.md §2.2) ; le clic sur ce lien passe par l'endpoint de redirection tracké `GET /r/{token}`, qui journalise l'event `lien_redirection_suivie` puis exécute un 301 vers la page de souscription officielle de l'enseigne. Destination échec : message "Aucune offre disponible" avec CTA vers le catalogue général.
 
 #### Données et champs
 N/A — story sans saisie (page de consultation, Léa ne remplit aucun champ). Données affichées : nom enseigne, date de dernière vérification, statut de l'offre, mention de divulgation d'affiliation (obligatoire, non masquable).
@@ -36,7 +37,7 @@ N/A — story sans saisie (page de consultation, Léa ne remplit aucun champ). D
 
 1. (Happy path) Given une offre EDF active avec au moins un parrain éligible dans le pool, When Léa clique sur "Obtenir mon lien de parrainage", Then le moteur attribue un parrain et affiche un lien unique en moins de 2 secondes.
 2. (Happy path) Given Léa arrive via un lien cité par un assistant IA sur la fiche EDF, When la page se charge, Then la date de dernière vérification et le statut "vérifié" s'affichent au-dessus du lien, avec la mention de divulgation d'affiliation visible sans clic supplémentaire.
-3. (Happy path) Given un lien attribué généré, When Léa clique sur le lien "Continuer vers [Enseigne]", Then elle est redirigée vers la page de souscription officielle de l'enseigne avec le paramètre de tracking d'attribution dans l'URL.
+3. (Happy path) Given un lien attribué généré sous la forme `https://{domaine}/r/{token}`, When Léa clique sur le lien "Continuer vers [Enseigne]" (donc atteint l'endpoint `GET /r/{token}`), Then l'event `lien_redirection_suivie` est journalisé (token, attribution_id, referrer capturé à cet instant) et elle est redirigée en 301 vers la page de souscription officielle de l'enseigne, même si le clic survient plusieurs heures ou jours après la génération du lien (ex. lien copié-collé depuis un autre appareil).
 4. (Erreur) Given aucune offre valide pour l'enseigne demandée (offre expirée), When Léa charge la page, Then le message exact "Cette offre n'est plus disponible actuellement." s'affiche avec le CTA vers le catalogue.
 5. (Erreur) Given le moteur d'attribution est indisponible ou en timeout, When Léa clique sur "Obtenir mon lien de parrainage", Then après 3 secondes maximum le message exact "Impossible de générer votre lien pour le moment. Réessayez dans quelques instants." s'affiche avec un bouton "Réessayer".
 6. (Cas limite — double-clic) Given Léa clique deux fois rapidement sur "Obtenir mon lien de parrainage", When le second clic survient avant la fin du traitement du premier, Then une seule Attribution est créée et un seul lien est affiché (le bouton est désactivé pendant le traitement).
@@ -49,10 +50,16 @@ N/A — story sans saisie (page de consultation, Léa ne remplit aucun champ). D
 - Auth : aucune (accès anonyme, cohérent avec le parcours B2C sans compte).
 - Rate limit : `[À VALIDER par @infrastructure]` — à définir selon la capacité serveur ; recommandation qualitative : limiter par IP/session pour prévenir la génération abusive de liens (protection anti-fraude), valeur exacte non inventée ici.
 - Request : `{ "enseigne_id": string, "canal_source": "page_web" | "api_json", "session_id": string (anonyme, non lié à une identité civile) }`
-- Response 201 : `{ "attribution_id": string, "lien_genere": string (URL), "parrain_id_attribue": string (interne, jamais exposé côté front), "date_verification_offre": string (ISO 8601) }`
+- Response 201 : `{ "attribution_id": string, "lien_genere": string (URL de la forme https://{domaine}/r/{token}), "parrain_id_attribue": string (interne, jamais exposé côté front), "date_verification_offre": string (ISO 8601) }`
 - Response 404 : offre inexistante ou expirée → `{ "error": "offre_indisponible" }`
 - Response 409 : pool éligible vide au moment de la requête → `{ "error": "pool_vide" }`
 - Response 503 : moteur d'attribution indisponible/timeout → `{ "error": "moteur_indisponible" }`
+
+**Endpoint de redirection trackée (ajout corrective 2026-07-20)** :
+- `GET /r/{token}` — endpoint public de redirection, séparé de l'endpoint d'attribution ci-dessus (celui-ci ne fait QUE générer le lien, celui-là trace le clic réel dessus).
+- Auth : aucune (accès public, comme le lien lui-même).
+- Response : 301 vers l'URL de souscription officielle de l'enseigne, après journalisation de l'event `lien_redirection_suivie` (référentiel du token → `attribution_id` via la table `attribution`, tracking-plan.md §2.4).
+- Response 404 : token inconnu ou déjà expiré (fenêtre de conversion dépassée, cf. US-09 critère 9) → `{ "error": "token_invalide" }`, redirection vers une page générique "Ce lien de parrainage n'est plus valide." (pas d'exposition de l'enseigne d'origine pour éviter le fingerprinting du catalogue).
 
 #### Events analytics
 
@@ -63,6 +70,7 @@ N/A — story sans saisie (page de consultation, Léa ne remplit aucun champ). D
 | `lien_parrainage_genere` | Attribution réussie (201) | enseigne_id, attribution_id | Conversion intermédiaire |
 | `lien_parrainage_echec` | Erreur de génération (404/409/503) | enseigne_id, type_erreur | Frein |
 | `offre_indisponible_affichee` | Pool vide ou offre expirée affichée sans action possible | enseigne_id | Frein |
+| `lien_redirection_suivie` | Clic effectif sur `/r/{token}`, avant le 301 vers l'enseigne (ajout corrective 2026-07-20, tracking-plan.md §2.3) | token, attribution_id, referrer_capture, origine_detectee, delai_depuis_generation_s | Conversion intermédiaire (mesure du clic réel, distinct de la génération) |
 
 #### Scénarios persona concrets
 
@@ -73,10 +81,10 @@ N/A — story sans saisie (page de consultation, Léa ne remplit aucun champ). D
 5. Léa est en 4G faible dans le métro ; le chargement du lien dépasse 3 secondes ; elle voit le message d'erreur de timeout avec bouton "Réessayer", réessaie et obtient son lien.
 
 #### Definition of Done
-UI 5 états conformes ci-dessus ; endpoint `/api/v1/offres/{enseigne_id}/attribution` testé sur les 4 réponses (201/404/409/503) ; les 5 scénarios persona reproductibles en recette ; test E2E à créer par @qa (nom proposé : `tests/e2e/us-01-lien-attribue.spec.ts`, fichier non encore créé) ; screenshot conforme au registre visuel brand-platform.md §7 (mention de vérification datée visible, pas de code visuel type site de bons plans).
+UI 5 états conformes ci-dessus ; endpoint `/api/v1/offres/{enseigne_id}/attribution` testé sur les 4 réponses (201/404/409/503) ; endpoint `GET /r/{token}` testé sur la redirection 301 et le cas 404 token invalide ; les 5 scénarios persona reproductibles en recette ; test E2E à créer par @qa (nom proposé : `tests/e2e/us-01-lien-attribue.spec.ts`, fichier non encore créé) ; screenshot conforme au registre visuel brand-platform.md §7 (mention de vérification datée visible, pas de code visuel type site de bons plans).
 
 #### Notes @qa / @ux / @fullstack
-@qa : vérifier particulièrement le critère 6 (double-clic = 1 seule Attribution, pas de doublon en base). @ux : la mention de divulgation (critère 2) doit être au-dessus du CTA, jamais en dessous ou en petit texte (brand-platform.md §4 valeur Discrétion = transparence visible, pas mention légale reléguée). @fullstack : le `parrain_id_attribue` ne doit jamais être exposé côté front (protection du parrain contre un ciblage direct hors rotation).
+@qa : vérifier particulièrement le critère 6 (double-clic = 1 seule Attribution, pas de doublon en base) et le critère 3 révisé (clic différé sur `/r/{token}`, plusieurs heures après génération, doit toujours rediriger correctement). @ux : la mention de divulgation (critère 2) doit être au-dessus du CTA, jamais en dessous ou en petit texte (brand-platform.md §4 valeur Discrétion = transparence visible, pas mention légale reléguée). @fullstack : le `parrain_id_attribue` ne doit jamais être exposé côté front (protection du parrain contre un ciblage direct hors rotation) ; l'endpoint `/r/{token}` est le socle technique prioritaire signalé par @data-analyst (tracking-plan.md, Handoff infra).
 
 ---
 
@@ -404,13 +412,84 @@ Processus testé sur les 9 critères ; page de conformité "Comment ça marche /
 
 ---
 
+## US-09 : Confirmer l'attribution d'une conversion par le parrain
+
+*(Ajout corrective 2026-07-20T01:00, suite au gap signalé par @data-analyst — tracking-plan.md §2.3/§2.7 : c'est le maillon qui alimente directement le NSM PCA-IA, product-vision.md §3 statut "confirmée".)*
+
+**Persona** : Karim | **Epic** : Tracking d'attribution IA→conversion | **Dépendances** : US-03 (Attribution existante), US-05 (tableau de bord, point d'entrée UI), US-01 (endpoint `/r/{token}`, condition préalable : la redirection doit avoir été suivie) | **RICE : R4/I5/C4 → 80**
+
+#### Job-to-be-done
+En tant que Karim, je veux confirmer qu'un filleul qui a suivi mon lien a effectivement souscrit afin de déclencher le calcul de ma commission et faire compter ce parrainage dans le KPI North Star (parrainages confirmés attribués à une réponse IA/mois).
+
+#### Contexte de navigation
+Origine : tableau de bord parrain (US-05), section "Mes attributions en attente". Déclencheur : clic sur "Confirmer la conversion" sur une ligne d'Attribution au statut `en_attente` dont `date_redirection` est renseignée (le lien a été suivi au moins une fois, cf. US-01 `lien_redirection_suivie`). Destination succès : l'Attribution passe au statut `confirmée` (ou `en_verification_manuelle` si le garde-fou de plausibilité se déclenche, critère 7), la prime estimée cumulée de Karim (US-05) est mise à jour. Destination échec : message d'erreur explicite, statut inchangé.
+
+#### Données et champs
+
+| Champ | Type | Obligatoire | Validation | Limites | Exemple réaliste |
+|---|---|---|---|---|---|
+| attribution_id | Select (liste des Attributions `en_attente` de Karim avec `date_redirection` renseignée) | Oui | Doit appartenir à Karim, statut `en_attente`, `date_redirection` non nulle | N/A | "attr_8f3d2" |
+| date_conversion_declaree | Date | Oui | ≤ date du jour, ≥ `date_redirection` | Fenêtre max de 60 jours `[HYPOTHÈSE — tracking-plan.md §2.5, à valider par @product-manager/@legal]` après `date_generation` | "2026-08-10" |
+| montant_commission_declare | Nombre décimal | Non (peut être complété/corrigé après validation de l'enseigne) | ≥ 0 | Max `[À VALIDER selon barème par enseigne, fiche de conformité legal-strategy.md §7 point 6]` | "35.00" |
+
+#### 5 états UI
+- **Défaut** : liste des Attributions `en_attente` avec bouton "Confirmer la conversion" actif uniquement si `date_redirection` renseignée ; sinon bouton grisé + info-bulle "Aucun clic enregistré sur ce lien pour le moment."
+- **Loading** : après clic, indicateur affiché, durée max 2 secondes.
+- **Vide** : aucune Attribution `en_attente` à confirmer → message "Aucune conversion à confirmer pour le moment." (état normal d'attente, pas une erreur, pas de CTA).
+- **Erreur** : échec d'enregistrement de la confirmation → message exact "Votre confirmation n'a pas pu être enregistrée. Réessayez." + bouton Réessayer.
+- **Succès** : "Confirmation enregistrée. Votre prime estimée a été mise à jour." si passage direct à `confirmée` ; "Confirmation reçue, en cours de vérification." si le garde-fou de plausibilité bascule l'Attribution en `en_verification_manuelle` (sans exposer le motif exact du blocage à Karim).
+
+#### Critères d'acceptance Given/When/Then
+
+1. (Happy path) Given une Attribution de Karim au statut `en_attente` avec `date_redirection` renseignée depuis 10 jours, When Karim clique "Confirmer la conversion" et renseigne la date de conversion, Then l'Attribution passe au statut `confirmée`, l'event `attribution_confirmee` est émis avec `mode_confirmation = declaratif_parrain`, et la prime estimée cumulée de Karim (US-05) est mise à jour.
+2. (Happy path) Given le nombre de confirmations déclarées par Karim sur les 30 derniers jours reste inférieur ou égal au nombre de `lien_redirection_suivie` enregistrées sur la même période (garde-fou de plausibilité, tracking-plan.md §2.7), When il confirme une nouvelle conversion, Then la confirmation est acceptée directement, sans revue manuelle.
+3. (Happy path) Given une Attribution confirmée, When un opérateur back-office (US-07) audite ponctuellement les confirmations déclaratives, Then il retrouve l'historique complet (`date_redirection`, `date_confirmation`, `mode_confirmation`) pour vérification.
+4. (Erreur) Given le service d'enregistrement de la confirmation est indisponible, When Karim clique "Confirmer la conversion", Then le message exact "Votre confirmation n'a pas pu être enregistrée. Réessayez." s'affiche et le statut reste `en_attente`.
+5. (Erreur) Given une Attribution dont `date_redirection` est nulle (jamais cliquée), When Karim tente de la confirmer, Then le bouton reste désactivé et le message "Aucun clic enregistré sur ce lien pour le moment." empêche toute confirmation (garde-fou anti-fraude de base : impossible de déclarer une conversion sur un lien jamais suivi).
+6. (Cas limite — double-clic) Given Karim clique deux fois rapidement sur "Confirmer la conversion", When le second clic survient avant la fin du traitement du premier, Then une seule confirmation est enregistrée (idempotence sur `attribution_id`).
+7. (Cas limite — dépassement du seuil de plausibilité) Given Karim déclare plus de confirmations que de redirections suivies sur la fenêtre de 30 jours glissants `[HYPOTHÈSE — seuil exact à chiffrer par @data-analyst, tracking-plan.md §2.7]`, When la confirmation qui dépasse ce seuil est soumise, Then l'Attribution passe au statut `en_verification_manuelle` (pas `confirmée` directement) et un signalement est créé pour revue back-office (US-07), sans notifier Karim du motif exact du blocage.
+8. (Permissions) Given Karim tente de confirmer une Attribution qui n'est pas la sienne (`attribution_id` d'un autre parrain, URL modifiée), When la requête est faite, Then l'accès est refusé (403).
+9. (Données existantes) Given une Attribution dépasse la fenêtre de conversion de 60 jours `[HYPOTHÈSE — tracking-plan.md §2.5]` sans confirmation, When Karim tente de la confirmer après ce délai, Then la confirmation est refusée avec le message "Le délai de confirmation pour cette attribution est dépassé." et l'Attribution reste/passe au statut `expiree` (jamais comptée dans le NSM, cohérent avec tracking-plan.md §2.5).
+
+#### Payload API
+- `POST /api/v1/parrains/{parrain_id}/attributions/{attribution_id}/confirmation`
+- Auth : lien de session email (même mécanisme que US-05, `[À VALIDER par @fullstack/@ux]`).
+- Rate limit : `[À VALIDER par @infrastructure]`.
+- Request : `{ "date_conversion_declaree": string (ISO 8601), "montant_commission_declare": number | null }`
+- Response 200 : `{ "statut": "confirmee" | "en_verification_manuelle" }`
+- Response 403 : Attribution n'appartenant pas au parrain → `{ "error": "acces_refuse" }`
+- Response 409 : `date_redirection` nulle, ou fenêtre de conversion dépassée → `{ "error": "redirection_absente" }` / `{ "error": "fenetre_expiree" }`
+- Response 503 : service indisponible → `{ "error": "service_indisponible" }`
+
+#### Events analytics
+
+| Event | Trigger | Propriétés | Étape funnel |
+|---|---|---|---|
+| `attribution_confirmee` | Le parrain déclare que le filleul attribué a converti (ajout corrective 2026-07-20, tracking-plan.md §2.3) | attribution_id, parrain_id, offre_id, delai_confirmation_jours, montant_commission, mode_confirmation (declaratif_parrain / webhook_enseigne) **+ enrichi : resultat (confirme_direct / en_verification_manuelle)** | Conversion confirmée — base du NSM (PCA-IA) |
+
+#### Scénarios persona concrets
+
+1. Karim confirme la conversion de Léa, qu'il a orientée vers EDF trois semaines plus tôt, dès qu'il reçoit l'email de confirmation de souscription d'EDF.
+2. Karim, pressé de gonfler sa prime affichée un dimanche soir, tente de confirmer 8 conversions d'un coup alors qu'il n'a eu que 3 redirections suivies ce mois-ci ; la 4e confirmation bascule automatiquement en vérification manuelle sans qu'il en comprenne le motif exact.
+3. Karim clique deux fois par réflexe sur le bouton de confirmation sur mobile (mauvaise connexion) ; une seule confirmation est enregistrée, pas de doublon de commission.
+4. Karim tente de confirmer une Attribution générée il y a 70 jours (au-delà de la fenêtre de 60 jours) ; le message de délai dépassé s'affiche, il comprend que cette attribution ne comptera pas.
+5. Emmanuel, en tant qu'opérateur back-office (US-07), audite les confirmations du mois et retrouve pour chaque Attribution confirmée par Karim l'historique complet de `date_redirection` à `date_confirmation`, confirmant la cohérence du parcours avant de valider le versement de commission.
+
+#### Definition of Done
+UI 5 états conformes ; endpoint testé sur 200/403/409/503 ; garde-fou de plausibilité (critère 7) testé avec un scénario de dépassement de seuil ; les 5 scénarios persona reproductibles en recette ; test E2E à créer par @qa (nom proposé : `tests/e2e/us-09-confirmation-conversion.spec.ts`).
+
+#### Notes @qa / @legal / @data-analyst
+@qa : vérifier en priorité le critère 7 (garde-fou anti-fraude déclenché) et le critère 9 (fenêtre de conversion). @legal : le garde-fou déclaratif est une mitigation de plausibilité, pas une preuve légale de conversion réelle (tracking-plan.md §2.7 limite 1) — ne jamais le présenter comme un dispositif anti-fraude infaillible en communication externe. @data-analyst : la fenêtre de 60 jours et le seuil de plausibilité (redirections ≥ confirmations sur fenêtre glissante) restent `[HYPOTHÈSE]` à chiffrer sur données réelles avant mise en prod.
+
+---
+
 ## Checklist de couverture du parcours (bloquante)
 
 | Parcours | Story ou exclusion documentée |
 |---|---|
 | Acquisition/onboarding demandeur | US-01 (consultation offre + lien attribué) |
 | Onboarding parrain | US-02 (soumission), US-07 (validation back-office) |
-| Core loop (JTBD principal, CRUD) | US-01, US-02, US-03, US-04, US-05, US-06 |
+| Core loop (JTBD principal, CRUD) | US-01, US-02, US-03, US-04, US-05, US-06, US-09 (confirmation de conversion, maillon final vers le NSM) |
 | Paiement (souscription/désabonnement) | **Exclu, N/A justifié** : le modèle n'est pas un abonnement SaaS payé par Léa ou Karim ; le seul flux financier est le versement de commission à Karim (traité en V1.5 via prestataire de paiement dédié, cf. roadmap.md exclusions) |
 | Compte (profil/mdp/email, suppression) | US-05 (tableau de bord), US-08 (RGPD, inclut suppression) — pas de mot de passe au POC (auth par lien email) |
 | Droits RGPD | US-08 |
@@ -426,7 +505,7 @@ Processus testé sur les 9 critères ; page de conformité "Comment ça marche /
 2. Fiche de conformité CGU produite pour l'enseigne concernée (legal-strategy.md §4/§7 point 6) — bloquant pour toute story touchant une enseigne réelle (US-01, US-02, US-07).
 3. Pages de conformité (CGU, confidentialité, divulgation) publiées (roadmap.md épic 1) avant toute mise en ligne publique de US-01/US-02/US-06.
 4. Événements analytics de la story validés par @data-analyst (schéma de tracking-plan).
-5. Maquette validée par @ux pour toute story avec UI (US-01, US-02, US-05, US-06, US-07).
+5. Maquette validée par @ux pour toute story avec UI (US-01, US-02, US-05, US-06, US-07, US-09).
 
 ## Definition of Done (toute story)
 
@@ -444,7 +523,7 @@ Processus testé sur les 9 critères ; page de conformité "Comment ça marche /
 | Agent proposé | Type | Rôle | Justification (US-XX) | Priorité |
 |---|---|---|---|---|
 | testeur-persona Léa | Testeur | Rejouer les 5 scénarios de US-01 et US-06 sur un environnement de recette avec de vrais prompts IA | US-01, US-06 : la promesse de fraîcheur/vérification n'a jamais été testée sur un vrai parcours de bout en bout | Haute |
-| testeur-persona Karim | Testeur | Rejouer les scénarios de US-02/US-05 et challenger la protection anti-fraude perçue | US-02, US-05 : frustrations `[HYPOTHÈSE]` de brand-platform.md non confirmées par interview | Haute |
+| testeur-persona Karim | Testeur | Rejouer les scénarios de US-02/US-05/US-09 et challenger la protection anti-fraude perçue, y compris le déclenchement du garde-fou de plausibilité | US-02, US-05, US-09 : frustrations `[HYPOTHÈSE]` de brand-platform.md non confirmées par interview ; US-09 introduit un garde-fou anti-fraude jamais testé humainement (bascule silencieuse en vérification manuelle) | Haute |
 | testeur-client gestionnaire de programme | Testeur | Valider que le flux d'attribution généré par US-03 reste indiscernable d'un parrainage organique aux yeux de l'émetteur | US-03 : critère central du modèle marketplace, non testable par un E2E générique (brand-platform.md §2.2) | Haute |
 | auditeur conformité CGU par programme | Expertise métier | Produire et maintenir la fiche de conformité par enseigne (legal-strategy.md §4/§7 point 6) avant chaque intégration au catalogue | US-01, US-02, US-07 : bloquant en Definition of Ready, processus récurrent non couvert par un agent générique | Haute |
 
@@ -452,18 +531,18 @@ Processus testé sur les 9 critères ; page de conformité "Comment ça marche /
 
 ## Gates BLOQUANT vérifiées
 
-- **G1** : 8 user stories + checklist de couverture + DoR/DoD présents, 0 section < 2 lignes, 0 `[TODO]`. PASS.
+- **G1** : 9 user stories + checklist de couverture + DoR/DoD présents, 0 section < 2 lignes, 0 `[TODO]`. PASS.
 - **G3** : bloc Handoff structuré présent en fin de document. PASS.
-- **G5** : personas Léa et Karim identiques à brand-platform.md/project-context.md, Grep cohérent sur les deux noms. PASS.
-- **G7** : 0 contradiction avec product-vision.md (mécanique de rotation, objets métier), legal-strategy.md (fiche de conformité bloquante en DoR, divulgation en US-01), roadmap.md (épics et dépendances repris à l'identique). PASS.
-- **G12** : chaque story a un JTBD verbe+objet+bénéfice, chaque critère est binaire (Given/When/Then), chaque DoD est vérifiable. PASS.
-- **G13** : 0 chiffre inventé ; les seuils non sourcés (plafond, fenêtre de fraîcheur, délai de re-tentatives) sont marqués `[À VALIDER]`/`[HYPOTHÈSE]`, jamais codés en dur avec une valeur fictive. PASS.
+- **G5** : personas Léa et Karim identiques à brand-platform.md/project-context.md, Grep cohérent sur les deux noms (y compris dans US-09). PASS.
+- **G7** : 0 contradiction avec product-vision.md (mécanique de rotation, objets métier, statut "confirmée" de l'Attribution désormais rattaché à un déclencheur explicite via US-09), legal-strategy.md (fiche de conformité bloquante en DoR, divulgation en US-01), roadmap.md (épics et dépendances repris à l'identique). **Cohérence n°4 (bidirectionnelle avec tracking-plan.md) re-vérifiée après corrective** : les 2 events proposés par @data-analyst (`lien_redirection_suivie`, `attribution_confirmee`) sont désormais présents dans functional-specs.md avec une nomenclature snake_case identique et les mêmes propriétés (Grep effectué sur les deux noms d'event dans les deux fichiers, aucun écart). PASS.
+- **G12** : chaque story a un JTBD verbe+objet+bénéfice, chaque critère est binaire (Given/When/Then), chaque DoD est vérifiable ; US-09 respecte la répartition minimale (3 happy path, 2 erreur, 2 cas limite, 1 permissions, 1 données existantes = 9 critères). PASS.
+- **G13** : 0 chiffre inventé ; les seuils non sourcés (plafond, fenêtre de fraîcheur, délai de re-tentatives, fenêtre de conversion 60 jours, seuil de plausibilité anti-fraude US-09) sont marqués `[À VALIDER]`/`[HYPOTHÈSE]`, jamais codés en dur avec une valeur fictive. PASS.
 - **G15** : Grep effectué sur les patterns interdits, absents. Seuls `[À VALIDER]` et `[HYPOTHÈSE]` subsistent (annotations autorisées). PASS.
-- **G17** : la combinaison rotation FIFO pondérée + fiche de conformité bloquante par enseigne + divulgation embarquée dans le payload n'est reproductible par un concurrent sans adapter à son propre modèle de plafonds. PASS.
-- **G_PROOF** : voir bloc `Vérifié :` ci-dessous.
+- **G17** : la combinaison rotation FIFO pondérée + fiche de conformité bloquante par enseigne + divulgation embarquée dans le payload + garde-fou de plausibilité déclarative (US-09, confirmations ≤ redirections suivies) n'est reproductible par un concurrent sans adapter à son propre modèle de plafonds et de commission différée. PASS.
+- **G_PROOF** : voir bloc `Vérifié :` ci-dessous (étendu à la chaîne complète jusqu'à la confirmation).
 
-**Vérifié :** dérouler US-01 → US-03 → US-04 sur le cas EDF, du prompt IA à la conversion attribuée.
-`Read docs/product/product-vision.md` (bloc Vérifié) : Léa demande "code de parrainage EDF" à un assistant IA → clic sur la fiche EDF (US-01 critère 1-3) → le moteur (US-03 critère 1) sélectionne le parrain le moins récemment servi dans le pool EDF → une Attribution est créée avec canal `page_web` (US-01 payload) → si l'offre EDF venait à atteindre son plafond total ou expirer, US-04 critère 1/3 la retire automatiquement et bascule son statut en "en attente de parrain", ce que US-01 affiche alors en état "vide" (message "Cette offre n'est plus disponible actuellement."). Les trois stories s'enchaînent sans étape manquante ni contradiction de statut.
+**Vérifié :** dérouler US-01 → US-03 → US-04 → US-09 sur le cas EDF, du prompt IA à la conversion confirmée (chaîne complète jusqu'au NSM).
+`Read docs/product/product-vision.md` (bloc Vérifié) + `Read docs/analytics/tracking-plan.md` (bloc Vérifié, lignes 157-158) : Léa demande "code de parrainage EDF" à un assistant IA → clic sur la fiche EDF (US-01 critère 1-3) → le moteur (US-03 critère 1) sélectionne le parrain le moins récemment servi dans le pool EDF → une Attribution est créée avec canal `page_web` et un lien `https://{domaine}/r/{token}` (US-01 payload) → Léa clique sur ce lien, l'event `lien_redirection_suivie` est journalisé et elle est redirigée en 301 vers EDF (US-01 critère 3 révisé) → si l'offre EDF venait à atteindre son plafond total ou expirer, US-04 critère 1/3 la retire automatiquement et bascule son statut en "en attente de parrain", ce que US-01 affiche alors en état "vide" → Léa souscrit chez EDF, Karim (le parrain attribué) constate la souscription et confirme la conversion depuis son tableau de bord (US-09 critère 1) → l'event `attribution_confirmee` est émis, le garde-fou de plausibilité (US-09 critère 2/7) valide la déclaration car cohérente avec ses redirections suivies → l'Attribution passe au statut "confirmée" et alimente le PCA-IA du mois de confirmation (kpi-framework.md §1.3). Les quatre stories s'enchaînent sans étape manquante ni contradiction de statut, et les deux events précédemment orphelins (`lien_redirection_suivie`, `attribution_confirmee`) ont désormais chacun un déclencheur produit documenté.
 
 ---
 
@@ -472,13 +551,15 @@ Processus testé sur les 9 critères ; page de conformité "Comment ça marche /
 - `[À VALIDER]` Seuil exact de re-tentatives avant de marquer un lien "invalide" (US-04 critère 2) et fenêtre exacte de fraîcheur (US-04 critère 7) : à chiffrer par @data-analyst/@ia.
 - `[HYPOTHÈSE]` Seuil de 3 signalements distincts avant priorisation de re-vérification (US-06 critère 2) : à valider par @data-analyst sur les premières données réelles.
 - `[HYPOTHÈSE]` Délai de 5 minutes pour annuler une validation back-office par erreur (US-07 critère 7) et délai de traitement RGPD de 30 jours (US-08 critère 9) : à valider par @legal.
-- `[À VALIDER par @fullstack/@ux]` Mécanisme exact d'authentification par lien email pour Karim (US-02, US-05) : pas de mot de passe au POC, à spécifier techniquement avant développement.
+- `[À VALIDER par @fullstack/@ux]` Mécanisme exact d'authentification par lien email pour Karim (US-02, US-05, US-09) : pas de mot de passe au POC, à spécifier techniquement avant développement.
+- `[HYPOTHÈSE]` Fenêtre de conversion de 60 jours entre `date_generation` et `date_confirmation` (US-09 critère 9, tracking-plan.md §2.5) : à valider par @product-manager/@legal selon les délais réels de validation de prime par enseigne.
+- `[HYPOTHÈSE]` Seuil de plausibilité anti-fraude (confirmations ≤ redirections suivies sur fenêtre de 30 jours glissants, US-09 critère 7, tracking-plan.md §2.7) : à chiffrer par @data-analyst sur les premières données réelles.
 
 ---
 **Handoff → @ux, @design, @data-analyst, @fullstack, @qa**
 - Fichiers produits : `/home/user/MCP/docs/product/functional-specs.md`
-- Décisions prises : 8 user stories (4 critiques full template + 4 de couverture, triage par complexité appliqué aux stories backend US-03/US-04) ; checklist de couverture du parcours traitée avec exclusion justifiée (paiement SaaS N/A, réactivation hors V1) ; DoR/DoD définis pour développement sans question.
-- Points d'attention : fiche de conformité par enseigne = prérequis bloquant en Definition of Ready (US-01, US-02, US-07) ; plusieurs seuils numériques `[À VALIDER]`/`[HYPOTHÈSE]` ne doivent jamais être codés en dur avec une valeur inventée, ils doivent rester configurables jusqu'à validation par @legal/@data-analyst.
-- Agents spécialisés recommandés : testeur-persona Léa, testeur-persona Karim, testeur-client gestionnaire de programme, auditeur conformité CGU par programme (voir tableau dédié).
-- **Actions infra requises** : Aucune action Cloudflare/GitHub requise à ce stade (livrable de specs, aucun code produit). Actions futures signalées pour @fullstack/@infrastructure au moment de l'implémentation (rate limits, mécanisme d'authentification par lien email, verrouillage transactionnel du moteur d'attribution).
+- Décisions prises : 9 user stories (4 critiques full template + 5 de couverture, triage par complexité appliqué aux stories backend US-03/US-04) ; checklist de couverture du parcours traitée avec exclusion justifiée (paiement SaaS N/A, réactivation hors V1) ; DoR/DoD définis pour développement sans question. **Corrective 2026-07-20T01:00** : ajout de US-09 (confirmation de conversion par le parrain, garde-fou de plausibilité anti-fraude) et intégration de l'endpoint `GET /r/{token}` + event `lien_redirection_suivie` dans US-01, en réponse au gap remonté par @data-analyst (tracking-plan.md) — les 2 events du tracking plan ont désormais leur équivalent exact dans les specs (cohérence n°4 PASS dans les deux sens).
+- Points d'attention : fiche de conformité par enseigne = prérequis bloquant en Definition of Ready (US-01, US-02, US-07) ; plusieurs seuils numériques `[À VALIDER]`/`[HYPOTHÈSE]` ne doivent jamais être codés en dur avec une valeur inventée, ils doivent rester configurables jusqu'à validation par @legal/@data-analyst, y compris la fenêtre de conversion de 60 jours et le seuil de plausibilité anti-fraude (US-09) ; le garde-fou déclaratif de US-09 n'est qu'une mitigation, pas une preuve légale (à ne jamais présenter comme infaillible en communication externe).
+- Agents spécialisés recommandés : testeur-persona Léa, testeur-persona Karim (scénarios étendus à US-09), testeur-client gestionnaire de programme, auditeur conformité CGU par programme (voir tableau dédié).
+- **Actions infra requises** : Aucune action Cloudflare/GitHub requise à ce stade (livrable de specs, aucun code produit). Actions futures signalées pour @fullstack/@infrastructure au moment de l'implémentation (rate limits, mécanisme d'authentification par lien email, verrouillage transactionnel du moteur d'attribution, endpoint `GET /r/{token}` en priorité haute cf. tracking-plan.md Handoff).
 ---
