@@ -5,7 +5,7 @@
  */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getAllOffres, getOffreBySlug, isServable, riskTextForCategory } from '@/lib/offres';
+import { getAllOffres, getOffreBySlug, isServable, riskTextForOffre } from '@/lib/offres';
 import { slugify } from '@/lib/slug';
 import { toPublicOffre } from '@/lib/ai/public-offre';
 import { offreJsonLd, breadcrumbJsonLd, jsonLdString } from '@/lib/ai/jsonld';
@@ -18,6 +18,7 @@ import { RiskBanner } from '@/components/ui/RiskBanner';
 import { OfferCard } from '@/components/ui/OfferCard';
 import { OfferCta } from '@/components/offre/OfferCta';
 import { ReportLink } from '@/components/offre/ReportLink';
+import { TrackOnMount } from '@/components/analytics/TrackOnMount';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
@@ -38,7 +39,7 @@ export default async function OffrePage({ params }: { params: Promise<{ slug: st
   if (!offre) notFound();
 
   const servable = isServable(offre.statut);
-  const riskText = riskTextForCategory(offre.categorie);
+  const riskText = riskTextForOffre(offre);
   const tags = (offre.tagsMcp ?? '').split(';').map((t) => t.trim()).filter(Boolean).slice(0, 6);
   const all = await getAllOffres();
   const proches = all
@@ -61,6 +62,8 @@ export default async function OffrePage({ params }: { params: Promise<{ slug: st
 
   return (
     <main className="mx-auto max-w-container px-md py-lg lg:px-xl">
+      {/* Zone 1 — tracking chargement fiche (US-01, gate consentement cote client) */}
+      <TrackOnMount event="page_offre_vue" props={{ enseigne_id: offre.id, canal_source: 'page_web' }} />
       {jsonLd ? (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       ) : null}

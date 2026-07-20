@@ -1,6 +1,7 @@
 /** Page « Divulgation d'affiliation / Comment ça marche » (US-08, docs/legal/textes/05). Rendu statique. */
 import type { Metadata } from 'next';
 import { LegalShell } from '@/components/legal/LegalShell';
+import { LegalContact } from '@/components/legal/LegalContact';
 
 export const metadata: Metadata = {
   title: 'Comment ça marche : divulgation de l\'affiliation',
@@ -47,7 +48,7 @@ export default function DivulgationPage() {
         parrainage ne compense ni ne couvre ce risque : c&apos;est un avantage de bienvenue, pas une performance
         du produit financier lui-même.
       </p>
-      <p>Une question, un désaccord avec une fiche ? Contactez-nous à [adresse email de contact à compléter].</p>
+      <p>Une question, un désaccord avec une fiche ? Contactez-nous via <LegalContact />.</p>
     </LegalShell>
   );
 }

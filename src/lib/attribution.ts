@@ -160,6 +160,35 @@ export function generateAttribution(input: GenerateAttributionInput): GenerateAt
       } satisfies GenerateAttributionResult;
     });
 
+    // Equite de rotation (US-03) : trace chaque parrain ayant un lien sur l'offre mais ecarte du pool
+    // (quota atteint / parrain ou lien non actif). Best-effort, n'affecte jamais la selection deja faite.
+    try {
+      const candidats = db
+        .select({
+          parrainId: lienParrainage.parrainId,
+          lienStatut: lienParrainage.statut,
+          parrainStatut: parrain.statut,
+          quotaMax: lienParrainage.quotaMax,
+          quotaUtilise: lienParrainage.quotaUtilise,
+        })
+        .from(lienParrainage)
+        .innerJoin(parrain, eq(parrain.id, lienParrainage.parrainId))
+        .where(eq(lienParrainage.offreId, input.offreId))
+        .all();
+      for (const c of candidats) {
+        if (c.parrainId === result.parrainId) continue; // le parrain retenu n'est pas exclu
+        let raison: string | null = null;
+        if (c.parrainStatut !== 'actif') raison = 'parrain_non_actif';
+        else if (c.lienStatut !== 'actif') raison = `lien_${c.lienStatut}`;
+        else if (c.quotaMax != null && c.quotaUtilise >= c.quotaMax) raison = 'quota_atteint';
+        if (raison) {
+          emitEvent('attribution_parrain_exclu', { parrain_id: c.parrainId, offre_id: input.offreId, raison });
+        }
+      }
+    } catch {
+      // tracabilite best-effort : ne jamais casser l'attribution deja creee.
+    }
+
     emitEvent('attribution_moteur_execute', {
       offre_id: input.offreId,
       resultat: 'succes',
@@ -220,7 +249,11 @@ export function resolveAndRecordRedirect(
     .where(eq(attribution.token, token))
     .get();
 
-  if (!row) return { ok: false, reason: 'token_invalide' };
+  if (!row) {
+    // Token inconnu : tentative de redirection sur un lien invalide (page generique servie par la route).
+    emitEvent('lien_invalide_detecte', { token, raison: 'token_invalide' });
+    return { ok: false, reason: 'token_invalide' };
+  }
 
   // Restriction legale et retraits : seule une offre `actif` est servie.
   if (row.offreStatut !== 'actif') return { ok: false, reason: 'offre_indisponible' };

@@ -8,8 +8,9 @@
  * -> une seule Attribution créée. Timeout 3s (US-01 crit.7) : bascule automatique en état erreur, jamais de
  * chargement infini.
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { formatDateFr } from '@/lib/format';
+import { trackClient } from '@/lib/analytics-client';
 
 type State = 'default' | 'loading' | 'success' | 'empty' | 'error';
 
@@ -26,10 +27,16 @@ export function OfferCta({ offreId, nomProgramme, dateVerification, servable, ca
   const [lien, setLien] = useState<string | null>(null);
   const inFlight = useRef(false);
 
+  // Offre non servable affichee d'emblee (pool vide / offre expiree) : garde-fou de disponibilite.
+  useEffect(() => {
+    if (!servable) trackClient('offre_indisponible_affichee', { enseigne_id: offreId });
+  }, [servable, offreId]);
+
   async function generate() {
     if (inFlight.current) return; // dédup double-clic
     inFlight.current = true;
     setState('loading');
+    trackClient('lien_parrainage_demande', { enseigne_id: offreId });
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3000);
@@ -43,22 +50,28 @@ export function OfferCta({ offreId, nomProgramme, dateVerification, servable, ca
       });
       clearTimeout(timeout);
       if (res.status === 404 || res.status === 409) {
+        trackClient('lien_parrainage_echec', { enseigne_id: offreId, type_erreur: String(res.status) });
+        trackClient('offre_indisponible_affichee', { enseigne_id: offreId });
         setState('empty');
         return;
       }
       if (!res.ok) {
+        trackClient('lien_parrainage_echec', { enseigne_id: offreId, type_erreur: String(res.status) });
         setState('error');
         return;
       }
-      const data = (await res.json()) as { lien_genere?: string };
+      const data = (await res.json()) as { lien_genere?: string; attribution_id?: string };
       if (!data.lien_genere) {
+        trackClient('lien_parrainage_echec', { enseigne_id: offreId, type_erreur: 'reponse_incomplete' });
         setState('error');
         return;
       }
+      trackClient('lien_parrainage_genere', { enseigne_id: offreId, attribution_id: data.attribution_id });
       setLien(data.lien_genere);
       setState('success');
     } catch {
       clearTimeout(timeout);
+      trackClient('lien_parrainage_echec', { enseigne_id: offreId, type_erreur: 'timeout_reseau' });
       setState('error');
     } finally {
       inFlight.current = false;

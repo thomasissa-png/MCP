@@ -12,9 +12,22 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { offre } from '@/db/schema';
 import { generateAttribution, SocleError } from '@/lib/attribution';
-import { SITE_URL } from '@/config/socle';
+import {
+  SITE_URL,
+  ATTRIBUTION_RATE_MAX,
+  ATTRIBUTION_RATE_WINDOW_SECONDS,
+  ATTRIBUTION_DEDUP_WINDOW_SECONDS,
+} from '@/config/socle';
+import { getClientIp, rateLimit, dedupGet, dedupSet } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
+
+type AttributionPayload = {
+  attribution_id: string;
+  token: string;
+  lien_genere: string;
+  date_verification_offre: string | null;
+};
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
@@ -26,12 +39,33 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     body = {};
   }
   const canalSource = body.canal_source === 'api_json' ? 'api_json' : 'page_web';
+  const sessionId = typeof body.session_id === 'string' ? body.session_id : undefined;
+
+  // Anti-abus (protection du quota T&E) : rate-limit + dedup par source (IP + session anonyme).
+  const ip = getClientIp(req);
+  const source = `${ip}:${sessionId ?? '-'}`;
+
+  const rate = rateLimit(`attr:${source}`, ATTRIBUTION_RATE_MAX, ATTRIBUTION_RATE_WINDOW_SECONDS);
+  if (!rate.allowed) {
+    return NextResponse.json(
+      { error: 'trop_de_requetes' },
+      { status: 429, headers: { 'Retry-After': String(rate.retryAfterSeconds) } },
+    );
+  }
+
+  // Dedup serveur : meme source + meme offre dans la fenetre -> on renvoie le lien deja genere
+  // (evite de consommer du quota sur un rechargement / double appel non couvert par la dedup client).
+  const dedupKey = `attr:${source}:${id}`;
+  const cached = dedupGet<AttributionPayload>(dedupKey, ATTRIBUTION_DEDUP_WINDOW_SECONDS);
+  if (cached) {
+    return NextResponse.json(cached, { status: 201 });
+  }
 
   try {
     const result = generateAttribution({
       offreId: id,
       canalSource,
-      sessionId: typeof body.session_id === 'string' ? body.session_id : undefined,
+      sessionId,
     });
 
     const offreRow = db
@@ -40,15 +74,15 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
       .where(eq(offre.id, id))
       .get();
 
-    return NextResponse.json(
-      {
-        attribution_id: result.attributionId,
-        token: result.token,
-        lien_genere: `${SITE_URL.replace(/\/$/, '')}/r/${result.token}`,
-        date_verification_offre: offreRow?.dateVerification ?? null,
-      },
-      { status: 201 },
-    );
+    const payload: AttributionPayload = {
+      attribution_id: result.attributionId,
+      token: result.token,
+      lien_genere: `${SITE_URL.replace(/\/$/, '')}/r/${result.token}`,
+      date_verification_offre: offreRow?.dateVerification ?? null,
+    };
+    dedupSet(dedupKey, payload);
+
+    return NextResponse.json(payload, { status: 201 });
   } catch (err) {
     if (err instanceof SocleError && err.code === 'offre_indisponible') {
       return NextResponse.json({ error: 'offre_indisponible' }, { status: 404 });

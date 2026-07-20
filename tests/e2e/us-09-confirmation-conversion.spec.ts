@@ -4,7 +4,7 @@
  * Garde-fou d'acces : confirmer sous un autre parrain (cross-parrain) -> 403.
  */
 import { test, expect } from '@playwright/test';
-import { EMMANUEL_EMAIL, REF_TRADE_REPUBLIC, loginParrain } from './helpers';
+import { EMMANUEL_EMAIL, REF_TRADE_REPUBLIC, loginParrain, internalHeaders } from './helpers';
 
 test.describe('US-09 confirmation de conversion', () => {
   test('confirmation d une attribution suivie -> statut confirmee ; cross-parrain -> 403', async ({ request }) => {
@@ -12,8 +12,9 @@ test.describe('US-09 confirmation de conversion', () => {
     const cookie = await loginParrain(request, EMMANUEL_EMAIL);
     const authHeaders = { cookie: `parrainly_session=${cookie}` };
 
-    // 2) Genere une attribution via le moteur (interne, ouvert en dev) pour l'offre Trade Republic
+    // 2) Genere une attribution via le moteur (interne, fail-closed en prod : header x-internal-key requis)
     const select = await request.post('/internal/attribution-engine/select', {
+      headers: internalHeaders,
       data: { offre_id: REF_TRADE_REPUBLIC, canal_source: 'api_json', origine_detectee: 'chatgpt' },
     });
     expect(select.status()).toBe(200);

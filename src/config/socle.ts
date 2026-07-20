@@ -43,10 +43,62 @@ export const NON_PUBLIC_PROGRAMS: readonly string[] = (process.env.SOCLE_NON_PUB
 
 /**
  * Cle d'authentification des routes internes (/internal/*). En dev (variable absente), les routes
- * internes sont ouvertes pour faciliter le smoke test, avec un warning. En prod, la variable DOIT
- * etre definie (wrangler secret) : sans elle, les routes internes restent ouvertes -> a configurer.
+ * internes sont ouvertes pour faciliter le smoke test, avec un warning. En PROD, la variable DOIT
+ * etre definie : sans elle, les routes internes sont FERMEES (fail-closed, 401) — jamais ouvertes.
  */
 export const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY ?? '';
+
+/** Vrai en production (bascule le regime de securite de fail-open dev vers fail-closed prod). */
+export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+/* -------------------------------------------------------------------------- */
+/* Anti-abus attribution publique (POST /api/v1/offres/{id}/attribution)        */
+/* Objectif : proteger le quota T&E (fondation du modele de rotation) contre    */
+/* l'epuisement par appels repetes. Seuils CONFIGURABLES (jamais en dur).       */
+/* -------------------------------------------------------------------------- */
+
+/** Nombre max de generations de lien par fenetre glissante et par source (IP + session anonyme). */
+export const ATTRIBUTION_RATE_MAX = intFromEnv('SOCLE_ATTRIBUTION_RATE_MAX', 10);
+
+/** Largeur de la fenetre glissante du rate-limit d'attribution, en secondes (defaut 60 s). */
+export const ATTRIBUTION_RATE_WINDOW_SECONDS = intFromEnv('SOCLE_ATTRIBUTION_RATE_WINDOW_SECONDS', 60);
+
+/**
+ * Fenetre de deduplication serveur (secondes) : dans cet intervalle, une meme source qui redemande
+ * un lien pour la MEME offre recoit le lien deja genere au lieu d'en creer un nouveau (evite de
+ * consommer du quota sur un rechargement / double appel non couvert par la dedup client). Defaut 30 s.
+ */
+export const ATTRIBUTION_DEDUP_WINDOW_SECONDS = intFromEnv('SOCLE_ATTRIBUTION_DEDUP_WINDOW_SECONDS', 30);
+
+/* -------------------------------------------------------------------------- */
+/* Signalement de lien mort (US-06) — dedup + seuil de re-verification          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Fenetre de deduplication d'un signalement (secondes) : un meme signalement (offre + source/IP)
+ * dans cette fenetre est ignore (idempotent, US-06 crit.7). Defaut 3600 s (1 h).
+ */
+export const SIGNALEMENT_DEDUP_WINDOW_SECONDS = intFromEnv('SOCLE_SIGNALEMENT_DEDUP_WINDOW_SECONDS', 3600);
+
+/**
+ * Seuil de signalements distincts sur une meme offre (dans la fenetre de re-verification) au-dela
+ * duquel l'event `lien_priorite_reverification` est emis (priorise le controle manuel). Defaut 3.
+ */
+export const SIGNALEMENT_REVERIFICATION_THRESHOLD = intFromEnv('SOCLE_SIGNALEMENT_REVERIFICATION_THRESHOLD', 3);
+
+/** Fenetre glissante (secondes) sur laquelle on compte les signalements pour le seuil ci-dessus. Defaut 7 j. */
+export const SIGNALEMENT_REVERIFICATION_WINDOW_SECONDS = intFromEnv('SOCLE_SIGNALEMENT_REVERIFICATION_WINDOW_SECONDS', 604800);
+
+/* -------------------------------------------------------------------------- */
+/* Contact legal (pages CGU / divulgation)                                      */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Adresse de contact affichee sur les pages legales. Si NON definie, les pages rendent un lien vers
+ * le formulaire /rgpd/demande — JAMAIS de crochet placeholder (garde-fou G15). Valeur reelle a
+ * confirmer a la revue juridique finale (voir .env.example : LEGAL_CONTACT_EMAIL).
+ */
+export const LEGAL_CONTACT_EMAIL = (process.env.LEGAL_CONTACT_EMAIL ?? '').trim();
 
 /** URL publique de base pour composer les liens /r/{token} et les liens magiques. */
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';

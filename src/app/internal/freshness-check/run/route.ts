@@ -1,7 +1,7 @@
 /**
  * POST /internal/freshness-check/run — job de fraicheur US-04 (interne / planifie).
  *
- * Auth : cle interne (`INTERNAL_API_KEY`), meme regime que le moteur d'arbitrage.
+ * Auth : cle interne (`INTERNAL_API_KEY`), fail-closed en prod, meme regime que le moteur d'arbitrage.
  * Fail-safe : ne casse jamais le catalogue (cf. lib/freshness.ts). Seuils configurables (config/socle.ts).
  *
  * Request  : {} (optionnel : { max_age_days?: number } pour surcharger le seuil de fraicheur).
@@ -10,21 +10,13 @@
  */
 import { NextResponse, type NextRequest } from 'next/server';
 import { runFreshnessCheck } from '@/lib/freshness';
-import { FRESHNESS_MAX_DAYS, INTERNAL_API_KEY } from '@/config/socle';
+import { FRESHNESS_MAX_DAYS } from '@/config/socle';
+import { isInternalAuthorized } from '@/lib/internal-auth';
 
 export const dynamic = 'force-dynamic';
 
-function authorized(req: NextRequest): boolean {
-  if (!INTERNAL_API_KEY) {
-    // eslint-disable-next-line no-console
-    console.warn('[internal] INTERNAL_API_KEY non definie : route interne ouverte (dev uniquement).');
-    return true;
-  }
-  return req.headers.get('x-internal-key') === INTERNAL_API_KEY;
-}
-
 export async function POST(req: NextRequest) {
-  if (!authorized(req)) {
+  if (!isInternalAuthorized(req)) {
     return NextResponse.json({ error: 'non_autorise' }, { status: 401 });
   }
 

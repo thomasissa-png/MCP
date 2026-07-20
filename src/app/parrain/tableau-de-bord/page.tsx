@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { requireUser } from '@/lib/session-server';
 import { getLiensForParrain, getPrimeEstimee, getAttributionsAConfirmer } from '@/lib/parrain';
 import { ParrainNav } from '@/components/parrain/ParrainNav';
+import { TrackOnMount } from '@/components/analytics/TrackOnMount';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Tableau de bord parrain', robots: { index: false } };
@@ -26,6 +27,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="mx-auto max-w-container px-md py-lg lg:px-xl">
+      <TrackOnMount event="dashboard_parrain_vu" props={{ parrain_id: user.parrainId, nb_liens: liens.length }} />
       <ParrainNav nom={user.nom} />
 
       {/* Zone 2 — Carte prime estimée cumulée */}

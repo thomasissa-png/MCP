@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LegalShell } from '@/components/legal/LegalShell';
+import { LegalContact } from '@/components/legal/LegalContact';
 
 export const metadata: Metadata = { title: 'Politique de confidentialité' };
 
@@ -80,7 +81,8 @@ export default function ConfidentialitePage() {
       <section>
         <h2>8. Contact et réclamation</h2>
         <p>
-          [adresse email de contact à compléter]. Autorité de contrôle : CNIL, 3 Place de Fontenoy, 75007 Paris.
+          Pour exercer vos droits ou toute réclamation, contactez-nous via <LegalContact />. Autorité de
+          contrôle : CNIL, 3 Place de Fontenoy, 75007 Paris.
         </p>
       </section>
     </LegalShell>

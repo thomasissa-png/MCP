@@ -9,6 +9,7 @@
  */
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { CONSENT_CHANGED_EVENT } from '@/lib/analytics-client';
 
 const STORAGE_KEY = 'parrainly-consent';
 const SIX_MONTHS_MS = 1000 * 60 * 60 * 24 * 182;
@@ -32,6 +33,12 @@ export function CookieBanner() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ choice, ts: Date.now() }));
     } catch {
       // stockage indisponible : on masque quand même le bandeau pour la session
+    }
+    // Notifie AnalyticsScripts (chargement/arret des sinks) du nouveau choix, sans rechargement.
+    try {
+      window.dispatchEvent(new Event(CONSENT_CHANGED_EVENT));
+    } catch {
+      // environnement sans window (ne devrait pas arriver ici, composant client)
     }
     setVisible(false);
   }

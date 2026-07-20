@@ -8,6 +8,7 @@
 import { and, eq, gte, isNull, lt } from 'drizzle-orm';
 import { db } from '@/db';
 import { magicLinkToken, session } from '@/db/schema';
+import { emitEvent } from '@/lib/analytics';
 import {
   MAGIC_LINK_COOLDOWN_SECONDS,
   MAGIC_LINK_MAX_PER_HOUR,
@@ -96,7 +97,14 @@ export type ConsumeResult =
   | { ok: true; email: string; returnTo: string | null }
   | { ok: false; reason: 'expired' | 'consumed' | 'invalid' };
 
-/** Consomme un lien magique (usage unique). Marque le token consomme si valide. */
+/**
+ * Consomme un lien magique (usage unique), de facon ATOMIQUE (anti-rejeu).
+ *
+ * La consommation est un UPDATE conditionnel `... WHERE consumed_at IS NULL` : sur deux requetes
+ * concurrentes portant le meme token, une seule voit `changes === 1` (SQLite serialise les ecritures),
+ * l'autre obtient `changes === 0` -> `consumed`. On evite ainsi la fenetre de course du schema
+ * read-check-update (deux lecteurs voyant le token non consomme puis l'utilisant tous les deux).
+ */
 export async function consumeMagicLinkToken(rawToken: string): Promise<ConsumeResult> {
   const tokenHash = await hashToken(rawToken);
   const row = db.select().from(magicLinkToken).where(eq(magicLinkToken.tokenHash, tokenHash)).get();
@@ -104,7 +112,14 @@ export async function consumeMagicLinkToken(rawToken: string): Promise<ConsumeRe
   if (row.consumedAt) return { ok: false, reason: 'consumed' };
   if (Date.now() > row.expiresAt.getTime()) return { ok: false, reason: 'expired' };
 
-  db.update(magicLinkToken).set({ consumedAt: new Date() }).where(eq(magicLinkToken.tokenHash, tokenHash)).run();
+  // Consommation atomique : ne reussit que si le token est encore non consomme au moment de l'ecriture.
+  const res = db
+    .update(magicLinkToken)
+    .set({ consumedAt: new Date() })
+    .where(and(eq(magicLinkToken.tokenHash, tokenHash), isNull(magicLinkToken.consumedAt)))
+    .run();
+  if (res.changes !== 1) return { ok: false, reason: 'consumed' };
+
   return { ok: true, email: row.email, returnTo: row.returnTo };
 }
 
@@ -138,6 +153,8 @@ export async function getSessionUser(rawToken: string | undefined): Promise<Sess
   if (!row) return null;
   if (Date.now() > row.expiresAt.getTime()) {
     db.delete(session).where(eq(session.tokenHash, tokenHash)).run();
+    // Session valide auparavant mais expiree : friction de reconnexion forcee (tracking-plan, etat 12).
+    emitEvent('session_parrain_expiree', { email_domaine: row.email.split('@')[1] ?? null });
     return null;
   }
   const account = findParrainAccount(row.email);

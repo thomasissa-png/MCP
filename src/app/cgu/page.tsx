@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LegalShell } from '@/components/legal/LegalShell';
+import { LegalContact } from '@/components/legal/LegalContact';
 
 export const metadata: Metadata = { title: "Conditions d'utilisation" };
 
@@ -76,7 +77,7 @@ export default function CguPage() {
       </section>
       <section>
         <h2>8. Contact</h2>
-        <p>Pour toute question : [adresse email de contact à compléter].</p>
+        <p>Pour toute question, contactez-nous via <LegalContact />.</p>
       </section>
     </LegalShell>
   );

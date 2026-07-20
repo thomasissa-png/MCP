@@ -14,6 +14,10 @@ export const EMMANUEL_EMAIL = 'emmanuel@parrainly.test';
 export const THOMAS_EMAIL = 'thomas@parrainly.test';
 export const REF_TRADE_REPUBLIC = 'REF-001';
 
+/** Cle interne partagee avec le serveur E2E (fail-closed en prod : /internal/* exige ce header). */
+export const INTERNAL_KEY = process.env.E2E_INTERNAL_KEY ?? 'e2e-internal-key';
+export const internalHeaders = { 'x-internal-key': INTERNAL_KEY };
+
 /** Ouvre la DB E2E en lecture seule (assertions d'etat, jamais d'ecriture depuis les tests). */
 export function openDb(): Database.Database {
   return new Database(DB_FILE, { readonly: true });

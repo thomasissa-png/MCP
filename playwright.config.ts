@@ -30,10 +30,15 @@ const BASE_URL = `http://127.0.0.1:${PORT}`;
 const DB_URL = process.env.DATABASE_URL ?? 'file:./drizzle/test-e2e.db';
 const SERVER_LOG = join(process.cwd(), 'e2e-server.log');
 
+// Cle interne E2E : depuis la securisation fail-closed, `next start` (NODE_ENV=production) exige la cle
+// sur /internal/*. On la fixe ici et on l'expose aux workers pour qu'ils envoient le header x-internal-key.
+const E2E_INTERNAL_KEY = 'e2e-internal-key';
+
 // Expose aux workers de test (herites au fork) : chemin du log serveur (capture du lien magique) + DB.
 process.env.DATABASE_URL = DB_URL;
 process.env.PARRAINLY_SERVER_LOG = SERVER_LOG;
 process.env.E2E_BASE_URL = BASE_URL;
+process.env.E2E_INTERNAL_KEY = E2E_INTERNAL_KEY;
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -71,6 +76,8 @@ export default defineConfig({
       // repetees (tests + retries) en 429. La logique cooldown/rate reste testee unitairement.
       AUTH_MAGIC_LINK_COOLDOWN_SECONDS: '1',
       AUTH_MAGIC_LINK_MAX_PER_HOUR: '100',
+      // Cle interne requise en prod (fail-closed) : les tests /internal/* envoient le header correspondant.
+      INTERNAL_API_KEY: E2E_INTERNAL_KEY,
     },
   },
 });

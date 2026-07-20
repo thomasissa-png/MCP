@@ -2,8 +2,8 @@
  * POST /internal/attribution-engine/select — moteur d'arbitrage US-03 (interne uniquement).
  *
  * Selectionne un parrain eligible (FIFO + quota, verrouillage transactionnel) et cree l'attribution.
- * Auth : cle interne (`INTERNAL_API_KEY`). Absente en dev -> route ouverte (facilite le smoke test),
- * avec warning ; en prod la cle DOIT etre definie.
+ * Auth : cle interne (`INTERNAL_API_KEY`), fail-closed en prod. Absente en dev -> route ouverte
+ * (facilite le smoke test) avec warning ; absente en prod -> acces refuse (401). Voir lib/internal-auth.
  *
  * Request  : { offre_id: string, canal_source?: "page_web"|"api_json", origine_detectee?: string, session_id?: string }
  * Response 200 : { parrain_id, attribution_id, token, lien_genere }
@@ -16,21 +16,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { generateAttribution, SocleError } from '@/lib/attribution';
 import { CANAUX, ORIGINES } from '@/db/schema';
-import { INTERNAL_API_KEY, SITE_URL } from '@/config/socle';
+import { SITE_URL } from '@/config/socle';
+import { isInternalAuthorized } from '@/lib/internal-auth';
 
 export const dynamic = 'force-dynamic';
 
-function authorized(req: NextRequest): boolean {
-  if (!INTERNAL_API_KEY) {
-    // eslint-disable-next-line no-console
-    console.warn('[internal] INTERNAL_API_KEY non definie : route interne ouverte (dev uniquement).');
-    return true;
-  }
-  return req.headers.get('x-internal-key') === INTERNAL_API_KEY;
-}
-
 export async function POST(req: NextRequest) {
-  if (!authorized(req)) {
+  if (!isInternalAuthorized(req)) {
     return NextResponse.json({ error: 'non_autorise' }, { status: 401 });
   }
 

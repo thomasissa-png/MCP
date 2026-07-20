@@ -38,20 +38,56 @@ const RISK_CATEGORIES = new Set([
 ]);
 
 /**
+ * Signaux d'un produit d'INVESTISSEMENT identifiables hors catégorie de tête, via sous-catégorie ou tags
+ * (courtage, ETF, PEA, investissement, bourse, action, obligation). Permet de déclencher une mention de
+ * risque mesurée sur une offre comme Trade Republic (catégorie « Finance personnelle », sous-catégorie
+ * « Néobanque & Courtage », tags ETF/PEA), sans surqualifier une simple néobanque de dépôt.
+ */
+const INVESTMENT_SIGNALS = ['courtage', 'etf', 'pea', 'investissement', 'invest', 'bourse', 'action', 'obligation', 'trading'];
+const CRYPTO_SIGNALS = ['crypto', 'bitcoin', 'staking', 'web3'];
+
+/** Texte de risque VERBATIM d'un produit d'investissement (docs/legal/textes/06). Ambre, factuel, jamais rouge. */
+const INVESTMENT_RISK_TEXT =
+  "Investir comporte des risques de perte en capital. Les performances passées ne préjugent pas des performances futures. La prime de parrainage est un avantage de bienvenue, distinct de la performance du produit financier souscrit.";
+
+const CRYPTO_RISK_TEXT =
+  'Les crypto-actifs sont des actifs risqués, leur valeur peut fortement varier, y compris à la baisse. Investir dans un crypto-actif comporte un risque de perte totale du capital. La prime de parrainage ne compense ni ne couvre ce risque.';
+
+function matchesAny(haystack: string, patterns: string[]): boolean {
+  const h = haystack.toLowerCase();
+  return patterns.some((p) => h.includes(p));
+}
+
+/**
  * Texte de risque légal VERBATIM par catégorie (docs/legal/textes/06). Retourne null si la catégorie
- * ne déclenche pas de bandeau. Trade Republic (Finance personnelle) : pas de bandeau par défaut
- * (checkpoint Phase 1 point 7), `[À VALIDER]` par @product-manager/@legal avant mise en ligne.
+ * de tête ne déclenche pas de bandeau. Conservée pour compat : la détection complète (sous-catégorie /
+ * tags) passe par `riskTextForOffre`.
  */
 export function riskTextForCategory(categorie: string): string | null {
   if (!RISK_CATEGORIES.has(categorie)) return null;
-  if (categorie === 'Crypto') {
-    return 'Les crypto-actifs sont des actifs risqués, leur valeur peut fortement varier, y compris à la baisse. Investir dans un crypto-actif comporte un risque de perte totale du capital. La prime de parrainage ne compense ni ne couvre ce risque.';
-  }
+  if (categorie === 'Crypto') return CRYPTO_RISK_TEXT;
   if (categorie === 'Placement trésorerie') {
     return "Investir comporte des risques de perte en capital. Les fonds monétaires ne sont pas garantis en capital malgré leur faible volatilité habituelle. Le rendement affiché dépend de la campagne en cours et peut évoluer.";
   }
   // Investissement + Gestion de patrimoine
-  return "Investir comporte des risques de perte en capital. Les performances passées ne préjugent pas des performances futures. La prime de parrainage est un avantage de bienvenue, distinct de la performance du produit financier souscrit.";
+  return INVESTMENT_RISK_TEXT;
+}
+
+/**
+ * Détection COMPLÈTE de la mention de risque d'une offre : catégorie de tête d'abord, puis, à défaut,
+ * détection par sous-catégorie / tags (produit d'investissement ou crypto identifié hors catégorie).
+ * C'est cette fonction que rend la page-offre (bandeau ambre mesuré, factuel, zéro promesse de rendement).
+ */
+export function riskTextForOffre(
+  o: Pick<Offre, 'categorie' | 'sousCategorie' | 'tagsMcp'>,
+): string | null {
+  const byCat = riskTextForCategory(o.categorie);
+  if (byCat) return byCat;
+
+  const signals = `${o.sousCategorie ?? ''} ${o.tagsMcp ?? ''}`;
+  if (matchesAny(signals, CRYPTO_SIGNALS)) return CRYPTO_RISK_TEXT;
+  if (matchesAny(signals, INVESTMENT_SIGNALS)) return INVESTMENT_RISK_TEXT;
+  return null;
 }
 
 export async function getAllOffres(): Promise<Offre[]> {

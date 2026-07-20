@@ -6,6 +6,7 @@
  * A11y : labels visibles, aria-describedby sur les erreurs, focus géré.
  */
 import { useState } from 'react';
+import { trackClient } from '@/lib/analytics-client';
 
 const DROITS = [
   { value: 'acces', label: "Accès à mes données" },
@@ -26,8 +27,14 @@ export default function RgpdDemandePage() {
       return;
     }
     setError(null);
+    const form = e.target as HTMLFormElement;
+    const typeDemande = (form.elements.namedItem('droit') as RadioNodeList | null)?.value ?? 'acces';
     // Soumission réelle déférée (voir handoff). On confirme la réception côté client.
+    trackClient('demande_rgpd_soumise', { type_demande: typeDemande });
     setSent(true);
+    // `demande_rgpd_traitee` (clôture) est un event de cycle de vie back-office (registre RGPD,
+    // delai_traitement_jours) : il sera émis côté serveur au traitement réel, PAS fabriqué ici à la
+    // réception (éviter de fausser le KPI de délai). Voir handoff — routage RGPD à brancher (infra email).
   }
 
   return (
