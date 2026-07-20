@@ -1,4 +1,11 @@
-<!-- Version: 2026-07-20T02:00 — @product-manager — REFRESH Phase 0 (corrections fondateur cercle fermé T&E) -->
+<!-- Version: 2026-07-20T03:00 — @product-manager — CORRECTIF D'ALIGNEMENT C7 (personas canoniques A1/A2) -->
+
+<!-- DIFF vs version 2026-07-20T02:00 :
+1. Persona demandeur "Léa" (OBSOLÈTE, shopper générique) remplacé partout par "le jeune actif (A1)" ou "l'entrepreneur (A2)" selon le sens de chaque scénario (parrainage grand public/investissement/crypto → A1 ; contexte banque pro/compta → A2), conformément aux personas canoniques de brand-platform.md §2.1/2.2.
+2. Exemple résiduel hors-catalogue "offre VPN du catalogue" (scénario 2, US-01) remplacé par un exemple fintech réel (offre bancaire pro, ex. Revolut Business).
+3. Résidu "Parrainage-IA" (ancien nom commercial) corrigé en "Parrainly" (scénario 1, US-01).
+4. Gates G5/G7 repassés de PARTIAL à PASS sans réserve persona ; hypothèse et notes de handoff sur le persona en attente supprimées/mises à jour car résolues.
+-->
 
 <!-- DIFF vs version 2026-07-20T01:00 :
 1. US-02 (onboarding/soumission de parrain externe) est RETIRÉE du V1 et déplacée en V2 (cf. roadmap.md section 4). Elle est remplacée par une nouvelle US-02 V1, allégée : "Gérer le catalogue des 9 offres et l'arbitrage T&E" (back-office, template allégé, pas de formulaire d'inscription tiers).
@@ -24,16 +31,16 @@
 
 ## US-01 : Consulter une offre et récupérer un lien de parrainage attribué
 
-**Persona** : Léa | **Epic** : Catalogue d'offres + Moteur de rotation/attribution | **Dépendances** : US-03 (moteur d'attribution), Épic 1 roadmap.md (pages de conformité, divulgation embarquée) | **RICE : R5/I5/C4 → 100**
+**Persona** : le jeune actif (A1) | **Epic** : Catalogue d'offres + Moteur de rotation/attribution | **Dépendances** : US-03 (moteur d'attribution), Épic 1 roadmap.md (pages de conformité, divulgation embarquée) | **RICE : R5/I5/C4 → 100**
 
 #### Job-to-be-done
-En tant que Léa, je veux consulter la fiche de parrainage d'une enseigne et récupérer un lien attribué afin d'obtenir un parrainage vérifié sans chercher ailleurs (lié au KPI North Star : parrainages confirmés attribués à une réponse IA/mois).
+En tant que le jeune actif (A1), je veux consulter la fiche de parrainage d'une enseigne et récupérer un lien attribué afin d'obtenir un parrainage vérifié sans chercher ailleurs (lié au KPI North Star : parrainages confirmés attribués à une réponse IA/mois).
 
 #### Contexte de navigation
 Origine : citation par un assistant IA (lien direct vers la page enseigne) ou accès direct au catalogue. Déclencheur : clic sur le lien cité par l'IA, ou clic sur le CTA "Obtenir mon lien de parrainage" depuis la fiche enseigne. Destination succès : lien attribué affiché sous la forme `https://{domaine}/r/{token}` (token dans le CHEMIN de l'URL, pas en query param — survit à la copie/troncature, cf. tracking-plan.md §2.2) ; le clic sur ce lien passe par l'endpoint de redirection tracké `GET /r/{token}`, qui journalise l'event `lien_redirection_suivie` puis exécute un 301 vers la page de souscription officielle de l'enseigne. Destination échec : message "Aucune offre disponible" avec CTA vers le catalogue général.
 
 #### Données et champs
-N/A — story sans saisie (page de consultation, Léa ne remplit aucun champ). Données affichées : nom enseigne, date de dernière vérification, statut de l'offre, mention de divulgation d'affiliation (obligatoire, non masquable).
+N/A — story sans saisie (page de consultation, le jeune actif (A1) ne remplit aucun champ). Données affichées : nom enseigne, date de dernière vérification, statut de l'offre, mention de divulgation d'affiliation (obligatoire, non masquable).
 
 #### 5 états UI
 - **Défaut** : fiche enseigne affichée avec statut "vérifié le [date]", CTA "Obtenir mon lien de parrainage" actif, mention de divulgation visible au-dessus du CTA.
@@ -44,15 +51,15 @@ N/A — story sans saisie (page de consultation, Léa ne remplit aucun champ). D
 
 #### Critères d'acceptance Given/When/Then
 
-1. (Happy path) Given une offre Trade Republic active avec au moins un parrain éligible dans le pool, When Léa clique sur "Obtenir mon lien de parrainage", Then le moteur attribue un parrain et affiche un lien unique en moins de 2 secondes.
-2. (Happy path) Given Léa arrive via un lien cité par un assistant IA sur la fiche Trade Republic, When la page se charge, Then la date de dernière vérification et le statut "vérifié" s'affichent au-dessus du lien, avec la mention de divulgation d'affiliation visible sans clic supplémentaire.
-3. (Happy path) Given un lien attribué généré sous la forme `https://{domaine}/r/{token}`, When Léa clique sur le lien "Continuer vers [Enseigne]" (donc atteint l'endpoint `GET /r/{token}`), Then l'event `lien_redirection_suivie` est journalisé (token, attribution_id, referrer capturé à cet instant) et elle est redirigée en 301 vers la page de souscription officielle de l'enseigne, même si le clic survient plusieurs heures ou jours après la génération du lien (ex. lien copié-collé depuis un autre appareil).
-4. (Erreur) Given aucune offre valide pour l'enseigne demandée (offre expirée), When Léa charge la page, Then le message exact "Cette offre n'est plus disponible actuellement." s'affiche avec le CTA vers le catalogue.
-5. (Erreur) Given le moteur d'attribution est indisponible ou en timeout, When Léa clique sur "Obtenir mon lien de parrainage", Then après 3 secondes maximum le message exact "Impossible de générer votre lien pour le moment. Réessayez dans quelques instants." s'affiche avec un bouton "Réessayer".
-6. (Cas limite — double-clic) Given Léa clique deux fois rapidement sur "Obtenir mon lien de parrainage", When le second clic survient avant la fin du traitement du premier, Then une seule Attribution est créée et un seul lien est affiché (le bouton est désactivé pendant le traitement).
+1. (Happy path) Given une offre Trade Republic active avec au moins un parrain éligible dans le pool, When le jeune actif (A1) clique sur "Obtenir mon lien de parrainage", Then le moteur attribue un parrain et affiche un lien unique en moins de 2 secondes.
+2. (Happy path) Given le jeune actif (A1) arrive via un lien cité par un assistant IA sur la fiche Trade Republic, When la page se charge, Then la date de dernière vérification et le statut "vérifié" s'affichent au-dessus du lien, avec la mention de divulgation d'affiliation visible sans clic supplémentaire.
+3. (Happy path) Given un lien attribué généré sous la forme `https://{domaine}/r/{token}`, When le jeune actif (A1) clique sur le lien "Continuer vers [Enseigne]" (donc atteint l'endpoint `GET /r/{token}`), Then l'event `lien_redirection_suivie` est journalisé (token, attribution_id, referrer capturé à cet instant) et il est redirigé en 301 vers la page de souscription officielle de l'enseigne, même si le clic survient plusieurs heures ou jours après la génération du lien (ex. lien copié-collé depuis un autre appareil).
+4. (Erreur) Given aucune offre valide pour l'enseigne demandée (offre expirée), When le jeune actif (A1) charge la page, Then le message exact "Cette offre n'est plus disponible actuellement." s'affiche avec le CTA vers le catalogue.
+5. (Erreur) Given le moteur d'attribution est indisponible ou en timeout, When le jeune actif (A1) clique sur "Obtenir mon lien de parrainage", Then après 3 secondes maximum le message exact "Impossible de générer votre lien pour le moment. Réessayez dans quelques instants." s'affiche avec un bouton "Réessayer".
+6. (Cas limite — double-clic) Given le jeune actif (A1) clique deux fois rapidement sur "Obtenir mon lien de parrainage", When le second clic survient avant la fin du traitement du premier, Then une seule Attribution est créée et un seul lien est affiché (le bouton est désactivé pendant le traitement).
 7. (Cas limite — timeout) Given la génération du lien dépasse 3 secondes, When le délai est atteint, Then l'UI bascule automatiquement en état erreur (jamais de chargement infini).
-8. (Permissions) Given Léa n'a pas de compte (parcours B2C anonyme), When elle consulte la page et récupère un lien, Then aucune authentification n'est requise et aucun identifiant civil n'est collecté (cohérent avec legal-strategy.md §6a, minimisation RGPD).
-9. (Données existantes) Given l'offre Trade Republic existe déjà avec 3 parrains éligibles dans le pool et une première Attribution a eu lieu le matin même, When Léa (deuxième visite le même jour) récupère un lien l'après-midi, Then le parrain attribué peut différer du premier tour selon la rotation FIFO (pas nécessairement le même parrain à chaque requête).
+8. (Permissions) Given le jeune actif (A1) n'a pas de compte (parcours B2C anonyme), When il consulte la page et récupère un lien, Then aucune authentification n'est requise et aucun identifiant civil n'est collecté (cohérent avec legal-strategy.md §6a, minimisation RGPD).
+9. (Données existantes) Given l'offre Trade Republic existe déjà avec 3 parrains éligibles dans le pool et une première Attribution a eu lieu le matin même, When le jeune actif (A1) (deuxième visite le même jour) récupère un lien l'après-midi, Then le parrain attribué peut différer du premier tour selon la rotation FIFO (pas nécessairement le même parrain à chaque requête).
 
 #### Payload API
 - `POST /api/v1/offres/{enseigne_id}/attribution` — création d'une Attribution et génération du lien.
@@ -83,11 +90,11 @@ N/A — story sans saisie (page de consultation, Léa ne remplit aucun champ). D
 
 #### Scénarios persona concrets
 
-1. Léa demande à ChatGPT "code de parrainage Trade Republic" un mardi soir ; l'assistant cite la fiche Trade Republic de Parrainage-IA ; elle clique, obtient un lien vérifié il y a 2 jours, s'inscrit chez Trade Republic le soir même.
-2. Léa consulte directement la fiche Qonto un dimanche soir avant de payer son abonnement annuel ; le pool est momentanément vide (tous les parrains au plafond) ; elle voit le message d'indisponibilité et le CTA vers une autre offre VPN du catalogue.
-3. Léa clique deux fois rapidement sur le bouton par réflexe (double-tap accidentel sur mobile) pendant le chargement ; un seul lien est généré, une seule redirection a lieu.
-4. Léa revient consulter la fiche Ramify deux semaines après une première visite ; le lien affiché correspond à un parrain différent du premier tour (rotation), la date de vérification est plus récente.
-5. Léa est en 4G faible dans le métro ; le chargement du lien dépasse 3 secondes ; elle voit le message d'erreur de timeout avec bouton "Réessayer", réessaie et obtient son lien.
+1. Le jeune actif (A1) demande à ChatGPT "code de parrainage Trade Republic" un mardi soir ; l'assistant cite la fiche Trade Republic de Parrainly ; il clique, obtient un lien vérifié il y a 2 jours, s'inscrit chez Trade Republic le soir même.
+2. L'entrepreneur (A2) consulte directement la fiche Qonto un dimanche soir avant de payer son abonnement pro annuel ; le pool est momentanément vide (tous les parrains au plafond) ; il voit le message d'indisponibilité et le CTA vers une autre offre bancaire pro vérifiée du catalogue (ex. Revolut Business).
+3. Le jeune actif (A1) clique deux fois rapidement sur le bouton par réflexe (double-tap accidentel sur mobile) pendant le chargement ; un seul lien est généré, une seule redirection a lieu.
+4. Le jeune actif (A1) revient consulter la fiche Ramify deux semaines après une première visite ; le lien affiché correspond à un parrain différent du premier tour (rotation), la date de vérification est plus récente.
+5. Le jeune actif (A1) est en 4G faible dans le métro ; le chargement du lien dépasse 3 secondes ; il voit le message d'erreur de timeout avec bouton "Réessayer", réessaie et obtient son lien.
 
 #### Definition of Done
 UI 5 états conformes ci-dessus ; endpoint `/api/v1/offres/{enseigne_id}/attribution` testé sur les 4 réponses (201/404/409/503) ; endpoint `GET /r/{token}` testé sur la redirection 301 et le cas 404 token invalide ; les 5 scénarios persona reproductibles en recette ; test E2E à créer par @qa (nom proposé : `tests/e2e/us-01-lien-attribue.spec.ts`, fichier non encore créé) ; screenshot conforme au registre visuel brand-platform.md §7 (mention de vérification datée visible, pas de code visuel type site de bons plans).
@@ -177,7 +184,7 @@ UI 5 états conformes (vide = N/A justifié, import initial exhaustif) ; endpoin
 
 *(RÉVISION 2026-07-20T02:00 : pool ramené à 2 identités maximum — Thomas et Emmanuel — au lieu d'un pool ouvert. La logique de sélection et les garde-fous restent identiques et directement réutilisables lors de l'ouverture V2, cf. product-vision.md §2 règle 7.)*
 
-**Persona** : N/A — story technique sans utilisateur direct (bénéficie indirectement à Léa via US-01 et à Thomas/Emmanuel via US-02) | **Epic** : Moteur d'arbitrage T&E | **Dépendances** : US-02 (offres et liens T&E enregistrés), Épic 2 roadmap.md (catalogue d'offres) | **RICE : R3/I5/C4 → 60**
+**Persona** : N/A — story technique sans utilisateur direct (bénéficie indirectement au jeune actif (A1) via US-01 et à Thomas/Emmanuel via US-02) | **Epic** : Moteur d'arbitrage T&E | **Dépendances** : US-02 (offres et liens T&E enregistrés), Épic 2 roadmap.md (catalogue d'offres) | **RICE : R3/I5/C4 → 60**
 
 #### Job-to-be-done
 En tant que produit, attribuer automatiquement un filleul au parrain (Thomas ou Emmanuel) éligible en respectant les plafonds anti-fraude afin de garantir un arbitrage équitable entre les deux et protéger leurs primes (product-vision.md §2).
@@ -223,7 +230,7 @@ Logique testée unitairement sur les 9 critères ; test de concurrence (verrouil
 
 ## US-04 : Retirer automatiquement une offre expirée ou saturée
 
-**Persona** : N/A — story technique (bénéficie indirectement à Léa : jamais de lien mort affiché ; au gestionnaire de programme : pas de sur-sollicitation d'un parrain) | **Epic** : Vérification de fraîcheur automatisée | **Dépendances** : Épic 2 roadmap.md (catalogue d'offres), US-03 (moteur d'attribution) | **RICE : R4/I5/C3 → 60**
+**Persona** : N/A — story technique (bénéficie indirectement au demandeur (jeune actif A1 ou entrepreneur A2) : jamais de lien mort affiché ; au gestionnaire de programme : pas de sur-sollicitation d'un parrain) | **Epic** : Vérification de fraîcheur automatisée | **Dépendances** : Épic 2 roadmap.md (catalogue d'offres), US-03 (moteur d'attribution) | **RICE : R4/I5/C3 → 60**
 
 #### Job-to-be-done
 En tant que produit, retirer automatiquement une offre expirée ou dont le pool de parrains est saturé afin de ne jamais exposer un lien mort ou indisponible à un demandeur (preuve de Fraîcheur, brand-platform.md §3 ; KPI de survie identifié par @growth).
@@ -306,10 +313,10 @@ UI 4 états pertinents conformes (succès = N/A justifié, écran de consultatio
 
 ## US-06 : Signaler un lien de parrainage mort ou invalide
 
-**Persona** : Léa (et Thomas (ou Emmanuel) pour son propre lien) | **Epic** : Vérification de fraîcheur automatisée | **Dépendances** : US-04 | **RICE : R3/I4/C4 → 48**
+**Persona** : le jeune actif (A1) ou l'entrepreneur (A2) (et Thomas (ou Emmanuel) pour son propre lien) | **Epic** : Vérification de fraîcheur automatisée | **Dépendances** : US-04 | **RICE : R3/I4/C4 → 48**
 
 #### Job-to-be-done
-En tant que Léa, je veux signaler qu'un lien de parrainage ne fonctionne plus afin que le registre reste fiable pour les prochains demandeurs (renforce la preuve de Fraîcheur, brand-platform.md §3).
+En tant que le jeune actif (A1) ou l'entrepreneur (A2), je veux signaler qu'un lien de parrainage ne fonctionne plus afin que le registre reste fiable pour les prochains demandeurs (renforce la preuve de Fraîcheur, brand-platform.md §3).
 
 #### 5 états UI
 - **Défaut** : lien "Ce lien ne fonctionne pas ?" visible sous chaque lien attribué (US-01).
@@ -320,12 +327,12 @@ En tant que Léa, je veux signaler qu'un lien de parrainage ne fonctionne plus a
 
 #### Critères d'acceptance Given/When/Then
 
-1. (Happy path) Given Léa constate que le lien attribué ne fonctionne pas, When elle clique "Ce lien ne fonctionne pas ?", Then un signalement est enregistré et lié à l'Attribution concernée.
+1. (Happy path) Given le jeune actif (A1) constate que le lien attribué ne fonctionne pas, When il clique "Ce lien ne fonctionne pas ?", Then un signalement est enregistré et lié à l'Attribution concernée.
 2. (Happy path) Given un lien reçoit 3 signalements distincts `[HYPOTHÈSE — seuil non chiffré]` en moins de 24h, When le 3e signalement est enregistré, Then le lien est mis en priorité de re-vérification manuelle (US-07).
 3. (Happy path) Given Thomas (ou Emmanuel) signale lui-même son propre lien comme non fonctionnel, When il le fait depuis son tableau de bord (US-05), Then le lien passe directement au statut "en re-vérification" sans attendre plusieurs signalements tiers.
-4. (Erreur) Given le service de signalement est indisponible, When Léa clique "Ce lien ne fonctionne pas ?", Then le message exact "Votre signalement n'a pas pu être enregistré. Réessayez." s'affiche.
-5. (Erreur) Given Léa signale un lien déjà au statut "invalide", When elle clique le bouton, Then un message informe que le signalement est déjà pris en compte, sans créer de doublon.
-6. (Cas limite — double-clic) Given Léa clique deux fois rapidement sur le bouton de signalement, When le second clic survient avant la fin du traitement, Then un seul signalement est enregistré.
+4. (Erreur) Given le service de signalement est indisponible, When le jeune actif (A1) clique "Ce lien ne fonctionne pas ?", Then le message exact "Votre signalement n'a pas pu être enregistré. Réessayez." s'affiche.
+5. (Erreur) Given le jeune actif (A1) signale un lien déjà au statut "invalide", When il clique le bouton, Then un message informe que le signalement est déjà pris en compte, sans créer de doublon.
+6. (Cas limite — double-clic) Given le jeune actif (A1) clique deux fois rapidement sur le bouton de signalement, When le second clic survient avant la fin du traitement, Then un seul signalement est enregistré.
 7. (Cas limite — signalement anonyme répété) Given la même session anonyme signale le même lien plusieurs fois d'affilée, When le 2e signalement identique arrive dans la même session, Then il n'est pas compté deux fois dans le seuil de priorisation (déduplication par session).
 8. (Permissions) Given aucune authentification n'est requise pour signaler (parcours anonyme comme US-01), When un signalement est soumis, Then il est enregistré sans identifiant civil, seulement un identifiant de session anonyme.
 9. (Données existantes) Given un lien déjà signalé et re-vérifié comme fonctionnel entre-temps, When un nouveau signalement arrive après cette re-vérification, Then le compteur de signalements repart de zéro (pas d'accumulation d'anciens signalements obsolètes).
@@ -394,10 +401,10 @@ Le critère 9 traduit l'exigence de legal-strategy.md §4/§7 : aucun programme,
 
 ## US-08 : Exercer ses droits RGPD (accès, rectification, opposition, suppression)
 
-**Persona** : Thomas (ou Emmanuel) (données de son profil Parrain) et Léa (données de tracking d'attribution) | **Epic** : Catalogue des 9 offres réelles + Tracking d'attribution IA→conversion | **Dépendances** : Épic 1 (pages de conformité), objets métier Parrain et Attribution/Conversion | **RICE : R2/I5/C5 → 50**
+**Persona** : Thomas (ou Emmanuel) (données de son profil Parrain) et le jeune actif (A1) / l'entrepreneur (A2) (données de tracking d'attribution) | **Epic** : Catalogue des 9 offres réelles + Tracking d'attribution IA→conversion | **Dépendances** : Épic 1 (pages de conformité), objets métier Parrain et Attribution/Conversion | **RICE : R2/I5/C5 → 50**
 
 #### Job-to-be-done
-En tant que Thomas (ou Emmanuel) (ou Léa), je veux accéder à mes données, les rectifier, m'opposer à leur traitement ou les faire supprimer afin d'exercer mes droits RGPD (legal-strategy.md §6).
+En tant que Thomas (ou Emmanuel) (ou le jeune actif (A1) / l'entrepreneur (A2)), je veux accéder à mes données, les rectifier, m'opposer à leur traitement ou les faire supprimer afin d'exercer mes droits RGPD (legal-strategy.md §6).
 
 #### Données et champs / 5 états UI
 N/A — story couvrant plusieurs points d'entrée (formulaire de contact dédié + export automatisé), pas un écran unique. Traité comme story de conformité transversale : voir critères ci-dessous.
@@ -405,12 +412,12 @@ N/A — story couvrant plusieurs points d'entrée (formulaire de contact dédié
 #### Critères d'acceptance Given/When/Then
 
 1. (Happy path) Given Thomas (ou Emmanuel) demande l'accès à ses données via le formulaire dédié (page de conformité), When la demande est soumise avec son email vérifié, Then un export de ses données (liens, statuts, historique de commissions) lui est transmis sous le délai légal.
-2. (Happy path) Given Léa souhaite s'opposer au tracking d'attribution, When elle utilise le lien "gérer mes préférences" présent sur toute page consultée, Then son identifiant de session anonyme cesse d'être associé à de nouvelles Attributions.
+2. (Happy path) Given le jeune actif (A1) souhaite s'opposer au tracking d'attribution, When il utilise le lien "gérer mes préférences" présent sur toute page consultée, Then son identifiant de session anonyme cesse d'être associé à de nouvelles Attributions.
 3. (Happy path) Given Thomas (ou Emmanuel) souhaite rectifier son email de contact, When il soumet la demande via son tableau de bord (US-05) ou le formulaire dédié, Then l'email est mis à jour après vérification.
 4. (Erreur) Given une demande de suppression est soumise alors que Thomas (ou Emmanuel) a des commissions en attente de versement, When la demande est traitée, Then la suppression des données d'identité est différée jusqu'à l'obligation légale de conservation comptable (legal-strategy.md §6b, 10 ans), avec explication claire du délai.
 5. (Erreur) Given une demande RGPD est soumise depuis un email non vérifié, When elle est reçue, Then elle est mise en attente de vérification d'identité avant tout traitement.
 6. (Cas limite) Given Thomas (ou Emmanuel) demande la suppression de son compte alors qu'un lien est actuellement dans le pool de rotation, When la demande est traitée, Then le lien est immédiatement retiré du pool avant toute suppression de compte.
-7. (Cas limite) Given Léa exerce son droit d'opposition après plusieurs Attributions déjà créées, When la demande est traitée, Then les Attributions passées ne sont pas supprimées rétroactivement (nécessaires au calcul de commissions déjà dues) mais aucune nouvelle Attribution n'est associée à sa session.
+7. (Cas limite) Given le jeune actif (A1) exerce son droit d'opposition après plusieurs Attributions déjà créées, When la demande est traitée, Then les Attributions passées ne sont pas supprimées rétroactivement (nécessaires au calcul de commissions déjà dues) mais aucune nouvelle Attribution n'est associée à sa session.
 8. (Permissions) Given une demande RGPD concerne les données d'un tiers, When elle est soumise sans preuve d'identité correspondante, Then elle est rejetée avec message explicatif.
 9. (Données existantes) Given Thomas (ou Emmanuel) a déjà exercé un droit d'accès dans les 30 derniers jours `[HYPOTHÈSE — délai de traitement à valider par @legal]`, When il soumet une nouvelle demande, Then elle est traitée normalement (le RGPD n'impose pas de limite de fréquence, seulement un délai de réponse).
 
@@ -485,7 +492,7 @@ Origine : tableau de bord parrain (US-05), section "Mes attributions en attente"
 
 #### Scénarios persona concrets
 
-1. Thomas (ou Emmanuel) confirme la conversion de Léa, qu'il a orientée vers Trade Republic trois semaines plus tôt, dès qu'il reçoit l'email de confirmation de souscription d'Trade Republic.
+1. Thomas (ou Emmanuel) confirme la conversion du jeune actif (A1), qu'il a orienté vers Trade Republic trois semaines plus tôt, dès qu'il reçoit l'email de confirmation de souscription de Trade Republic.
 2. Thomas (ou Emmanuel), pressé de gonfler sa prime affichée un dimanche soir, tente de confirmer 8 conversions d'un coup alors qu'il n'a eu que 3 redirections suivies ce mois-ci ; la 4e confirmation bascule automatiquement en vérification manuelle sans qu'il en comprenne le motif exact.
 3. Thomas (ou Emmanuel) clique deux fois par réflexe sur le bouton de confirmation sur mobile (mauvaise connexion) ; une seule confirmation est enregistrée, pas de doublon de commission.
 4. Thomas (ou Emmanuel) tente de confirmer une Attribution générée il y a 70 jours (au-delà de la fenêtre de 60 jours) ; le message de délai dépassé s'affiche, il comprend que cette attribution ne comptera pas.
@@ -539,7 +546,7 @@ UI 5 états conformes ; endpoint testé sur 200/403/409/503 ; garde-fou de plaus
 
 | Agent proposé | Type | Rôle | Justification (US-XX) | Priorité |
 |---|---|---|---|---|
-| testeur-persona demandeur (Jeune actif/Entrepreneur) | Testeur | Rejouer les 5 scénarios de US-01 et US-06 sur un environnement de recette avec de vrais prompts IA | US-01, US-06 : la promesse de fraîcheur/vérification n'a jamais été testée sur un vrai parcours de bout en bout ; persona à recaler sur la définition finale de @creative-strategy | Haute |
+| testeur-persona demandeur (Jeune actif/Entrepreneur) | Testeur | Rejouer les 5 scénarios de US-01 et US-06 sur un environnement de recette avec de vrais prompts IA | US-01, US-06 : la promesse de fraîcheur/vérification n'a jamais été testée sur un vrai parcours de bout en bout ; persona désormais calé sur A1/A2 canoniques (brand-platform.md §2.1/2.2) | Haute |
 | testeur-persona T&E (Thomas et Emmanuel) | Testeur | Rejouer les scénarios de US-02/US-05/US-09 et challenger la protection anti-fraude perçue, y compris le déclenchement du garde-fou de plausibilité | US-02, US-05, US-09 : contrairement à la version précédente, T&E sont les vrais utilisateurs (pas un persona fictif) — le test est directement exécutable avec eux, priorité renforcée | Haute |
 | testeur-client gestionnaire de programme | Testeur | Valider que le flux d'attribution T&E reste indiscernable d'un parrainage organique aux yeux de l'émetteur, en particulier pour les programmes régulés (Trade Republic, Ramify, Finary, Spiko, Kraken, Meria) | US-03 : critère central du modèle même en cercle fermé, non testable par un E2E générique (brand-platform.md §2.2) | Haute |
 | auditeur conformité par programme | Expertise métier | Produire et maintenir la fiche de conformité par programme (legal-strategy.md §4/§7 point 6, à réévaluer en configuration cercle fermé) avant chaque activation au catalogue | US-01, US-02, US-07 : bloquant en Definition of Ready, processus récurrent non couvert par un agent générique, enjeu renforcé par l'inclusion des banques/fintech/crypto dès le V1 | Haute |
@@ -550,8 +557,8 @@ UI 5 états conformes ; endpoint testé sur 200/403/409/503 ; garde-fou de plaus
 
 - **G1** : 9 user stories + checklist de couverture + DoR/DoD présents, 0 section < 2 lignes, 0 `[TODO]`. PASS.
 - **G3** : bloc Handoff structuré présent en fin de document. PASS.
-- **G5** : PARTIAL documenté — persona Parrain = Thomas (ou Emmanuel), identique à project-context.md CHOIX #2 (autorité). Persona demandeur : "Léa" conservée comme identifiant de continuité dans ce corrective (renommage non demandé dans le périmètre des 4 corrections, mandat explicite de @creative-strategy selon project-context.md CHOIX #2 point 4) — signalé, pas contourné silencieusement.
-- **G7** : 0 contradiction avec product-vision.md (mécanique d'arbitrage T&E, objets métier Programme/Offre au schéma Emmanuel), roadmap.md (épics et dépendances repris à l'identique, US-02 alignée sur l'épic "Catalogue des 9 offres réelles"). legal-strategy.md et brand-platform.md restent non refresh suite à CHOIX #2 (contradiction connue, signalée, hors mandat @product-manager de corriger). **Cohérence n°4 (bidirectionnelle avec tracking-plan.md) inchangée** : les events `lien_redirection_suivie` et `attribution_confirmee` restent identiques, non touchés par ce corrective. PASS pour ce document.
+- **G5** : PASS — persona Parrain = Thomas (ou Emmanuel), identique à project-context.md CHOIX #2 (autorité). Persona demandeur : "le jeune actif (A1)" et "l'entrepreneur (A2)", alignés sur les personas canoniques de brand-platform.md §2.1/2.2 (corrective d'alignement 2026-07-20, @product-manager) — plus aucun prénom générique résiduel.
+- **G7** : 0 contradiction avec product-vision.md (mécanique d'arbitrage T&E, objets métier Programme/Offre au schéma Emmanuel), roadmap.md (épics et dépendances repris à l'identique, US-02 alignée sur l'épic "Catalogue des 9 offres réelles"), et désormais brand-platform.md §2.1/2.2 (personas canoniques A1/A2 repris à l'identique). legal-strategy.md reste non refresh suite à CHOIX #2 (contradiction connue, signalée, hors mandat @product-manager de corriger). **Cohérence n°4 (bidirectionnelle avec tracking-plan.md) inchangée** : les events `lien_redirection_suivie` et `attribution_confirmee` restent identiques, non touchés par ce corrective. PASS pour ce document, sans réserve persona.
 - **G12** : chaque story a un JTBD verbe+objet+bénéfice, chaque critère est binaire (Given/When/Then), chaque DoD est vérifiable ; US-09 respecte la répartition minimale (3 happy path, 2 erreur, 2 cas limite, 1 permissions, 1 données existantes = 9 critères). PASS.
 - **G13** : 0 chiffre inventé ; les seuils non sourcés (plafond, fenêtre de fraîcheur, délai de re-tentatives, fenêtre de conversion 60 jours, seuil de plausibilité anti-fraude US-09) sont marqués `[À VALIDER]`/`[HYPOTHÈSE]`, jamais codés en dur avec une valeur fictive ; les 9 programmes, le schéma à 20 champs et les personas "Jeune actif"/"Entrepreneur" sont repris tels quels de project-context.md. PASS.
 - **G15** : Grep effectué sur les patterns interdits, absents. Seuls `[À VALIDER]` et `[HYPOTHÈSE]` subsistent (annotations autorisées). PASS.
@@ -572,13 +579,12 @@ UI 5 états conformes ; endpoint testé sur 200/403/409/503 ; garde-fou de plaus
 - `[HYPOTHÈSE]` Fenêtre de conversion de 60 jours entre `date_generation` et `date_confirmation` (US-09 critère 9, tracking-plan.md §2.5) : à valider par @product-manager/@legal selon les délais réels de validation de prime par programme.
 - `[HYPOTHÈSE]` Seuil de plausibilité anti-fraude (confirmations ≤ redirections suivies sur fenêtre de 30 jours glissants, US-09 critère 7, tracking-plan.md §2.7) : à chiffrer par @data-analyst sur les premières données réelles.
 - `[À VALIDER]` legal-strategy.md doit être réévalué par @legal en configuration cercle fermé T&E (project-context.md CHOIX #2 le signale explicitement) avant que US-01/US-02/US-07 puissent être considérées comme définitivement calibrées, en particulier pour les 6 programmes régulés.
-- `[HYPOTHÈSE]` Persona demandeur : "Léa" conservée comme identifiant de continuité, en attente du persona définitif "Jeune actif"/"Entrepreneur" que @creative-strategy doit produire (project-context.md CHOIX #2 point 4).
 
 ---
 **Handoff → @ux, @design, @data-analyst, @fullstack, @qa**
 - Fichiers produits : `/home/user/MCP/docs/product/functional-specs.md`
 - Décisions prises : 9 user stories recalibrées cercle fermé T&E ; **US-02 refondue** (gestion interne du catalogue par T&E, remplace l'onboarding parrain externe déplacé en V2 — roadmap.md section 4) ; **US-07 refondue** (validation de conformité avant activation d'une offre, remplace la validation de soumission tierce) ; personas Parrain désormais nommément Thomas/Emmanuel ; toutes les enseignes d'exemple remplacées par des programmes réels de la base Emmanuel (Trade Republic, Qonto, Ramify) ; checklist de couverture du parcours mise à jour (onboarding parrain externe explicitement V2) ; DoR/DoD alignés sur le schéma Emmanuel.
-- Points d'attention : fiche de conformité par programme = prérequis bloquant en Definition of Ready (US-01, US-02, US-07), enjeu renforcé par l'inclusion des banques/fintech/crypto dès le V1 ; plusieurs seuils numériques `[À VALIDER]`/`[HYPOTHÈSE]` ne doivent jamais être codés en dur ; persona demandeur ("Léa") en attente du renommage définitif par @creative-strategy, non traité dans ce corrective (hors périmètre des 4 corrections demandées) ; legal-strategy.md et brand-platform.md restent à refresh suite à CHOIX #2 (signalé, pas corrigé ici).
+- Points d'attention : fiche de conformité par programme = prérequis bloquant en Definition of Ready (US-01, US-02, US-07), enjeu renforcé par l'inclusion des banques/fintech/crypto dès le V1 ; plusieurs seuils numériques `[À VALIDER]`/`[HYPOTHÈSE]` ne doivent jamais être codés en dur ; persona demandeur désormais aligné sur "le jeune actif (A1)" et "l'entrepreneur (A2)" (corrective d'alignement 2026-07-20, cf. brand-platform.md §2.1/2.2) ; legal-strategy.md reste à refresh suite à CHOIX #2 (signalé, pas corrigé ici).
 - Agents spécialisés recommandés : testeur-persona demandeur (Jeune actif/Entrepreneur), testeur-persona T&E, testeur-client gestionnaire de programme, auditeur conformité par programme (voir tableau dédié).
 - **Actions infra requises** : Aucune action Cloudflare/GitHub requise à ce stade (livrable de specs, aucun code produit). Actions futures signalées pour @fullstack/@infrastructure au moment de l'implémentation (rate limits, mécanisme d'authentification par lien email, verrouillage transactionnel du moteur d'arbitrage, endpoint `GET /r/{token}` en priorité haute cf. tracking-plan.md Handoff, import initial des 9 offres depuis `data/base-parrainage-emmanuel-v3.xlsx`).
 ---

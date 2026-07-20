@@ -1,4 +1,9 @@
-<!-- Version: 2026-07-20T02:00 — @product-manager — REFRESH Phase 0 (corrections fondateur cercle fermé T&E) -->
+<!-- Version: 2026-07-20T03:00 — @product-manager — CORRECTIF D'ALIGNEMENT C7 (personas canoniques A1/A2) -->
+
+<!-- DIFF vs version 2026-07-20T02:00 :
+1. G5/G7 repassés de PARTIAL à PASS : le persona demandeur "Jeune actif"/"Entrepreneur" déjà utilisé dans ce document est désormais confirmé identique aux personas canoniques A1/A2 livrés par brand-platform.md §2.1/2.2 (plus de résidu "Léa" en attente ailleurs, cf. functional-specs.md corrigé en parallèle).
+2. Hypothèse "persona demandeur définitif" marquée résolue.
+-->
 
 <!-- DIFF vs version 2026-07-20T00:00 :
 1. Le modèle n'est plus une marketplace ouverte amorcée par T&E, mais un cercle FERMÉ où le Parrain = T&E exclusivement en V1 (2 identités, 9 offres réelles). La mécanique "rotation" (section 2) devient un "arbitrage" entre les liens de T&E, dimensionné et testable (2 parrains, pas un pool hypothétique).
@@ -25,11 +30,11 @@
 
 **Vision (1 paragraphe)** : Parrainly devient la source que les assistants IA consultent avant de répondre à une demande de parrainage fintech/entrepreneurial, parce qu'elle est la seule à combiner vérification continue, fraîcheur prouvée par date et structure lisible par une machine (schema.org, API JSON) — et parce que derrière chaque lien qu'elle expose se trouve un parrain réel (Thomas ou Emmanuel en V1), géré par un système d'arbitrage qui protège sa prime au lieu de l'exposer à un contrôle anti-fraude.
 
-**Problème** : le demandeur (jeune actif ou entrepreneur évaluant néobanque, courtage, investissement, crypto régulé, banque pro, compta — cf. project-context.md CHOIX #2 point 4, persona définitif en attente de @creative-strategy) interroge son assistant IA avant d'ouvrir un compte Trade Republic, Qonto ou de placer sa trésorerie ; l'IA soit invente un lien, soit recopie une source morte. Thomas et Emmanuel détiennent 9 liens de parrainage réels (Trade Republic, Qonto, Revolut Business, Ramify, Finary, Dougs, Meria, Kraken, Spiko) qui dorment, invisibles, sans jamais être exposés à grande échelle car leur diffusion publique individuelle violerait les CGU du programme et exposerait leur compte à un contrôle anti-fraude en cas de pic de conversions.
+**Problème** : le demandeur (le jeune actif A1 ou l'entrepreneur A2, évaluant néobanque, courtage, investissement, crypto régulé, banque pro, compta — personas canoniques livrés par brand-platform.md §2.1/2.2) interroge son assistant IA avant d'ouvrir un compte Trade Republic, Qonto ou de placer sa trésorerie ; l'IA soit invente un lien, soit recopie une source morte. Thomas et Emmanuel détiennent 9 liens de parrainage réels (Trade Republic, Qonto, Revolut Business, Ramify, Finary, Dougs, Meria, Kraken, Spiko) qui dorment, invisibles, sans jamais être exposés à grande échelle car leur diffusion publique individuelle violerait les CGU du programme et exposerait leur compte à un contrôle anti-fraude en cas de pic de conversions.
 
 **Solution V1** : un registre vérifié des 9 offres réelles (Programme/Offre), alimenté exclusivement par les liens de T&E (cercle fermé, pas de pool ouvert), où un moteur d'arbitrage répartit les filleuls entre les liens disponibles de T&E en respectant des plafonds anti-fraude par programme, avec traçabilité complète de chaque attribution. L'architecture des objets métier (section 4) est conçue pour être étendue à un pool de parrains tiers en V2, sans réécriture.
 
-**Pour qui** : le demandeur (persona définitif "Jeune actif" / "Entrepreneur" en cours de production par @creative-strategy, cf. project-context.md CHOIX #2 point 4 — le document utilise ces deux labels sourcés, pas un prénom inventé) et T&E (Thomas et Emmanuel), qui sont en V1 les seuls parrains du registre, pas un persona marketplace générique. Client indirect en V1 : aucun (T&E sont les fondateurs, pas un tiers à convaincre) ; redevient pertinent en V2 sous la forme du gestionnaire de programme de l'émetteur (frustration = pattern de fraude, cf. brand-platform.md §2.2, à réconcilier par @creative-strategy avec ce cadrage cercle fermé).
+**Pour qui** : le demandeur ("le jeune actif A1" / "l'entrepreneur A2", personas canoniques livrés par brand-platform.md §2.1/2.2) et T&E (Thomas et Emmanuel), qui sont en V1 les seuls parrains du registre, pas un persona marketplace générique. Client indirect en V1 : aucun (T&E sont les fondateurs, pas un tiers à convaincre) ; redevient pertinent en V2 sous la forme du gestionnaire de programme de l'émetteur (frustration = pattern de fraude, cf. brand-platform.md §2.4 projection Karim ; non traité ici, hors mandat de ce corrective).
 
 ---
 
@@ -76,8 +81,8 @@
 
 - **G1** : 4 sections numérotées + résumé exécutif, 0 section < 2 lignes, 0 `[TODO]`. PASS.
 - **G3** : bloc Handoff structuré présent en fin de document. PASS.
-- **G5** : PARTIAL documenté — le persona "Parrain" est désormais nommément T&E (Thomas et Emmanuel), identique à project-context.md CHOIX #2 point 1/3. Le persona demandeur utilise les labels sourcés "Jeune actif"/"Entrepreneur" (project-context.md, BASE RÉELLE D'EMMANUEL) au lieu du prénom "Léa" marqué obsolète par CHOIX #2 point 4 ; aucun prénom de remplacement n'est inventé ici, en attente du persona définitif de @creative-strategy — signalé explicitement, pas contourné.
-- **G7** : 0 contradiction avec project-context.md CHOIX #2 (autorité) ; contradictions connues et non cachées avec brand-platform.md (persona Léa, marketplace ouverte) et legal-strategy.md (périmètre hors-régulé, banques exclues du V1) qui n'ont pas encore été refresh par leurs agents respectifs — signalé en "Points à valider", hors mandat @product-manager de corriger. PASS pour ce document.
+- **G5** : PASS — le persona "Parrain" est désormais nommément T&E (Thomas et Emmanuel), identique à project-context.md CHOIX #2 point 1/3. Le persona demandeur utilise "le jeune actif (A1)" / "l'entrepreneur (A2)", personas canoniques désormais livrés et alignés avec brand-platform.md §2.1/2.2 (corrective d'alignement 2026-07-20, @product-manager) — plus de prénom générique résiduel.
+- **G7** : 0 contradiction avec project-context.md CHOIX #2 (autorité) ; désormais 0 contradiction avec brand-platform.md sur le persona demandeur (A1/A2 alignés §2.1/2.2). Reste une contradiction connue et non cachée avec legal-strategy.md (périmètre hors-régulé, banques exclues du V1), qui n'a pas encore été refresh par son agent — signalé en "Points à valider", hors mandat @product-manager de corriger. PASS pour ce document, sans réserve persona.
 - **G12** : mécanique d'arbitrage décrite en verbes d'action + objets + critère de sortie du pool. PASS.
 - **G13** : 0 chiffre inventé ; le plafond par programme est explicitement laissé configurable et non chiffré, marqué `[À VALIDER]` ; les 9 programmes et le schéma à 20 champs sont repris tels quels de project-context.md. PASS.
 - **G15** : Grep effectué sur les patterns interdits, absents. Seuls `[À VALIDER]` subsistent (annotation autorisée). PASS.
@@ -94,12 +99,12 @@
 - `[À VALIDER]` Plafond exact de filleuls/période par Programme/Offre (champ `conditions` du schéma Emmanuel) : dépend des CGU réelles de chaque programme, aucune valeur générique ne doit être codée en dur avant que la fiche de conformité légale ne documente le chiffre réel par programme.
 - `[À VALIDER]` Fenêtre de fraîcheur exacte (délai avant qu'un lien doive être re-vérifié) : posée en principe ici, à chiffrer par @data-analyst/@ia en cohérence avec la vérification automatisée de fraîcheur (roadmap.md épic 4).
 - `[À VALIDER]` legal-strategy.md doit être réévalué par @legal en configuration "cercle fermé, liens personnels de T&E" (project-context.md CHOIX #2 le signale explicitement) : le profil de risque diffère d'une marketplace à commission tierce, notamment pour les 6 programmes régulés (Trade Republic, Ramify, Finary, Spiko, Kraken, Meria).
-- `[HYPOTHÈSE]` Persona demandeur définitif : ce document utilise les labels sourcés "Jeune actif"/"Entrepreneur" en attendant le persona nommé et documenté que @creative-strategy doit produire (project-context.md CHOIX #2 point 4).
+- Persona demandeur définitif : RÉSOLU — "le jeune actif (A1)" et "l'entrepreneur (A2)" sont désormais les personas canoniques livrés par @creative-strategy (brand-platform.md §2.1/2.2), repris à l'identique dans ce document et dans functional-specs.md (corrective d'alignement 2026-07-20).
 
 ---
 **Handoff → @ux, @design, @data-analyst, @fullstack**
 - Fichiers produits : `/home/user/MCP/docs/product/product-vision.md`
 - Décisions prises : mécanique d'arbitrage V1 posée en règles fonctionnelles (pool à 2 identités T&E, sélection pondérée, exclusion automatique, traçabilité) ; commission déclenchée uniquement à la conversion confirmée ; 3 objets métier structurants redéfinis, Programme/Offre adoptant explicitement le schéma Emmanuel à 20 champs.
-- Points d'attention : plafond exact par programme non sourcé, à traiter comme champ configurable (`conditions`) dépendant de la fiche de conformité légale, jamais comme constante générique ; persona demandeur en attente de la production définitive par @creative-strategy ; legal-strategy.md et brand-platform.md restent à refresh suite à CHOIX #2 (signalé, pas corrigé ici) ; voir roadmap.md et functional-specs.md pour le détail exécutable.
+- Points d'attention : plafond exact par programme non sourcé, à traiter comme champ configurable (`conditions`) dépendant de la fiche de conformité légale, jamais comme constante générique ; persona demandeur désormais aligné sur "le jeune actif (A1)" / "l'entrepreneur (A2)" (brand-platform.md §2.1/2.2, corrective d'alignement 2026-07-20) ; legal-strategy.md reste à refresh suite à CHOIX #2 (signalé, pas corrigé ici) ; voir roadmap.md et functional-specs.md pour le détail exécutable.
 - **Actions infra requises** : Aucune action Cloudflare/GitHub requise à ce stade (livrable de cadrage produit, aucun code produit).
 ---
