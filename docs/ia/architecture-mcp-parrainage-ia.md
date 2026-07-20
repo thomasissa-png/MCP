@@ -50,7 +50,42 @@ Conséquence directe sur le persona "Léa" du project-context : **une personne q
 
 ## 2. Architecture recommandée POC → V1
 
-[SECTION_2]
+### 2.1 Principe directeur
+
+**La source de vérité est unique (le Sheet, puis une DB), et on en dérive PLUSIEURS interfaces de consommation.** On ne mise pas sur un seul canal. On priorise le canal qui touche réellement le grand public (web structuré lu par les IA en browsing), et on ajoute le MCP quand l'API existe déjà.
+
+### 2.2 Comment une IA sert réellement nos codes au grand public
+
+Les assistants grand public répondent en majorité via **browsing / answer engine** : ils lisent des pages web indexées et **citent les contenus structurés**. Un site avec schema.org est ~2,3× plus cité dans les réponses IA qu'un site sans données structurées ; les types `ItemList`, `FAQPage`, `Offer` ont les meilleurs taux de citation. [sources §Sources] **C'est notre canal principal.**
+
+### 2.3 Schéma d'architecture (POC → V1)
+
+```
+             SOURCE DE VÉRITÉ
+        POC : Google Sheet (T&E)
+        V1  : DB (Cloudflare D1 ou Neon Postgres)
+                     │
+        ┌────────────┴─── build / sync automatisé (cron) ───────────┐
+        │                        │                                   │
+   [CANAL 1 — GRAND PUBLIC]  [CANAL 2 — MACHINE]              [CANAL 3 — AVANCÉ]
+   Site statique GEO/AEO      Flux / API JSON public          Serveur MCP
+   - 1 page / marchand        /api/codes.json                 (façade sur CANAL 2)
+   - schema.org : ItemList,   /api/codes/{marchand}           - search_promo_codes()
+     Offer, FAQPage           machine-readable, cache CDN      - get_referral_link()
+   - contenu factuel citable  réutilisable par agents/tiers    + App/Plugin ChatGPT
+   → lu par ChatGPT Browse,   → réutilisation, sitemap IA        listée au directory
+     Perplexity, Google AI                                     → power users / pro
+```
+
+- **POC (immédiat)** : Sheet publié → petit script de génération (GitHub Action / Cloudflare Worker) qui produit **le site statique + schema.org + le `codes.json`**. Zéro backend lourd. Hébergement Cloudflare Pages (gratuit).
+- **V1** : migration Sheet → **D1** (aligné écosystème Cloudflare du contexte projet) ou Neon si besoin relationnel avancé ; ajout de l'**attribution des conversions** (liens de parrainage traçés, `utm` + redirecteur `/go/{code}` qui logge le clic) ; puis **MCP** en façade sur l'API + soumission d'une **App ChatGPT** au directory.
+
+### 2.4 Pourquoi cet ordre (et pas MCP d'abord)
+
+1. Le web structuré est le SEUL canal qui atteint "Léa" dès le POC, sans qu'elle installe quoi que ce soit.
+2. L'API JSON est l'**actif pivot** : le site ET le MCP ET l'App ChatGPT la consomment. La construire une fois sert tout le reste.
+3. Le MCP se greffe en quelques jours une fois l'API stable (façade fine). Le faire avant l'API, c'est coder deux fois.
+4. Cet ordre est **réversible et mesurable** : on saura via l'attribution quel canal convertit avant d'investir dans le suivant.
 
 ---
 

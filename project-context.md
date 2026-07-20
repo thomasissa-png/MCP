@@ -90,6 +90,8 @@
 | Agent | Date | Livrable produit | Décisions clés | Pourquoi / Alternatives écartées |
 |-------|------|-----------------|----------------|----------------------------------|
 | @orchestrator | 2026-07-20 | project-context.md (cadrage) | Cadrer l'idée d'Emmanuel en contexte exploitable, stade Idée, marquer les hypothèses | Débloquer la gate project-context.md pour lancer l'étude de faisabilité demandée par Thomas |
+| @legal | 2026-07-20 | docs/legal/conformite-parrainage-ia.md | Modèle licite dans son principe (affiliation classique) ; 2 risques P0 (violation CGU parrainage tiers sur diffusion publique, divulgation non restituée par l'IA), 2 P1 (CGU plateformes IA, RGPD tracking), 2 P2 (marque, crypto/PSAN). Verdict GO POC, garde-fous avant V1 | WebSearch loi Influenceurs 2023/Omnibus/DGCCRF + CGU parrainage bancaire + App Developer Terms OpenAI ; pas de blocage conformément au protocole (signalement, pas arbitrage) |
+| @creative-strategy | 2026-07-20 | docs/strategy/positionnement-parrainage-ia.md | Positionnement de lancement = Option A "registre de confiance des codes pour les IA" (Option B "protocole IA-natif" en trajectoire différée, Option C écartée) ; personas demandeur/parrain affinés avec verbatims ; why-now sourcé (AI Overviews, agentic commerce, affiliation Perplexity, primauté structure/citation) | Option B jugée non crédible au stade POC (pas encore de serveur MCP en prod) ; Option C écartée car non différenciante face à la concurrence (test G17) |
 
 ---
 
