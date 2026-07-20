@@ -147,9 +147,42 @@ Calibration équipe 100 % IA (2 humains T&E pour valider) : la "complexité" n'e
 
 ## Sources (WebSearch, 2026-07-20)
 
-[SOURCES]
+- MCP Adoption Statistics 2026 — https://www.digitalapplied.com/blog/mcp-adoption-statistics-2026-model-context-protocol
+- Everything your team needs to know about MCP in 2026 (WorkOS) — https://workos.com/blog/everything-your-team-needs-to-know-about-mcp-in-2026
+- The MCP Ecosystem in 2026 (ChatForest) — https://chatforest.com/guides/mcp-ecosystem-2026-state-of-the-standard/
+- Model Context Protocol — Wikipedia — https://en.wikipedia.org/wiki/Model_Context_Protocol
+- Apps in ChatGPT (OpenAI Help Center — activation explicite) — https://help.openai.com/en/articles/11487775-connectors-in-chatgpt
+- Developer mode & full MCP connectors in ChatGPT (beta) — https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta
+- MCP and Connectors (OpenAI API) — https://developers.openai.com/api/docs/guides/tools-connectors-mcp
+- The state of MCP servers in 2026 (ToolDirectory) — https://tooldirectory.ai/blog/state-of-mcp-servers-2026
+- Update on the MCP Registry Project + ChatGPT MCP support (Obot) — https://obot.ai/blog/update-on-the-mcp-registry-project-new-chatgpt-support-for-mcp-and-what-it-means-for-enterprise-ai/
+- Schema.org Structured Data SEO/GEO/AIO Guide 2026 — https://digitalmarketingco.org/blog/schema-org-structured-data-seo-geo-aio-complete-guide
+- Structured Data for AI Search: Schema Types That Drive Citations 2026 (Presence AI) — https://presenceai.app/blog/structured-data-for-ai-search-schema-types-that-drive-citations
+- Answer Engine Optimization Complete Guide 2026 (Frase) — https://www.frase.io/blog/what-is-answer-engine-optimization-the-complete-guide-to-getting-cited-by-ai
 
 ---
 
 **Handoff → @orchestrator**
-[HANDOFF]
+- **Fichiers produits** : `/home/user/MCP/docs/ia/architecture-mcp-parrainage-ia.md`
+- **Décisions prises** : (1) MCP repoussé hors du chemin critique POC — canal grand public = web structuré schema.org lu en browsing ; (2) architecture multi-canaux avec **API JSON comme actif pivot** (site + MCP + App ChatGPT la consomment) ; (3) fraîcheur = KPI qualité central, automatisée par cron + statut `verified_at`, seuls les codes `actif` exposés.
+- **Points d'attention** :
+  - Pour **@geo / @seo** : le canal principal est GEO/AEO (schema.org ItemList/Offer/FAQPage). Décision structurante qui les concerne directement — à intégrer à leur calibration.
+  - Pour **@data-analyst** : l'attribution des conversions parrainage (`/go/{code}` traçant) est le KPI North Star ; à cadrer en V1.
+  - Pour **@fullstack** : générateur statique + Action de sync Sheet→site/JSON ; MCP en façade sur l'API (V1.5), pas avant.
+  - Pour **@legal** : divulgation de la relation d'affiliation à afficher sur le site public et dans les réponses (directive Omnibus / DGCCRF) — déjà flaggé au contexte.
+  - Hypothèses non levées du contexte (modèle de revenu, périmètre ouvert/fermé) n'affectent pas cette architecture technique mais conditionnent l'ampleur de la V1.
+- **Actions infra requises** : Aucune action Cloudflare/GitHub requise à ce stade (livrable = documentation). Pistes V1 à cadrer par @infrastructure : Cloudflare Pages (site), Worker Cron (fraîcheur), D1 (DB), redirecteur d'attribution.
+
+---
+
+## Auto-évaluation (gates)
+
+Gates BLOQUANT vérifiées : **G5 PASS** (persona "Léa" du project-context adressé explicitement §1.2), **G7 PASS** (cohérent avec project-context : MCP "piste privilégiée" reçu et nuancé, pas contredit sans le signaler), **G12 PASS** (recommandations = verbe+objet+critère de done, effort chiffré §4), **G15 PASS** (aucun placeholder résiduel), **G17 PASS** (analyse spécifique au cas parrainage/codes, non copiable telle quelle par un concurrent générique).
+
+**Vérifié (G_PROOF)** — projection sur le cas réel :
+```
+Requête réelle "trouve-moi un code promo NordVPN" dans ChatGPT.com sans MCP branché
+→ l'assistant fait du browsing, lit les pages indexées structurées.
+→ Notre MCP n'est PAS appelé (non installé). Notre page schema.org PEUT être citée.
+Conclusion confirmée : le canal grand public est le web structuré, pas le MCP.
+```
