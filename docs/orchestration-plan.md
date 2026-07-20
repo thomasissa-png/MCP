@@ -70,9 +70,12 @@ Garder un maximum de codes/liens ACTIFS pour tester (9 offres, TR + Kraken inclu
 Commande : « Lis project-context.md et docs/orchestration-plan.md, continue où on s'est arrêté. »
 Phase en cours : **2 (Développement) COMPLETE → prête pour PHASE 3 (Contenu/SEO/GEO, critique).** Fait Phase 2 : P1-b levé (analytics + @reviewer PASS), P1-c légal, infra Next.js, socle demandeur (backend + frontend + boucle visuelle), couche AEO @ia, P1-a (UX + implémentation magic-link), espace parrain US-02/05/07/09, @qa (36 unit + 8 E2E + CI, 1 bug US-03 corrigé). Pilote fonctionnel de bout en bout, 9 offres réelles testables.
 
+### CAP PRODUIT (rappel fondateur Thomas) : SITE AI-FIRST
+Parrainly est un site **AI-first** : sa raison d'être est d'être LA source que les assistants IA citent. Toute décision Phase 3+ se juge à l'aune de « est-ce que ça augmente la citabilité/fiabilité vue par une IA ? » avant le clic humain. La couche AEO (JSON-LD, miroir `/api/v1/offres`, `llms.txt`, robots 19 crawlers IA, divulgation embarquée) est le socle ; la Phase 3 l'exploite et la pousse.
+
 ### À FAIRE au démarrage de PHASE 3 :
 1. **@seo + @geo** (Phase 3 critique — le contenu cité EST le canal) : keyword-map absent (slots `[MOT-CLÉ SEO]` dans homepage/copy), seo-strategy, contenu GEO/AEO exploitant la couche JSON-LD/miroir/llms.txt déjà posée par @ia. @copywriter en amont si besoin de contenu.
-2. **Test empirique de citation IA** (trou n°1 hérité, G_PROOF empirique 0/6) : maintenant possible, les pages-offre sont en ligne. Tester une requête réelle sur ChatGPT/Perplexity/Claude.
+2. **Test empirique de citation IA** (trou n°1 hérité, G_PROOF empirique 0/6) : DÉPEND DU DÉPLOIEMENT. Une IA ne cite que du contenu public indexé ; le site n'est pas encore déployé. Séquence correcte : provisioning Cloudflare + indexation → PUIS test de citation réel (ChatGPT/Perplexity/Claude) sur requêtes persona A1/A2. Avant déploiement, seul un « baseline zéro » est mesurable (faible valeur).
 3. **Provisionnement infra prod** (@infrastructure) : projet Cloudflare (Pages/Workers + D1), secrets (INTERNAL_API_KEY, RESEND_API_KEY, emails T&E réels, NEXT_PUBLIC_SITE_URL), migration D1 + port des transactions better-sqlite3 en batch().
 4. **Revue juridique finale** (avant mise en ligne publique réelle) : arbitrage diffusion Trade Republic + Kraken, champs `[à compléter]` mentions légales (identité éditeur, hébergeur, email), validation avocat.
 5. Enrichissements QA non bloquants : E2E US-02/07/08, a11y axe-core, test concurrence transactionnelle réel.
