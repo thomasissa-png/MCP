@@ -30,7 +30,7 @@
   --color-accent-primary-hover: #152A47; /* cobalt.900 */
   --color-accent-primary-subtle: #DCE7F2;/* cobalt.100 */
   /* Verifie / fraicheur */
-  --color-verified-fg: #0F7B6C;          /* verified.700 */
+  --color-verified-fg: #0A5449;          /* verified.800 (contraste AA renforcé 7.7:1 sur verified.100, marge confortable) */
   --color-verified-bg: #DEF5EE;          /* verified.100 */
   --color-verified-border: #8FDCC9;      /* verified.300 */
   /* Neutre expire */

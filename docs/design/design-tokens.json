@@ -70,7 +70,7 @@
       "color-accent-primary": "{primitives.color.cobalt.700}",
       "color-accent-primary-hover": "{primitives.color.cobalt.900}",
       "color-accent-primary-subtle": "{primitives.color.cobalt.100}",
-      "color-verified-fg": "{primitives.color.verified.700}",
+      "color-verified-fg": "{primitives.color.verified.800}",
       "color-verified-bg": "{primitives.color.verified.100}",
       "color-verified-border": "{primitives.color.verified.300}",
       "color-stale-fg": "{primitives.color.stale.700}",
