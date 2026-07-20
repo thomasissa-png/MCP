@@ -97,92 +97,97 @@ UI 5 états conformes ci-dessus ; endpoint `/api/v1/offres/{enseigne_id}/attribu
 
 ---
 
-## US-02 : Soumettre un lien de parrainage et entrer dans la rotation
+## US-02 : Enregistrer et actualiser une offre du catalogue (gestion interne T&E)
 
-**Persona** : Thomas (ou Emmanuel) | **Epic** : Onboarding/soumission parrain | **Dépendances** : Épic 1 roadmap.md (CGU internes parrains), objet métier Parrain (product-vision.md §4) | **RICE : R4/I4/C4 → 64**
+*(RÉVISION 2026-07-20T02:00 : cette story remplace "Soumettre un lien de parrainage et entrer dans la rotation" (onboarding parrain externe), déplacée en V2 — cf. roadmap.md section 4. En cercle fermé, il n'y a rien à "onboarder" : Thomas et Emmanuel enregistrent et actualisent directement leurs propres offres dans le catalogue via le back-office. La mécanique CGU/inscription/file de validation tierce, non pertinente en V1, est conservée comme brouillon de référence pour le futur chantier V2 dans roadmap.md.)*
+
+**Persona** : Thomas ou Emmanuel (opérateur du catalogue) | **Epic** : Catalogue des 9 offres réelles | **Dépendances** : Épic 1 roadmap.md (pages de conformité), objet métier Programme/Offre au schéma Emmanuel (product-vision.md §4) | **RICE : R2/I4/C5 → 40**
 
 #### Job-to-be-done
-En tant que Thomas (ou Emmanuel), je veux soumettre mon lien de parrainage et entrer dans la rotation afin de faire vivre mon lien et toucher ma prime sans le griller par un pic suspect (brand-platform.md §2.2).
+En tant que Thomas ou Emmanuel, je veux enregistrer ou actualiser une offre du catalogue avec mon lien et mes conditions afin qu'elle soit disponible pour le moteur d'arbitrage (US-03) et vérifiable pour sa fraîcheur (US-04).
 
 #### Contexte de navigation
-Origine : page "Devenir parrain" ou CTA "Vous avez ce lien ? Proposez-le" depuis une fiche enseigne. Déclencheur : clic "Soumettre mon lien". Destination succès : confirmation "Votre lien est en file de vérification" + accès à "Mon espace parrain" (US-05). Destination échec : message d'erreur de validation, formulaire conservé.
+Origine : back-office, section "Catalogue des offres". Déclencheur : clic "Ajouter une offre" ou "Modifier" sur une des 9 lignes existantes. Destination succès : l'offre apparaît (ou est mise à jour) dans le catalogue public dès que son statut passe à `actif`. Destination échec : message d'erreur de validation, formulaire conservé.
 
 #### Données et champs
 
+Champs = les 20 champs du schéma Emmanuel (product-vision.md §4, non redupliqués intégralement ici) ; les 5 saisis manuellement par T&E à l'ajout/mise à jour :
+
 | Champ | Type | Obligatoire | Validation | Limites | Exemple réaliste |
 |---|---|---|---|---|---|
-| enseigne_id | Select | Oui | Doit exister au catalogue hors-régulé actif | Liste fermée aux enseignes actives | "Trade Republic" |
-| lien_parrainage | Texte/URL | Oui | Format URL ou code alphanumérique selon l'enseigne | Max 500 caractères | "https://www.edf.fr/parrainage/ABC123" |
-| email_contact | Email | Oui | Format email valide | Max 254 caractères | "karim.b@example.com" |
-| moyen_versement | N/A à la soumission | Non | KYC différé après validation (legal-strategy.md §6b) | N/A | N/A — collecté après validation, pas à la soumission |
-| cgu_acceptees | Checkbox | Oui | Doit être coché | Booléen | true |
+| nom_programme | Texte | Oui | Doit correspondre à un des 9 programmes de la base Emmanuel en V1 | Liste fermée en V1 | "Trade Republic" |
+| url_parrainage / code_parrainage | Texte/URL | Au moins un des deux | Format URL ou code alphanumérique selon le programme | Max 500 caractères | "https://www.traderepublic.com/parrainage/ABC123" |
+| conditions | Texte structuré | Oui | Porte le plafond anti-fraude (cf. product-vision.md §2 règle 3) | `[À VALIDER selon fiche de conformité par programme]` | "Max 10 filleuls/mois" |
+| statut | Select | Oui | actif / en_attente_verification / suspendu / retiré | Enum fermée | "actif" |
+| date_verification | Date (auto) | Oui | Mise à jour par US-04 (job automatisé) ou manuellement par T&E | ≤ date du jour | "2026-07-18" |
 
 #### 5 états UI
-- **Défaut** : formulaire vide, CTA "Soumettre mon lien" désactivé tant que les champs obligatoires ne sont pas remplis.
-- **Loading** : après clic, indicateur affiché, durée max 2 secondes (validation de format uniquement, pas de contrôle live du lien à la soumission).
-- **Vide** : aucune enseigne hors-régulé disponible pour proposer un lien → message exact "Aucune enseigne disponible pour le moment." + CTA "Être averti par email".
-- **Erreur** : format de lien non reconnu pour l'enseigne choisie → message exact "Ce lien ne correspond pas au format attendu pour cette enseigne." + les autres champs restent remplis.
-- **Succès** : "Votre lien est en file de vérification. Vous serez averti par email une fois validé." + redirection vers "Mon espace parrain".
+- **Défaut** : liste des 9 offres avec statut, propriétaire (Thomas/Emmanuel), date de dernière vérification.
+- **Loading** : après clic Enregistrer, indicateur bref, durée max 2 secondes.
+- **Vide** : N/A — les 9 offres sont importées au démarrage (import direct de `data/base-parrainage-emmanuel-v3.xlsx`), il n'y a jamais de catalogue vide en V1.
+- **Erreur** : format de lien non reconnu pour le programme choisi → message exact "Ce lien ne correspond pas au format attendu pour ce programme." + les autres champs restent remplis.
+- **Succès** : "Offre enregistrée. Statut : [statut]." + mise à jour immédiate visible dans la liste.
 
 #### Critères d'acceptance Given/When/Then
 
-1. (Happy path) Given Thomas (ou Emmanuel) remplit tous les champs obligatoires avec un lien Trade Republic au format valide et coche les CGU, When il clique "Soumettre mon lien", Then une entrée Parrain/lien au statut "en attente de vérification" est créée et la confirmation s'affiche.
-2. (Happy path) Given Thomas (ou Emmanuel) a déjà un lien validé pour Qonto, When il soumet un second lien pour Trade Republic, Then les deux liens coexistent sous son profil Parrain, chacun avec son propre statut et quota.
-3. (Happy path) Given un lien soumis passe la vérification, When son statut passe à "actif", Then Thomas (ou Emmanuel) entre dans le pool de rotation de l'enseigne correspondante et reçoit un email de confirmation.
-4. (Erreur) Given Thomas (ou Emmanuel) soumet un lien dans un format non reconnu pour l'enseigne choisie, When il clique "Soumettre", Then le message exact "Ce lien ne correspond pas au format attendu pour cette enseigne." s'affiche sans effacer les autres champs.
-5. (Erreur) Given Thomas (ou Emmanuel) ne coche pas la case CGU, When il clique "Soumettre mon lien", Then le bouton reste désactivé et le message "Vous devez accepter les CGU parrains pour continuer." s'affiche.
-6. (Cas limite — champ vide) Given le champ email_contact est laissé vide, When Thomas (ou Emmanuel) clique "Soumettre", Then la validation bloque l'envoi sur ce champ précis sans soumettre le formulaire.
-7. (Cas limite — double soumission) Given Thomas (ou Emmanuel) clique deux fois rapidement sur "Soumettre mon lien", When le second clic survient avant la fin du traitement du premier, Then une seule entrée est créée en base (pas de doublon).
-8. (Permissions) Given Thomas (ou Emmanuel) n'a pas encore de compte parrain, When il soumet son premier lien, Then un compte Parrain minimal (email + CGU acceptées) est créé automatiquement, sans étape d'inscription séparée.
-9. (Données existantes) Given Thomas (ou Emmanuel) a un lien Trade Republic au statut "suspendu" (plafond atteint le mois précédent), When la nouvelle période démarre, Then son quota est réinitialisé automatiquement et son statut repasse à "actif" sans nouvelle action de sa part.
+1. (Happy path) Given Thomas modifie le lien Trade Republic qu'il détient, When il clique "Enregistrer", Then l'offre Trade Republic est mise à jour avec le nouveau lien et `date_verification` repasse à la date du jour.
+2. (Happy path) Given Thomas et Emmanuel détiennent chacun un lien pour le même programme (ex. Qonto), When les deux sont enregistrés, Then les deux entrées coexistent comme deux instances de Parrain rattachées à la même Offre, chacune avec son propre quota (cf. product-vision.md §2 règle 1).
+3. (Happy path) Given une offre passe le contrôle de conformité (fiche produite par @legal), When son statut est basculé de `en_attente_verification` à `actif`, Then elle devient éligible au moteur d'arbitrage (US-03) et visible au catalogue public.
+4. (Erreur) Given Emmanuel soumet un lien dans un format non reconnu pour le programme choisi, When il clique "Enregistrer", Then le message exact "Ce lien ne correspond pas au format attendu pour ce programme." s'affiche sans effacer les autres champs.
+5. (Erreur) Given le champ `conditions` (plafond) est laissé vide pour un programme régulé, When Thomas tente de passer le statut à `actif`, Then l'action est bloquée avec le message "Le plafond doit être renseigné avant activation." (garde-fou anti-fraude, cf. product-vision.md §2 règle 3).
+6. (Cas limite — champ vide) Given ni `url_parrainage` ni `code_parrainage` n'est renseigné, When Thomas ou Emmanuel clique "Enregistrer", Then la validation bloque l'envoi sur ce point précis.
+7. (Cas limite — double soumission) Given Thomas clique deux fois rapidement sur "Enregistrer", When le second clic survient avant la fin du traitement du premier, Then une seule mise à jour est appliquée (idempotence sur `id` de l'offre).
+8. (Permissions) Given une personne autre que Thomas ou Emmanuel tente d'accéder à cette section du back-office, When elle charge l'URL, Then l'accès est refusé (403) — aucun accès public à la gestion du catalogue en V1.
+9. (Données existantes) Given une offre Kraken détenue uniquement par Emmanuel atteint son plafond (`conditions`), When la période se renouvelle, Then son quota est réinitialisé automatiquement et son statut repasse à `actif` sans action manuelle.
 
 #### Payload API
-- `POST /api/v1/parrains/{parrain_id}/liens` — soumission d'un lien.
-- Auth : lien de confirmation par email (compte minimal créé à la soumission, pas de mot de passe au POC) — mécanisme exact `[À VALIDER par @fullstack/@ux]`.
-- Rate limit : `[À VALIDER par @infrastructure]`.
-- Request : `{ "enseigne_id": string, "lien_parrainage": string, "email_contact": string, "cgu_acceptees": boolean }`
-- Response 201 : `{ "lien_id": string, "statut": "en_attente_verification" }`
-- Response 400 : `{ "error": "format_lien_invalide" }`
-- Response 409 : `{ "error": "lien_deja_soumis" }`
+- `PATCH /api/v1/admin/offres/{offre_id}` — mise à jour d'une offre existante (les 9 offres sont pré-créées à l'import initial, pas de `POST` de création en V1).
+- Auth : session admin T&E (rôle back-office, même mécanisme que US-07).
+- Rate limit : N/A (2 opérateurs internes, pas de risque d'abus).
+- Request : `{ "url_parrainage": string, "code_parrainage": string, "conditions": string, "statut": "actif" | "en_attente_verification" | "suspendu" | "retire" }`
+- Response 200 : `{ "id": string, "statut": string, "date_verification": string }`
+- Response 400 : `{ "error": "format_lien_invalide" }` / `{ "error": "plafond_manquant" }`
+- Response 403 : accès refusé (non T&E).
 
 #### Events analytics
 
 | Event | Trigger | Propriétés | Étape funnel |
 |---|---|---|---|
-| `formulaire_soumission_vu` | Chargement de la page soumission | enseignes_disponibles_count | Awareness |
-| `lien_soumis` | Soumission réussie (201) | enseigne_id, parrain_id | Activation |
-| `lien_soumission_echec` | Erreur de validation/format | enseigne_id, type_erreur | Frein |
-| `lien_valide_actif` | Statut passe à "actif" après vérification | enseigne_id, parrain_id, delai_verification_jours | Activation confirmée |
+| `offre_mise_a_jour` | Enregistrement réussi (200) | offre_id, statut, operateur (thomas/emmanuel) | Opération |
+| `offre_mise_a_jour_echec` | Erreur de validation/format | offre_id, type_erreur | Frein |
+| `offre_activee` | Statut passe à `actif` | offre_id | Opération |
 
 #### Scénarios persona concrets
 
-1. Thomas (ou Emmanuel), après avoir ouvert un compte Qonto, retrouve son lien égaré dans ses emails et le soumet le soir même depuis son mobile.
-2. Thomas (ou Emmanuel) se trompe de format en soumettant son lien Trade Republic (colle l'URL complète au lieu du code), voit le message d'erreur, corrige et resoumet avec succès.
-3. Thomas (ou Emmanuel) oublie de cocher les CGU, le bouton reste grisé, il relit la mention et coche, la soumission passe.
-4. Thomas (ou Emmanuel), parrain actif depuis 2 mois sur Trade Republic, atteint son plafond mi-mois, voit son statut "en pause jusqu'au [date]" dans son espace, puis redevient actif le mois suivant sans rien faire.
-5. Thomas (ou Emmanuel) soumet deux liens le même jour (Trade Republic et Ramify), retrouve les deux dans son espace parrain avec des statuts indépendants.
+1. Thomas met à jour son lien Trade Republic après un changement d'URL du programme, la date de vérification repasse au jour même.
+2. Emmanuel enregistre son propre lien Kraken (Thomas n'en détient pas) ; l'offre Kraken n'a qu'un seul détenteur dans le pool d'arbitrage (US-03), ce qui est normal en V1.
+3. Thomas tente d'activer l'offre Meria sans avoir renseigné le plafond ; le blocage l'empêche de publier une offre sans garde-fou anti-fraude.
+4. Emmanuel modifie deux fois de suite très rapidement le statut de Spiko par erreur de manipulation tactile ; une seule mise à jour est appliquée.
+5. Thomas et Emmanuel enregistrent chacun un lien Qonto le même jour ; le back-office affiche les deux entrées distinctement avec leurs quotas propres.
 
 #### Definition of Done
-UI 5 états conformes ; endpoint testé sur 201/400/409 ; les 5 scénarios reproductibles en recette ; test E2E à créer par @qa (nom proposé : `tests/e2e/us-02-soumission-parrain.spec.ts`) ; CGU internes parrains (roadmap.md épic 1, item 9) liées depuis le formulaire.
+UI 5 états conformes (vide = N/A justifié, import initial exhaustif) ; endpoint testé sur 200/400/403 ; les 5 scénarios reproductibles en recette ; test E2E à créer par @qa (nom proposé : `tests/e2e/us-02-gestion-catalogue.spec.ts`).
 
 #### Notes @qa / @ux / @fullstack
-@legal : le mécanisme d'authentification par lien email (sans mot de passe) reste à valider avant prod. @ux : le champ `lien_parrainage` doit accepter aussi bien une URL complète qu'un code brut selon l'enseigne (validation contextuelle par `enseigne_id`).
+@fullstack : l'import initial des 9 offres doit se faire directement depuis `data/base-parrainage-emmanuel-v3.xlsx` (les 20 colonnes du schéma Emmanuel), pas de ressaisie manuelle des champs déjà documentés par Emmanuel. @legal : le blocage du critère 5 (plafond obligatoire avant activation) est le seul garde-fou produit tant que la fiche de conformité par programme n'est pas réévaluée en configuration cercle fermé.
 
 ---
 
-## US-03 : Attribuer un filleul à un parrain en respectant les plafonds (moteur de rotation)
+## US-03 : Attribuer un filleul à un parrain en respectant les plafonds (moteur d'arbitrage T&E)
 
-**Persona** : N/A — story technique sans utilisateur direct (bénéficie indirectement à Léa via US-01 et à Thomas (ou Emmanuel) via US-02) | **Epic** : Moteur de rotation/attribution | **Dépendances** : US-02 (pool de parrains existant), Épic 2 roadmap.md (catalogue d'offres) | **RICE : R4/I5/C3 → 60**
+*(RÉVISION 2026-07-20T02:00 : pool ramené à 2 identités maximum — Thomas et Emmanuel — au lieu d'un pool ouvert. La logique de sélection et les garde-fous restent identiques et directement réutilisables lors de l'ouverture V2, cf. product-vision.md §2 règle 7.)*
+
+**Persona** : N/A — story technique sans utilisateur direct (bénéficie indirectement à Léa via US-01 et à Thomas/Emmanuel via US-02) | **Epic** : Moteur d'arbitrage T&E | **Dépendances** : US-02 (offres et liens T&E enregistrés), Épic 2 roadmap.md (catalogue d'offres) | **RICE : R3/I5/C4 → 60**
 
 #### Job-to-be-done
-En tant que produit, attribuer automatiquement un filleul à un parrain éligible en respectant les plafonds anti-fraude afin de garantir une rotation équitable et protéger les primes des parrains (product-vision.md §2).
+En tant que produit, attribuer automatiquement un filleul au parrain (Thomas ou Emmanuel) éligible en respectant les plafonds anti-fraude afin de garantir un arbitrage équitable entre les deux et protéger leurs primes (product-vision.md §2).
 
 #### Données et champs / 5 états UI
 N/A — story sans UI (template allégé, cf. product-manager.md règle de triage par complexité).
 
 #### Critères d'acceptance Given/When/Then
 
-1. (Happy path) Given un pool de 3 parrains éligibles pour l'offre Trade Republic (aucun au plafond), When une requête d'attribution arrive, Then le moteur sélectionne le parrain dont `date_dernier_tour` est la plus ancienne.
+1. (Happy path) Given Thomas ET Emmanuel détiennent chacun un lien éligible pour l'offre Trade Republic (aucun au plafond), When une requête d'attribution arrive, Then le moteur sélectionne celui des deux dont `date_dernier_tour` est la plus ancienne.
 2. (Happy path) Given le parrain sélectionné atteint son plafond après cette attribution, When l'attribution est enregistrée, Then ce parrain est automatiquement exclu du pool pour les requêtes suivantes sur cette offre.
 3. (Happy path) Given deux parrains ont exactement la même `date_dernier_tour` (jamais servis), When une requête arrive, Then le moteur applique un critère de départage déterministe et documenté (ex. ordre d'inscription), jamais un tirage aléatoire non traçable.
 4. (Erreur) Given le pool éligible est vide (tous au plafond ou suspendus), When une requête d'attribution arrive, Then le moteur retourne l'erreur `pool_vide` (409) sans créer d'Attribution, et déclenche le passage de l'offre au statut "en attente de parrain" (US-04).
@@ -261,15 +266,15 @@ Job testé sur les 9 critères, y compris le cas fail-safe (critère 4) ; seuils
 
 ## US-05 : Consulter son tableau de bord parrain (statut, quota, prime)
 
-**Persona** : Thomas (ou Emmanuel) | **Epic** : Onboarding/soumission parrain | **Dépendances** : US-02, US-03 | **RICE : R3/I3/C4 → 36**
+**Persona** : Thomas (ou Emmanuel) | **Epic** : Catalogue des 9 offres réelles | **Dépendances** : US-02, US-03 | **RICE : R2/I3/C4 → 24**
 
 #### Job-to-be-done
-En tant que Thomas (ou Emmanuel), je veux consulter le statut de mes liens et ma prime estimée afin de savoir si mon lien est actif dans la rotation et s'il approche de son plafond.
+En tant que Thomas (ou Emmanuel), je veux consulter le statut de mes liens et ma prime estimée afin de savoir si mon lien est actif dans l'arbitrage et s'il approche de son plafond.
 
 #### 5 états UI
-- **Défaut** : liste des liens soumis avec statut (en attente/actif/en pause/suspendu), quota utilisé/max par offre.
+- **Défaut** : liste des liens enregistrés avec statut (en attente/actif/en pause/suspendu), quota utilisé/max par offre.
 - **Loading** : chargement du tableau, durée max 2 secondes.
-- **Vide** : aucun lien soumis → message "Vous n'avez pas encore soumis de lien." + CTA "Soumettre mon premier lien" (US-02).
+- **Vide** : aucun lien encore enregistré pour ce parrain (ex. Emmanuel n'a pas de lien Kraken) → message "Vous n'avez pas encore de lien enregistré." + CTA "Enregistrer un lien" (US-02).
 - **Erreur** : échec de chargement → message exact "Impossible de charger votre espace parrain. Réessayez." + bouton Réessayer.
 - **Succès** : N/A pour un écran de consultation pure — la confirmation se fait à l'affichage des données à jour.
 
@@ -280,7 +285,7 @@ En tant que Thomas (ou Emmanuel), je veux consulter le statut de mes liens et ma
 3. (Happy path) Given une Attribution liée à un lien de Thomas (ou Emmanuel) est passée à "confirmée", When il consulte son tableau de bord, Then sa prime estimée cumulée reflète cette conversion.
 4. (Erreur) Given le service de chargement du tableau échoue, When Thomas (ou Emmanuel) ouvre la page, Then le message exact "Impossible de charger votre espace parrain. Réessayez." s'affiche avec bouton Réessayer.
 5. (Erreur) Given Thomas (ou Emmanuel) accède à l'URL de son tableau de bord sans lien de session valide (email expiré), When la page se charge, Then il est redirigé vers une page de renvoi de lien de connexion.
-6. (Cas limite — aucun lien) Given Thomas (ou Emmanuel) n'a jamais soumis de lien, When il ouvre son tableau de bord, Then l'état "vide" s'affiche avec le CTA vers US-02.
+6. (Cas limite — aucun lien) Given Thomas (ou Emmanuel) n'a jamais enregistré de lien pour un programme donné, When il ouvre son tableau de bord, Then l'état "vide" s'affiche avec le CTA vers US-02.
 7. (Cas limite — session expirée en cours de consultation) Given le lien de session de Thomas (ou Emmanuel) expire pendant qu'il consulte la page, When il tente une action (ex. rafraîchir), Then il est invité à redemander un lien de connexion sans perte des données déjà affichées à l'écran.
 8. (Permissions) Given Thomas (ou Emmanuel) tente d'accéder au tableau de bord d'un autre parrain via une URL modifiée, When la requête est faite, Then l'accès est refusé (403) — un parrain ne voit que ses propres liens.
 9. (Données existantes) Given Thomas (ou Emmanuel) a un lien suspendu pour fraude (US-07), When il consulte son tableau de bord, Then ce lien est visible avec le statut "suspendu" et un message générique, sans détail de l'enquête anti-fraude.
@@ -339,55 +344,57 @@ UI 3 états pertinents conformes (vide = N/A justifié) ; endpoint testé 201/40
 
 ---
 
-## US-07 : Valider ou rejeter une soumission de parrain (back-office admin)
+## US-07 : Valider la mise en ligne d'une offre après contrôle de conformité (back-office)
 
-**Persona** : Thomas ou Emmanuel (opérateur back-office au POC, tout futur administrateur ensuite) | **Epic** : Back-office admin | **Dépendances** : US-02, objet métier Parrain | **RICE : R2/I4/C5 → 40**
+*(RÉVISION 2026-07-20T02:00 : remplace "Valider ou rejeter une soumission de parrain" — sans onboarding tiers en V1, il n'y a plus de soumission à arbitrer entre plusieurs candidats. Cette story devient une porte de conformité : T&E ne peuvent pas eux-mêmes activer une offre régulée tant que la fiche de conformité par programme n'existe pas, cf. legal-strategy.md §7 point 6, à réévaluer par @legal en configuration cercle fermé.)*
+
+**Persona** : Thomas ou Emmanuel (opérateur back-office) | **Epic** : Back-office minimal + Pages de conformité | **Dépendances** : US-02, Épic 1 roadmap.md | **RICE : R2/I4/C4 → 32**
 
 #### Job-to-be-done
-En tant qu'opérateur back-office, je veux valider ou rejeter une soumission de lien de parrain afin de garantir qu'aucun lien invalide ou en violation des CGU d'un programme n'entre dans le pool de rotation (legal-strategy.md §4).
+En tant qu'opérateur back-office, je veux valider qu'une offre dispose de sa fiche de conformité avant de basculer son statut à `actif`, afin de garantir qu'aucune offre non conforme (CGU du programme, mentions réglementaires spécifiques aux programmes régulés) n'est exposée publiquement (legal-strategy.md §4/§7 point 6).
 
 #### Données et champs
-N/A — pas de formulaire de saisie complexe : action binaire (valider/rejeter) sur une soumission existante, avec champ optionnel "motif de rejet" (texte libre, max 500 caractères, obligatoire si rejet).
+N/A — pas de formulaire de saisie complexe : action binaire (valider/bloquer) sur une offre en attente d'activation, avec champ "référence de la fiche de conformité" (lien/identifiant, obligatoire pour valider).
 
 #### 5 états UI
-- **Défaut** : liste des soumissions "en attente de vérification" avec lien, enseigne, date de soumission.
-- **Loading** : après clic Valider/Rejeter, indicateur bref, durée max 2 secondes.
-- **Vide** : aucune soumission en attente → message "Aucune soumission à traiter."
+- **Défaut** : liste des offres au statut `en_attente_verification` avec programme, catégorie, date d'enregistrement.
+- **Loading** : après clic Valider/Bloquer, indicateur bref, durée max 2 secondes.
+- **Vide** : aucune offre en attente de contrôle de conformité → message "Aucune offre à valider."
 - **Erreur** : échec d'enregistrement de la décision → message exact "L'action n'a pas pu être enregistrée. Réessayez." + bouton Réessayer.
-- **Succès** : "Soumission validée, le parrain est actif." ou "Soumission rejetée, le parrain a été notifié."
+- **Succès** : "Offre validée, elle est désormais active." ou "Offre bloquée, fiche de conformité manquante ou insuffisante."
 
 #### Critères d'acceptance Given/When/Then
 
-1. (Happy path) Given une soumission de Thomas (ou Emmanuel) en attente pour Trade Republic, When l'opérateur clique "Valider", Then le lien passe au statut "actif", Thomas (ou Emmanuel) reçoit un email de confirmation, et le lien entre dans le pool de rotation (US-03).
-2. (Happy path) Given une soumission ne correspond pas aux CGU du programme (ex. Trade Republic interdit la diffusion tierce), When l'opérateur clique "Rejeter" avec un motif, Then le lien passe au statut "rejeté" et Thomas (ou Emmanuel) reçoit le motif par email.
-3. (Happy path) Given un opérateur consulte la fiche de conformité de l'enseigne (legal-strategy.md §7 point 6) avant de statuer, When il valide en connaissance de cause, Then la décision est journalisée avec l'identifiant de l'opérateur.
-4. (Erreur) Given le service d'enregistrement de décision échoue, When l'opérateur clique Valider ou Rejeter, Then le message exact "L'action n'a pas pu être enregistrée. Réessayez." s'affiche et le statut reste "en attente".
-5. (Erreur) Given l'opérateur tente de rejeter sans motif, When il clique "Rejeter", Then le bouton reste bloqué tant que le champ motif n'est pas rempli.
-6. (Cas limite — double traitement) Given deux opérateurs traitent la même soumission simultanément, When les deux actions arrivent en même temps, Then seule la première est appliquée, la seconde reçoit un message "Déjà traité par un autre opérateur".
-7. (Cas limite — annulation) Given une soumission vient d'être validée par erreur, When l'opérateur la repasse en "suspendu" dans les 5 minutes `[HYPOTHÈSE — délai non validé]`, Then le parrain sort immédiatement du pool de rotation.
-8. (Permissions) Given un utilisateur non-administrateur tente d'accéder au back-office, When il charge l'URL, Then l'accès est refusé (403) et redirigé vers la page d'accueil.
-9. (Données existantes) Given une enseigne n'a pas encore de fiche de conformité produite (legal-strategy.md §7 point 6), When l'opérateur ouvre une soumission pour cette enseigne, Then un avertissement bloquant "Fiche de conformité manquante pour cette enseigne" empêche la validation tant que la fiche n'est pas renseignée.
+1. (Happy path) Given l'offre Trade Republic est enregistrée par Thomas (US-02) et sa fiche de conformité est produite, When l'opérateur clique "Valider" en référençant la fiche, Then l'offre passe au statut `actif` et entre dans le pool d'arbitrage (US-03).
+2. (Happy path) Given l'offre Kraken (crypto, enjeu réglementaire PSAN/MiCA) n'a pas encore de fiche de conformité, When l'opérateur ouvre l'offre pour la valider, Then le bouton "Valider" reste bloqué tant que la référence de fiche n'est pas renseignée.
+3. (Happy path) Given un opérateur consulte la fiche de conformité du programme (legal-strategy.md §7 point 6) avant de statuer, When il valide en connaissance de cause, Then la décision est journalisée avec l'identifiant de l'opérateur (Thomas ou Emmanuel) et la référence de la fiche.
+4. (Erreur) Given le service d'enregistrement de décision échoue, When l'opérateur clique Valider, Then le message exact "L'action n'a pas pu être enregistrée. Réessayez." s'affiche et le statut reste `en_attente_verification`.
+5. (Erreur) Given l'opérateur tente de valider sans renseigner la référence de fiche de conformité, When il clique "Valider", Then le bouton reste bloqué et le message "La référence de la fiche de conformité est obligatoire." s'affiche.
+6. (Cas limite — double traitement) Given Thomas et Emmanuel traitent la même offre simultanément depuis deux sessions, When les deux actions arrivent en même temps, Then seule la première est appliquée, la seconde reçoit un message "Déjà traité par un autre opérateur".
+7. (Cas limite — retrait après activation) Given une offre déjà `actif` doit être suspendue suite à une évolution des CGU du programme, When l'opérateur la repasse en `suspendu`, Then elle sort immédiatement du pool d'arbitrage (US-03) sans délai.
+8. (Permissions) Given un utilisateur autre que Thomas ou Emmanuel tente d'accéder au back-office, When il charge l'URL, Then l'accès est refusé (403) et redirigé vers la page d'accueil.
+9. (Données existantes) Given un programme régulé (Trade Republic, Ramify, Finary, Spiko, Kraken, Meria) n'a pas encore de fiche de conformité produite par @legal, When l'opérateur ouvre l'offre correspondante, Then un avertissement bloquant "Fiche de conformité manquante pour ce programme" empêche la validation tant que la fiche n'est pas renseignée.
 
 #### Payload API
-`POST /api/v1/admin/soumissions/{lien_id}/decision` — Auth : session admin (rôle back-office) — Request : `{ "decision": "valider" | "rejeter", "motif": string (obligatoire si rejeter) }` — Response 200 : `{ "statut": "actif" | "rejete" }` — Response 403 si non-admin — Response 409 si déjà traité.
+`POST /api/v1/admin/offres/{offre_id}/validation` — Auth : session admin T&E (rôle back-office) — Request : `{ "decision": "valider" | "bloquer", "reference_fiche_conformite": string }` — Response 200 : `{ "statut": "actif" | "en_attente_verification" }` — Response 403 si non-admin — Response 400 si `reference_fiche_conformite` absente sur décision "valider".
 
 #### Events analytics
 | Event | Trigger | Propriétés | Étape funnel |
 |---|---|---|---|
-| `soumission_validee` | Décision "valider" enregistrée | lien_id, enseigne_id, admin_id | Opération |
-| `soumission_rejetee` | Décision "rejeter" enregistrée | lien_id, enseigne_id, motif | Opération |
+| `offre_validee_conformite` | Décision "valider" enregistrée | offre_id, admin_id, reference_fiche | Opération |
+| `offre_bloquee_conformite` | Décision "bloquer" enregistrée | offre_id, admin_id | Opération |
 
 #### Definition of Done
-UI 5 états conformes ; endpoint testé 200/403/409 ; le garde-fou "fiche de conformité manquante" (critère 9) est un blocage produit non contournable, cohérent avec legal-strategy.md §7.
+UI 5 états conformes ; endpoint testé 200/400/403 ; le garde-fou "fiche de conformité manquante" (critère 9) est un blocage produit non contournable, cohérent avec legal-strategy.md §7 (sous réserve de la réévaluation §7 en cercle fermé, non faite à ce jour).
 
 #### Notes @legal
-Le critère 9 traduit directement l'exigence de legal-strategy.md §4/§7 : aucune enseigne ne doit être ouverte à la rotation sans fiche de conformité CGU documentée.
+Le critère 9 traduit l'exigence de legal-strategy.md §4/§7 : aucun programme, en particulier régulé, ne doit être activé sans fiche de conformité documentée. Signalé : cette exigence a été écrite pour une marketplace ouverte ; @legal doit confirmer qu'elle reste identique (ou l'ajuster) en configuration cercle fermé T&E avant mise en prod réelle.
 
 ---
 
 ## US-08 : Exercer ses droits RGPD (accès, rectification, opposition, suppression)
 
-**Persona** : Thomas (ou Emmanuel) (données KYC) et Léa (données de tracking d'attribution) | **Epic** : Onboarding/soumission parrain + Tracking d'attribution IA→conversion | **Dépendances** : Épic 1 (pages de conformité), objets métier Parrain et Attribution/Conversion | **RICE : R2/I5/C5 → 50**
+**Persona** : Thomas (ou Emmanuel) (données de son profil Parrain) et Léa (données de tracking d'attribution) | **Epic** : Catalogue des 9 offres réelles + Tracking d'attribution IA→conversion | **Dépendances** : Épic 1 (pages de conformité), objets métier Parrain et Attribution/Conversion | **RICE : R2/I5/C5 → 50**
 
 #### Job-to-be-done
 En tant que Thomas (ou Emmanuel) (ou Léa), je veux accéder à mes données, les rectifier, m'opposer à leur traitement ou les faire supprimer afin d'exercer mes droits RGPD (legal-strategy.md §6).
@@ -497,22 +504,23 @@ UI 5 états conformes ; endpoint testé sur 200/403/409/503 ; garde-fou de plaus
 | Parcours | Story ou exclusion documentée |
 |---|---|
 | Acquisition/onboarding demandeur | US-01 (consultation offre + lien attribué) |
-| Onboarding parrain | US-02 (soumission), US-07 (validation back-office) |
+| Onboarding parrain externe | **Reporté en V2, N/A en V1** : cercle fermé T&E tranché par le fondateur (project-context.md CHOIX #2 point 3) ; rien à onboarder tant que le pool = 2 personnes déjà identifiées. Cf. roadmap.md section 4 pour le chantier V2 documenté. |
+| Gestion interne du catalogue (T&E) | US-02 (enregistrer/actualiser une offre), US-07 (validation de conformité avant activation) |
 | Core loop (JTBD principal, CRUD) | US-01, US-02, US-03, US-04, US-05, US-06, US-09 (confirmation de conversion, maillon final vers le NSM) |
-| Paiement (souscription/désabonnement) | **Exclu, N/A justifié** : le modèle n'est pas un abonnement SaaS payé par Léa ou Thomas (ou Emmanuel) ; le seul flux financier est le versement de commission à Thomas (ou Emmanuel) (traité en V1.5 via prestataire de paiement dédié, cf. roadmap.md exclusions) |
+| Paiement (souscription/désabonnement) | **Exclu, N/A justifié** : le modèle n'est pas un abonnement SaaS payé par le demandeur ou T&E ; le seul flux financier est le versement de commission à T&E (versement manuel suivi en back-office en V1, prestataire de paiement dédié seulement à l'ouverture V2, cf. roadmap.md exclusions) |
 | Compte (profil/mdp/email, suppression) | US-05 (tableau de bord), US-08 (RGPD, inclut suppression) — pas de mot de passe au POC (auth par lien email) |
 | Droits RGPD | US-08 |
 | Erreurs transversales (session expirée, 404, 403, double soumission) | Couvertes dans les critères de US-01 (double-clic), US-02 (double soumission), US-05 (session expirée, 403), US-07 (403, double traitement) |
-| Multi-utilisateurs (rôles/permissions/admin) | US-07 (rôle admin back-office), critères permissions dans chaque story |
-| Réactivation (inactif → retour) | Couvert par le critère 9 de US-02 (réinitialisation automatique de quota) ; réactivation d'un ancien parrain totalement inactif = **hors V1, N/A** — pas de mécanique de relance email spécifique au POC, à instruire en V1.5 avec le reste du CRM parrain |
+| Multi-utilisateurs (rôles/permissions/admin) | US-07 (rôle admin back-office), critères permissions dans chaque story — périmètre volontairement réduit à 2 opérateurs (T&E) en V1 |
+| Réactivation (inactif → retour) | Couvert par le critère 9 de US-02 (réinitialisation automatique de quota) ; réactivation d'un ancien parrain totalement inactif = **hors V1, N/A** — sans objet tant que le pool = T&E (toujours actifs par construction) ; à instruire en V2 avec le reste du CRM parrain |
 
 ---
 
 ## Definition of Ready (avant qu'une story entre en développement)
 
-1. Objets métier Enseigne/Offre, Parrain, Attribution/Conversion modélisés en base (product-vision.md §4).
-2. Fiche de conformité CGU produite pour l'enseigne concernée (legal-strategy.md §4/§7 point 6) — bloquant pour toute story touchant une enseigne réelle (US-01, US-02, US-07).
-3. Pages de conformité (CGU, confidentialité, divulgation) publiées (roadmap.md épic 1) avant toute mise en ligne publique de US-01/US-02/US-06.
+1. Objets métier Programme/Offre (schéma Emmanuel, 20 champs), Parrain (=T&E en V1), Attribution/Conversion modélisés en base (product-vision.md §4).
+2. Fiche de conformité produite pour le programme concerné (legal-strategy.md §4/§7 point 6) — bloquant pour toute story touchant un programme réel (US-01, US-02, US-07), en particulier les 6 programmes régulés (Trade Republic, Ramify, Finary, Spiko, Kraken, Meria).
+3. Pages de conformité (CGU, confidentialité, divulgation, mentions financières) publiées (roadmap.md épic 1) avant toute mise en ligne publique de US-01/US-02/US-06.
 4. Événements analytics de la story validés par @data-analyst (schéma de tracking-plan).
 5. Maquette validée par @ux pour toute story avec UI (US-01, US-02, US-05, US-06, US-07, US-09).
 
@@ -531,10 +539,10 @@ UI 5 états conformes ; endpoint testé sur 200/403/409/503 ; garde-fou de plaus
 
 | Agent proposé | Type | Rôle | Justification (US-XX) | Priorité |
 |---|---|---|---|---|
-| testeur-persona Léa | Testeur | Rejouer les 5 scénarios de US-01 et US-06 sur un environnement de recette avec de vrais prompts IA | US-01, US-06 : la promesse de fraîcheur/vérification n'a jamais été testée sur un vrai parcours de bout en bout | Haute |
-| testeur-persona Thomas (ou Emmanuel) | Testeur | Rejouer les scénarios de US-02/US-05/US-09 et challenger la protection anti-fraude perçue, y compris le déclenchement du garde-fou de plausibilité | US-02, US-05, US-09 : frustrations `[HYPOTHÈSE]` de brand-platform.md non confirmées par interview ; US-09 introduit un garde-fou anti-fraude jamais testé humainement (bascule silencieuse en vérification manuelle) | Haute |
-| testeur-client gestionnaire de programme | Testeur | Valider que le flux d'attribution généré par US-03 reste indiscernable d'un parrainage organique aux yeux de l'émetteur | US-03 : critère central du modèle marketplace, non testable par un E2E générique (brand-platform.md §2.2) | Haute |
-| auditeur conformité CGU par programme | Expertise métier | Produire et maintenir la fiche de conformité par enseigne (legal-strategy.md §4/§7 point 6) avant chaque intégration au catalogue | US-01, US-02, US-07 : bloquant en Definition of Ready, processus récurrent non couvert par un agent générique | Haute |
+| testeur-persona demandeur (Jeune actif/Entrepreneur) | Testeur | Rejouer les 5 scénarios de US-01 et US-06 sur un environnement de recette avec de vrais prompts IA | US-01, US-06 : la promesse de fraîcheur/vérification n'a jamais été testée sur un vrai parcours de bout en bout ; persona à recaler sur la définition finale de @creative-strategy | Haute |
+| testeur-persona T&E (Thomas et Emmanuel) | Testeur | Rejouer les scénarios de US-02/US-05/US-09 et challenger la protection anti-fraude perçue, y compris le déclenchement du garde-fou de plausibilité | US-02, US-05, US-09 : contrairement à la version précédente, T&E sont les vrais utilisateurs (pas un persona fictif) — le test est directement exécutable avec eux, priorité renforcée | Haute |
+| testeur-client gestionnaire de programme | Testeur | Valider que le flux d'attribution T&E reste indiscernable d'un parrainage organique aux yeux de l'émetteur, en particulier pour les programmes régulés (Trade Republic, Ramify, Finary, Spiko, Kraken, Meria) | US-03 : critère central du modèle même en cercle fermé, non testable par un E2E générique (brand-platform.md §2.2) | Haute |
+| auditeur conformité par programme | Expertise métier | Produire et maintenir la fiche de conformité par programme (legal-strategy.md §4/§7 point 6, à réévaluer en configuration cercle fermé) avant chaque activation au catalogue | US-01, US-02, US-07 : bloquant en Definition of Ready, processus récurrent non couvert par un agent générique, enjeu renforcé par l'inclusion des banques/fintech/crypto dès le V1 | Haute |
 
 ---
 
@@ -542,16 +550,16 @@ UI 5 états conformes ; endpoint testé sur 200/403/409/503 ; garde-fou de plaus
 
 - **G1** : 9 user stories + checklist de couverture + DoR/DoD présents, 0 section < 2 lignes, 0 `[TODO]`. PASS.
 - **G3** : bloc Handoff structuré présent en fin de document. PASS.
-- **G5** : personas Léa et Thomas (ou Emmanuel) identiques à brand-platform.md/project-context.md, Grep cohérent sur les deux noms (y compris dans US-09). PASS.
-- **G7** : 0 contradiction avec product-vision.md (mécanique de rotation, objets métier, statut "confirmée" de l'Attribution désormais rattaché à un déclencheur explicite via US-09), legal-strategy.md (fiche de conformité bloquante en DoR, divulgation en US-01), roadmap.md (épics et dépendances repris à l'identique). **Cohérence n°4 (bidirectionnelle avec tracking-plan.md) re-vérifiée après corrective** : les 2 events proposés par @data-analyst (`lien_redirection_suivie`, `attribution_confirmee`) sont désormais présents dans functional-specs.md avec une nomenclature snake_case identique et les mêmes propriétés (Grep effectué sur les deux noms d'event dans les deux fichiers, aucun écart). PASS.
+- **G5** : PARTIAL documenté — persona Parrain = Thomas (ou Emmanuel), identique à project-context.md CHOIX #2 (autorité). Persona demandeur : "Léa" conservée comme identifiant de continuité dans ce corrective (renommage non demandé dans le périmètre des 4 corrections, mandat explicite de @creative-strategy selon project-context.md CHOIX #2 point 4) — signalé, pas contourné silencieusement.
+- **G7** : 0 contradiction avec product-vision.md (mécanique d'arbitrage T&E, objets métier Programme/Offre au schéma Emmanuel), roadmap.md (épics et dépendances repris à l'identique, US-02 alignée sur l'épic "Catalogue des 9 offres réelles"). legal-strategy.md et brand-platform.md restent non refresh suite à CHOIX #2 (contradiction connue, signalée, hors mandat @product-manager de corriger). **Cohérence n°4 (bidirectionnelle avec tracking-plan.md) inchangée** : les events `lien_redirection_suivie` et `attribution_confirmee` restent identiques, non touchés par ce corrective. PASS pour ce document.
 - **G12** : chaque story a un JTBD verbe+objet+bénéfice, chaque critère est binaire (Given/When/Then), chaque DoD est vérifiable ; US-09 respecte la répartition minimale (3 happy path, 2 erreur, 2 cas limite, 1 permissions, 1 données existantes = 9 critères). PASS.
-- **G13** : 0 chiffre inventé ; les seuils non sourcés (plafond, fenêtre de fraîcheur, délai de re-tentatives, fenêtre de conversion 60 jours, seuil de plausibilité anti-fraude US-09) sont marqués `[À VALIDER]`/`[HYPOTHÈSE]`, jamais codés en dur avec une valeur fictive. PASS.
+- **G13** : 0 chiffre inventé ; les seuils non sourcés (plafond, fenêtre de fraîcheur, délai de re-tentatives, fenêtre de conversion 60 jours, seuil de plausibilité anti-fraude US-09) sont marqués `[À VALIDER]`/`[HYPOTHÈSE]`, jamais codés en dur avec une valeur fictive ; les 9 programmes, le schéma à 20 champs et les personas "Jeune actif"/"Entrepreneur" sont repris tels quels de project-context.md. PASS.
 - **G15** : Grep effectué sur les patterns interdits, absents. Seuls `[À VALIDER]` et `[HYPOTHÈSE]` subsistent (annotations autorisées). PASS.
-- **G17** : la combinaison rotation FIFO pondérée + fiche de conformité bloquante par enseigne + divulgation embarquée dans le payload + garde-fou de plausibilité déclarative (US-09, confirmations ≤ redirections suivies) n'est reproductible par un concurrent sans adapter à son propre modèle de plafonds et de commission différée. PASS.
+- **G17** : la combinaison arbitrage à 2 identités connues + fiche de conformité bloquante par programme + divulgation embarquée dans le payload + garde-fou de plausibilité déclarative (US-09) n'est reproductible par un concurrent sans adapter à son propre modèle de plafonds, de cercle fermé et de commission différée. PASS.
 - **G_PROOF** : voir bloc `Vérifié :` ci-dessous (étendu à la chaîne complète jusqu'à la confirmation).
 
 **Vérifié :** dérouler US-01 → US-03 → US-04 → US-09 sur le cas Trade Republic, du prompt IA à la conversion confirmée (chaîne complète jusqu'au NSM).
-`Read docs/product/product-vision.md` (bloc Vérifié) + `Read docs/analytics/tracking-plan.md` (bloc Vérifié, lignes 157-158) : Léa demande "code de parrainage Trade Republic" à un assistant IA → clic sur la fiche Trade Republic (US-01 critère 1-3) → le moteur (US-03 critère 1) sélectionne le parrain le moins récemment servi dans le pool Trade Republic → une Attribution est créée avec canal `page_web` et un lien `https://{domaine}/r/{token}` (US-01 payload) → Léa clique sur ce lien, l'event `lien_redirection_suivie` est journalisé et elle est redirigée en 301 vers Trade Republic (US-01 critère 3 révisé) → si l'offre Trade Republic venait à atteindre son plafond total ou expirer, US-04 critère 1/3 la retire automatiquement et bascule son statut en "en attente de parrain", ce que US-01 affiche alors en état "vide" → Léa souscrit chez Trade Republic, Thomas (ou Emmanuel) (le parrain attribué) constate la souscription et confirme la conversion depuis son tableau de bord (US-09 critère 1) → l'event `attribution_confirmee` est émis, le garde-fou de plausibilité (US-09 critère 2/7) valide la déclaration car cohérente avec ses redirections suivies → l'Attribution passe au statut "confirmée" et alimente le PCA-IA du mois de confirmation (kpi-framework.md §1.3). Les quatre stories s'enchaînent sans étape manquante ni contradiction de statut, et les deux events précédemment orphelins (`lien_redirection_suivie`, `attribution_confirmee`) ont désormais chacun un déclencheur produit documenté.
+`Read project-context.md` (BASE RÉELLE D'EMMANUEL, confirme Trade Republic comme l'un des 9 programmes réels) : un demandeur (jeune actif) demande "code de parrainage Trade Republic" à un assistant IA → clic sur la fiche Trade Republic (US-01 critère 1-3) → le moteur d'arbitrage (US-03 critère 1) sélectionne, entre Thomas et Emmanuel, celui qui détient un lien Trade Republic actif et non au plafond → une Attribution est créée avec canal `page_web` et un lien `https://{domaine}/r/{token}` (US-01 payload) → le demandeur clique sur ce lien, l'event `lien_redirection_suivie` est journalisé et il est redirigé en 301 vers Trade Republic (US-01 critère 3 révisé) → si l'offre Trade Republic venait à atteindre son plafond total ou expirer (ex. ni Thomas ni Emmanuel n'ont plus de lien éligible), US-04 critère 1/3 la retire automatiquement et bascule son statut en "en attente de parrain", ce que US-01 affiche alors en état "vide" → le demandeur souscrit chez Trade Republic, le parrain attribué (Thomas ou Emmanuel) constate la souscription et confirme la conversion depuis son tableau de bord (US-09 critère 1) → l'event `attribution_confirmee` est émis, le garde-fou de plausibilité (US-09 critère 2/7) valide la déclaration car cohérente avec ses redirections suivies → l'Attribution passe au statut "confirmée" et alimente le PCA-IA du mois de confirmation (kpi-framework.md §1.3). Les quatre stories s'enchaînent sans étape manquante ni contradiction de statut.
 
 ---
 
@@ -559,16 +567,18 @@ UI 5 états conformes ; endpoint testé sur 200/403/409/503 ; garde-fou de plaus
 
 - `[À VALIDER]` Seuil exact de re-tentatives avant de marquer un lien "invalide" (US-04 critère 2) et fenêtre exacte de fraîcheur (US-04 critère 7) : à chiffrer par @data-analyst/@ia.
 - `[HYPOTHÈSE]` Seuil de 3 signalements distincts avant priorisation de re-vérification (US-06 critère 2) : à valider par @data-analyst sur les premières données réelles.
-- `[HYPOTHÈSE]` Délai de 5 minutes pour annuler une validation back-office par erreur (US-07 critère 7) et délai de traitement RGPD de 30 jours (US-08 critère 9) : à valider par @legal.
+- `[HYPOTHÈSE]` Délai de traitement RGPD de 30 jours (US-08 critère 9) : à valider par @legal.
 - `[À VALIDER par @fullstack/@ux]` Mécanisme exact d'authentification par lien email pour Thomas (ou Emmanuel) (US-02, US-05, US-09) : pas de mot de passe au POC, à spécifier techniquement avant développement.
-- `[HYPOTHÈSE]` Fenêtre de conversion de 60 jours entre `date_generation` et `date_confirmation` (US-09 critère 9, tracking-plan.md §2.5) : à valider par @product-manager/@legal selon les délais réels de validation de prime par enseigne.
+- `[HYPOTHÈSE]` Fenêtre de conversion de 60 jours entre `date_generation` et `date_confirmation` (US-09 critère 9, tracking-plan.md §2.5) : à valider par @product-manager/@legal selon les délais réels de validation de prime par programme.
 - `[HYPOTHÈSE]` Seuil de plausibilité anti-fraude (confirmations ≤ redirections suivies sur fenêtre de 30 jours glissants, US-09 critère 7, tracking-plan.md §2.7) : à chiffrer par @data-analyst sur les premières données réelles.
+- `[À VALIDER]` legal-strategy.md doit être réévalué par @legal en configuration cercle fermé T&E (project-context.md CHOIX #2 le signale explicitement) avant que US-01/US-02/US-07 puissent être considérées comme définitivement calibrées, en particulier pour les 6 programmes régulés.
+- `[HYPOTHÈSE]` Persona demandeur : "Léa" conservée comme identifiant de continuité, en attente du persona définitif "Jeune actif"/"Entrepreneur" que @creative-strategy doit produire (project-context.md CHOIX #2 point 4).
 
 ---
 **Handoff → @ux, @design, @data-analyst, @fullstack, @qa**
 - Fichiers produits : `/home/user/MCP/docs/product/functional-specs.md`
-- Décisions prises : 9 user stories (4 critiques full template + 5 de couverture, triage par complexité appliqué aux stories backend US-03/US-04) ; checklist de couverture du parcours traitée avec exclusion justifiée (paiement SaaS N/A, réactivation hors V1) ; DoR/DoD définis pour développement sans question. **Corrective 2026-07-20T01:00** : ajout de US-09 (confirmation de conversion par le parrain, garde-fou de plausibilité anti-fraude) et intégration de l'endpoint `GET /r/{token}` + event `lien_redirection_suivie` dans US-01, en réponse au gap remonté par @data-analyst (tracking-plan.md) — les 2 events du tracking plan ont désormais leur équivalent exact dans les specs (cohérence n°4 PASS dans les deux sens).
-- Points d'attention : fiche de conformité par enseigne = prérequis bloquant en Definition of Ready (US-01, US-02, US-07) ; plusieurs seuils numériques `[À VALIDER]`/`[HYPOTHÈSE]` ne doivent jamais être codés en dur avec une valeur inventée, ils doivent rester configurables jusqu'à validation par @legal/@data-analyst, y compris la fenêtre de conversion de 60 jours et le seuil de plausibilité anti-fraude (US-09) ; le garde-fou déclaratif de US-09 n'est qu'une mitigation, pas une preuve légale (à ne jamais présenter comme infaillible en communication externe).
-- Agents spécialisés recommandés : testeur-persona Léa, testeur-persona Thomas (ou Emmanuel) (scénarios étendus à US-09), testeur-client gestionnaire de programme, auditeur conformité CGU par programme (voir tableau dédié).
-- **Actions infra requises** : Aucune action Cloudflare/GitHub requise à ce stade (livrable de specs, aucun code produit). Actions futures signalées pour @fullstack/@infrastructure au moment de l'implémentation (rate limits, mécanisme d'authentification par lien email, verrouillage transactionnel du moteur d'attribution, endpoint `GET /r/{token}` en priorité haute cf. tracking-plan.md Handoff).
+- Décisions prises : 9 user stories recalibrées cercle fermé T&E ; **US-02 refondue** (gestion interne du catalogue par T&E, remplace l'onboarding parrain externe déplacé en V2 — roadmap.md section 4) ; **US-07 refondue** (validation de conformité avant activation d'une offre, remplace la validation de soumission tierce) ; personas Parrain désormais nommément Thomas/Emmanuel ; toutes les enseignes d'exemple remplacées par des programmes réels de la base Emmanuel (Trade Republic, Qonto, Ramify) ; checklist de couverture du parcours mise à jour (onboarding parrain externe explicitement V2) ; DoR/DoD alignés sur le schéma Emmanuel.
+- Points d'attention : fiche de conformité par programme = prérequis bloquant en Definition of Ready (US-01, US-02, US-07), enjeu renforcé par l'inclusion des banques/fintech/crypto dès le V1 ; plusieurs seuils numériques `[À VALIDER]`/`[HYPOTHÈSE]` ne doivent jamais être codés en dur ; persona demandeur ("Léa") en attente du renommage définitif par @creative-strategy, non traité dans ce corrective (hors périmètre des 4 corrections demandées) ; legal-strategy.md et brand-platform.md restent à refresh suite à CHOIX #2 (signalé, pas corrigé ici).
+- Agents spécialisés recommandés : testeur-persona demandeur (Jeune actif/Entrepreneur), testeur-persona T&E, testeur-client gestionnaire de programme, auditeur conformité par programme (voir tableau dédié).
+- **Actions infra requises** : Aucune action Cloudflare/GitHub requise à ce stade (livrable de specs, aucun code produit). Actions futures signalées pour @fullstack/@infrastructure au moment de l'implémentation (rate limits, mécanisme d'authentification par lien email, verrouillage transactionnel du moteur d'arbitrage, endpoint `GET /r/{token}` en priorité haute cf. tracking-plan.md Handoff, import initial des 9 offres depuis `data/base-parrainage-emmanuel-v3.xlsx`).
 ---
