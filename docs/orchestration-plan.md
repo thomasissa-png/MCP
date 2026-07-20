@@ -26,7 +26,7 @@
 |---|---|---|
 | 0 — Fondations | creative-strategy → product-manager → data-analyst ; legal ‖ | **COMPLETE** (refresh corrections Thomas intégré : Parrainly, banques/fintech incluses, V1 cercle fermé, personas A1/A2 fintech, schéma Emmanuel ; alignment C7 : 0 Léa/EDF actif ; 9/9 gates/livrable) |
 | 0b — Agents custom | @agent-factory si specs le recommandent | à évaluer |
-| 1 — Expérience | ux → design ; copywriter ‖ | **EN COURS — vague A : @ux + @copywriter** (@design en vague B) |
+| 1 — Expérience | ux → design ; copywriter ‖ | **COMPLETE** (@ux, @copywriter, @design 9/9 gates) + checkpoint specs @reviewer = GO CONDITIONNEL (0 P0, 3 P1) |
 | 2 — Développement | infrastructure → fullstack + ia → ux review → qa → infra | à venir |
 | 3 — Contenu | copywriter → seo + geo | à venir (critique) |
 | 4 — Acquisition | growth + social ; sales-enablement | à venir |
@@ -46,11 +46,19 @@
 | 2026-07-20 | 1 | @copywriter | docs/copy ×3 (voix, page-offre, homepage) | 9/9 PASS | Mots interdits classement/rendement ; fiche Trade Republic auto-auditée |
 | 2026-07-20 | 1 | @orchestrator | data/base-parrainage.json + programmes.csv + lessons-learned.md | OK | Résout L1 (xlsx binaire illisible par agents) |
 | 2026-07-20 | 1 | @ux | docs/ux ×3 (IA, flows, wireframes) | 9/9 PASS | URL mono-offre + JSON miroir ; 4 parcours ; page-offre 10 zones |
-| 2026-07-20 | 1 | @design (en cours) | design-tokens, design-system, page-compositions | — | Vague B lancée |
+| 2026-07-20 | 1 | @design | design-tokens, design-system, page-compositions | 9/9 PASS | Palette anti-cliché (cobalt/vérifié-teal/risque-ambre), carte-offre 5 états, dark mode AA |
+| 2026-07-20 | 1→2 | @reviewer | checkpoint-specs-phase1.md | GO CONDITIONNEL | 0 P0 ; 3 P1 (auth parrain, resync analytics=FAIL, textes légaux) ; socle demandeur codeable |
 
 ## Reprise (multi-sessions)
 Commande : « Lis project-context.md et docs/orchestration-plan.md, continue où on s'est arrêté. »
-Phase en cours : **1 — Expérience, EN COURS.** Vague A lancée : @ux + @copywriter (@design en vague B après @ux).
-Checkpoint Phase 0 validé par Thomas (corrections : Parrainly, banques incluses, V1 cercle fermé, base réelle Emmanuel).
-Prochaine action : à leur retour → @design (vague B), puis checkpoint specs (@reviewer) avant Phase 2.
-Points restant à trancher par Thomas (non bloquants pour la Phase 1) : plafonds de parrainage par programme (via champ `conditions`), vérification CGU des 9 programmes avant mise en ligne réelle, opportunité du test de distribution H1.
+Phase en cours : **1 COMPLETE → prête pour PHASE 2 (Développement).** Checkpoint specs @reviewer = GO CONDITIONNEL (`docs/reviews/checkpoint-specs-phase1.md`).
+
+### À FAIRE EN PRIORITÉ au démarrage de la session Phase 2 (dans l'ordre) :
+1. **P1-b (resync analytics — seul FAIL de gate)** : relancer @data-analyst pour aligner `docs/analytics/kpi-framework.md` + `tracking-plan.md` sur functional-specs actuel (events US-02/US-07 à jour : `offre_mise_a_jour`, `offre_validee_conformite`… ; retirer `lien_soumis`/`soumission_validee` périmés ; persona « Karim » → Thomas & Emmanuel cercle fermé). Puis re-vérif @reviewer ciblée C4/C7/G7.
+2. **Phase 2 — @infrastructure** (setup : squelette Next.js, env, CI/CD, DB D1/Neon) → **@fullstack + @ia**. Ordre @fullstack donné par @reviewer (checkpoint-specs-phase1.md §d) : (a) modèle 3 objets + table `attribution` ; (b) import des 9 offres depuis `data/base-parrainage.json` (PAS le xlsx) ; (c) `GET /r/{token}` ; (d) moteur d'arbitrage US-03 + job fraîcheur US-04 ; (e) pages-offre `/offres/{slug}` + accueil/catégories ; (f) Tailwind depuis `design-tokens.json` ; (g) coquilles conformité.
+3. **Boucle visuelle @fullstack OBLIGATOIRE** : screenshots Playwright 3 devices comparés à `docs/design/page-compositions.md`, sauvegarde `tests/screenshots/` AVANT @qa (gate G26).
+4. **P1-a (auth parrain magic-link)** : à spécifier par @fullstack+@ux avant de coder l'espace parrain (US-02/05/09). Ne PAS coder l'espace parrain ni le câblage analytics des events parrain avant P1-a + P1-b.
+5. **P1-c (@legal)** : produire les 11 textes juridiques + fiches de conformité CGU par programme + statut PSCA Kraken/Meria. Bloque la MISE EN LIGNE publique, pas le code.
+
+Points Thomas (non bloquants dev) : plafonds de parrainage par programme (champ `conditions`), vérif CGU des 9 programmes avant mise en ligne réelle, opportunité du test de distribution H1 (gratuit).
+Commande de reprise : « Lis project-context.md et docs/orchestration-plan.md, continue où on s'est arrêté. »
