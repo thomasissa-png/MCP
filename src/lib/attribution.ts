@@ -112,11 +112,9 @@ export function generateAttribution(input: GenerateAttributionInput): GenerateAt
         .all();
 
       if (pool.length === 0) {
-        // Pool vide : l'offre bascule "en attente de parrain" (US-03 crit.4 -> US-04).
-        tx.update(offre)
-          .set({ statut: 'en_attente_parrain', updatedAt: new Date() })
-          .where(eq(offre.id, input.offreId))
-          .run();
+        // Pool vide (US-03 crit.4 -> US-04). NE PAS basculer l'offre ici : le throw ci-dessous
+        // ROLLBACK la transaction (better-sqlite3), donc tout update fait dans ce bloc serait annule.
+        // La bascule en `en_attente_parrain` est effectuee APRES coup, dans le catch (hors transaction).
         throw new SocleError('pool_vide');
       }
 
@@ -170,6 +168,15 @@ export function generateAttribution(input: GenerateAttributionInput): GenerateAt
     return result;
   } catch (err) {
     const code = err instanceof SocleError ? err.code : 'moteur_indisponible';
+    // Pool vide : l'offre bascule "en attente de parrain" HORS transaction (celle-ci a rollback).
+    // REGRESSION: bascule en_attente_parrain perdue car ecrite dans la transaction qui throw
+    // (better-sqlite3 rollback) — fixe le 2026-07-20. Test: tests/unit/attribution.test.ts.
+    if (code === 'pool_vide') {
+      db.update(offre)
+        .set({ statut: 'en_attente_parrain', updatedAt: new Date() })
+        .where(eq(offre.id, input.offreId))
+        .run();
+    }
     emitEvent('attribution_moteur_execute', {
       offre_id: input.offreId,
       resultat: code,
