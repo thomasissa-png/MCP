@@ -116,7 +116,20 @@ Chaque code porte des champs de fraîcheur : `code`, `marchand`, `type` (promo /
 
 ## 4. Effort technique réaliste : POC vs V1
 
-[SECTION_4]
+Calibration équipe 100 % IA (2 humains T&E pour valider) : la "complexité" n'est pas la contrainte, c'est l'**enchaînement des dépendances** qui structure l'effort. Estimations en jours-équipe IA.
+
+| Brique | POC | V1 | Note |
+|---|---|---|---|
+| Source de vérité | Google Sheet (fait par Emmanuel) | Migration → D1/Neon + schéma fraîcheur | POC = 0 dev |
+| Génération site GEO/AEO | Générateur statique + schema.org (ItemList/Offer/FAQPage) — **2-3 j** | Templates par marchand, sitemap IA, contenu enrichi — **1 sem** | Canal grand public prioritaire |
+| Flux/API JSON public | Export `codes.json` via Action — **1 j** | API cache CDN + endpoints par marchand — **2-3 j** | Actif pivot |
+| Vérification fraîcheur | Règles dates + check liens (cron) — **1-2 j** | Dashboard + signalements + alertes — **3-5 j** | §3 |
+| Attribution conversions | (hors POC ou minimal `/go/{code}` + log) — **0-1 j** | Redirecteur traçant + analytics + réconciliation parrainage — **1 sem** | KPI North Star du contexte |
+| Serveur MCP | **Non** (repoussé) | Façade sur l'API + publication Registry — **2-4 j** | Faible coût car API existe |
+| App/Plugin ChatGPT | Non | Build + soumission directory — **3-5 j** | Segment "install volontaire" |
+| **Total** | **~1 à 2 semaines** | **~4 à 8 semaines** | dépend de l'attribution |
+
+**Chemin critique POC** : Sheet rempli → générateur → schema.org en ligne → 1er test réel "une IA en browsing cite-t-elle notre page ?". C'est le seul test qui valide l'hypothèse de distribution. Le MCP ne fait pas partie du chemin critique du POC.
 
 ---
 
