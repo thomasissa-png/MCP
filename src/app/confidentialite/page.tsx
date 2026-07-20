@@ -8,6 +8,8 @@ import { absUrl } from '@/lib/ai/site';
 
 export const metadata: Metadata = {
   title: 'Politique de confidentialité',
+  description:
+    'Politique de confidentialité RGPD de Parrainly : données collectées, finalités, base légale, durées de conservation et vos droits.',
   alternates: { canonical: absUrl('/confidentialite') },
 };
 
@@ -22,7 +24,7 @@ export default function ConfidentialitePage() {
         <p>
           {LEGAL_EDITOR_NAME
             ? `Parrainly est édité par ${LEGAL_EDITOR_NAME}.`
-            : "Parrainly est édité par l'éditeur du site, identité définitive à préciser avant la mise en ligne publique."}{' '}
+            : "Le responsable de traitement est l'éditeur de ce site, dont l'identité définitive sera précisée avant la mise en ligne publique."}{' '}
           Le responsable de traitement des données collectées sur le site est cette même entité, dont
           l&apos;identité complète figure dans les{' '}
           <Link href="/mentions-legales" className="text-accent underline">Mentions légales</Link>.

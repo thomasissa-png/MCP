@@ -125,10 +125,14 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Focus-visible AA obligatoire partout (design-system.md §5), jamais outline:none sans remplacement. */
+  /* Focus-visible AA obligatoire partout (design-system.md §5), jamais outline:none sans remplacement.
+   * Double indicateur (design round 2b, item 7) : un liseré de la couleur de fond hugge l'élément
+   * (box-shadow spread) PUIS l'anneau focus. Sur un CTA/lien à fond accent, ce liseré crée un halo
+   * contrasté qui sépare l'accent de l'anneau — WCAG 2.4.7 + 1.4.11 (3:1) garantis sur tout fond. */
   :focus-visible {
     outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--color-background-primary);
   }
 
   @media (prefers-reduced-motion: reduce) {

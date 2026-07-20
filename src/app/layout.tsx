@@ -14,9 +14,11 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   applicationName: 'Parrainly',
+  // SVG déclaré ici (navigateurs modernes) ; le raster PNG (icon.tsx), l'apple-touch-icon
+  // (apple-icon.tsx) et le fallback favicon.ico (src/app/favicon.ico) sont ajoutés par les
+  // conventions de fichiers App Router — plus aucun chemin d'icône par défaut en 404.
   icons: {
     icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
-    apple: [{ url: '/favicon.svg' }],
   },
   manifest: '/site.webmanifest',
   openGraph: {

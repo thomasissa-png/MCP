@@ -7,6 +7,8 @@ import { absUrl } from '@/lib/ai/site';
 
 export const metadata: Metadata = {
   title: "Conditions d'utilisation",
+  description:
+    "Conditions générales d'utilisation de Parrainly : nature du site, catalogue de fiches de parrainage tiers et règles d'accès.",
   alternates: { canonical: absUrl('/cgu') },
 };
 

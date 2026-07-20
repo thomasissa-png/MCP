@@ -21,13 +21,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // (loading.tsx global), ce qui fixe le vrai statut HTTP 404 avant l'envoi des en-têtes.
   if (!meta) notFound();
   const canonical = absUrl(`/categories/${slug}`);
-  // Title = mot-clé principal EXACT de keyword-map §3 (source unique CATEGORY_META), pas de format générique.
+  // Title = mot-clé principal EXACT de keyword-map §3 (source unique CATEGORY_META), casse propre :
+  // on capitalise l'initiale pour ne pas rendre une minuscule brute en SERP/onglet (seo round 2b, item 2).
+  // Le mot-clé « parrainage » reste présent verbatim ; le H1 (meta.h1) est déjà en casse propre.
+  const title = meta.motCle.charAt(0).toUpperCase() + meta.motCle.slice(1);
   return {
-    title: meta.motCle,
+    title,
     description: meta.description,
     alternates: { canonical },
-    openGraph: { title: `${meta.motCle} · Parrainly`, description: meta.description, url: canonical, type: 'website' },
-    twitter: { title: `${meta.motCle} · Parrainly`, description: meta.description },
+    openGraph: { title: `${title} · Parrainly`, description: meta.description, url: canonical, type: 'website' },
+    twitter: { title: `${title} · Parrainly`, description: meta.description },
   };
 }
 

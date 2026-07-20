@@ -35,11 +35,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const canonical = absUrl(`/offres/${slug}`);
   // Title porte le mot-clé EXACT « parrainage {enseigne} » de keyword-map §2 (contigu, cohérent avec le H1).
   const title = `Parrainage ${offre.nomProgramme} vérifié`;
-  const description = offre.descriptionCourte ?? undefined;
+  // Description : mot-clé « Parrainage {enseigne} » en tête (keyword-map §2), puis descriptionCourte.
+  // Tronquée à < 160 caractères pour rester exploitable en SERP.
+  const lead = `Parrainage ${offre.nomProgramme} : code et avantages vérifiés à date.`;
+  const description = [lead, offre.descriptionCourte].filter(Boolean).join(' ').slice(0, 158).trimEnd();
+  // Miroir JSON de l'offre exposé en <head> (ux round 2b, item 5) : aide un agent IA à trouver la
+  // donnée structurée depuis la page HTML sans deviner l'endpoint.
+  const jsonMirror = absUrl(`/api/v1/offres/${offre.id}`);
   return {
     title,
     description,
-    alternates: { canonical },
+    alternates: { canonical, types: { 'application/json': jsonMirror } },
     openGraph: { title: `${title} · Parrainly`, description, url: canonical, type: 'website' },
     twitter: { title: `${title} · Parrainly`, description },
   };
@@ -92,7 +98,7 @@ export default async function OffrePage({ params }: { params: Promise<{ slug: st
       <section className="animate-fade-up mt-lg grid grid-cols-1 gap-lg lg:grid-cols-[7fr_3fr]">
         <div className="flex flex-col gap-sm">
           {/* H1 porte le mot-clé exact « parrainage {enseigne} » (keyword-map §2, audit §2.4). */}
-          <h1 className="text-xl font-bold text-content-primary md:text-2xl">Parrainage {offre.nomProgramme} vérifié</h1>
+          <h1 className="text-2xl font-bold text-content-primary md:text-3xl">Parrainage {offre.nomProgramme} vérifié</h1>
           <div className="flex flex-wrap items-center gap-xs">
             <CategoryBadge categorie={offre.categorie} />
             <FreshnessBadge variant={servable ? 'verified' : 'stale'} date={offre.dateVerification} />

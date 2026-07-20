@@ -7,6 +7,8 @@ import { absUrl } from '@/lib/ai/site';
 
 export const metadata: Metadata = {
   title: 'Mentions légales',
+  description:
+    "Mentions légales de Parrainly : éditeur, directeur de la publication et hébergeur du site, conformément à l'article 6-III de la LCEN.",
   alternates: { canonical: absUrl('/mentions-legales') },
 };
 
@@ -22,7 +24,7 @@ export default function MentionsLegalesPage() {
         <p>
           {LEGAL_EDITOR_NAME
             ? `Le site Parrainly est édité par ${LEGAL_EDITOR_NAME}.`
-            : "Le site Parrainly est édité par l'éditeur du site, identité définitive à préciser avant la mise en ligne publique."}{' '}
+            : "Le site Parrainly est édité en cercle fermé ; l'identité définitive de l'éditeur sera précisée avant la mise en ligne publique."}{' '}
           Le site étant à visée commerciale (perception de commissions de parrainage), une déclaration
           d&apos;activité est requise. Les coordonnées complètes de l&apos;éditeur sont précisées lors de la mise
           en ligne publique. Pour toute question, contactez-nous via <LegalContact />.
@@ -33,7 +35,7 @@ export default function MentionsLegalesPage() {
         <p>
           {LEGAL_PUBLICATION_DIRECTOR
             ? `La direction de la publication est assurée par ${LEGAL_PUBLICATION_DIRECTOR}.`
-            : "La direction de la publication est assurée par l'éditeur du site."}
+            : "La direction de la publication est assurée par l'éditeur de ce site."}
         </p>
       </section>
       <section>
