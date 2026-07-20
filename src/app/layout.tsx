@@ -27,6 +27,18 @@ export const metadata: Metadata = {
       'Un registre qui vérifie les liens de parrainage fintech avant de les recommander, avec une date de contrôle sur chaque offre.',
   },
   twitter: { card: 'summary_large_image' },
+  // Verification de propriete pour Google Search Console et Bing Webmaster Tools.
+  // Sur un sous-domaine *.workers.dev la verification DNS est impossible : on passe par
+  // la balise meta. Poser les tokens en secret/var (GOOGLE_SITE_VERIFICATION,
+  // BING_SITE_VERIFICATION) puis redeployer suffit a verifier la propriete, sans changer le code.
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.BING_SITE_VERIFICATION
+      ? { other: { 'msvalidate.01': process.env.BING_SITE_VERIFICATION } }
+      : {}),
+  },
 };
 
 export const viewport: Viewport = {
