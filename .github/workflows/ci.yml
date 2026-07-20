@@ -62,6 +62,8 @@ jobs:
       - name: Tests E2E (Playwright)
         # webServer prepare la DB E2E (migrations + seed) PUIS demarre next start (port dynamique,
         # teardown automatique). Aucun seed manuel a l'exterieur : tout est encapsule dans le webServer.
+        # Couvre tout tests/e2e/ : US-01/02/05/06/07/09, auth, securite /internal fail-closed, et a11y
+        # (axe-core via @axe-core/playwright, installe par `npm ci` — echec si violation serious/critical).
         run: npm run test:e2e
 
       - name: Archiver le rapport E2E en cas d'echec

@@ -1,4 +1,4 @@
-<!-- Version: 2026-07-20 — @qa — Phase 2 : couverture de tests du socle + espace parrain -->
+<!-- Version: 2026-07-20 (v2) — @qa — Phase 2 : + E2E US-02/05/07, a11y axe-core, screenshots etats CTA -->
 
 # Matrice de traçabilité des tests — Parrainly
 
@@ -17,6 +17,17 @@ Statut `[LIVE]` = exécuté avec serveur/DB réels (E2E) ou logique réelle sur 
 |----|----------|----------------------|------|--------|
 | US-01 | Consulter une offre + lien attribué + `/r/{token}` 301 | `tests/e2e/us-01-lien-attribue.spec.ts:11` | E2E | [LIVE] PASS |
 | US-01 | Token inconnu → 307 `/lien-invalide` | `tests/e2e/us-01-lien-attribue.spec.ts:51` | E2E | [LIVE] PASS |
+| US-02 | Édition offre → persistance + re-vérification datée + event `offre_mise_a_jour` | `tests/e2e/us-02-catalogue.spec.ts:24` | E2E | [LIVE] PASS |
+| US-02 | Garde-fou plafond : activation sans plafond → 400 `plafond_manquant` | `tests/e2e/us-02-catalogue.spec.ts:53` | E2E | [LIVE] PASS |
+| US-02 | Réactivation suspendu→actif → event `offre_activee` + persistance | `tests/e2e/us-02-catalogue.spec.ts:62` | E2E | [LIVE] PASS |
+| US-02 | Édition sans session → 401 | `tests/e2e/us-02-catalogue.spec.ts:87` | E2E | [LIVE] PASS |
+| US-05 | Dashboard authentifié : carte prime + liste des liens | `tests/e2e/us-05-dashboard.spec.ts:11` | E2E | [LIVE] PASS |
+| US-05 | Accès sans session → redirection connexion (returnTo préservé) | `tests/e2e/us-05-dashboard.spec.ts:34` | E2E | [LIVE] PASS |
+| US-07 | Valider sans référence fiche → 400 `reference_fiche_manquante` | `tests/e2e/us-07-validation.spec.ts:29` | E2E | [LIVE] PASS |
+| US-07 | Bloquer → `en_attente_verification` + event `offre_bloquee_conformite` | `tests/e2e/us-07-validation.spec.ts:38` | E2E | [LIVE] PASS |
+| US-07 | Valider → `actif` + event `offre_validee_conformite` | `tests/e2e/us-07-validation.spec.ts:51` | E2E | [LIVE] PASS |
+| US-07 | Décision inconnue → 400 ; offre inconnue → 404 ; sans session → 401 | `tests/e2e/us-07-validation.spec.ts:67` | E2E | [LIVE] PASS |
+| A11y | Accueil / page-offre / dashboard : 0 violation serious/critical (axe-core) | `tests/e2e/a11y.spec.ts:33` | E2E | [LIVE] PASS |
 | US-03 | Moteur d'arbitrage : FIFO déterministe, départage stable | `tests/unit/attribution.test.ts:24` | Unit | [LIVE] PASS |
 | US-03 | Plafond, exclusion, quota exact, suspendu, lien invalide | `tests/unit/attribution.test.ts:60` | Unit | [LIVE] PASS |
 | US-03 | Offre indisponible / pool vide → `en_attente_parrain` | `tests/unit/attribution.test.ts:104` | Unit | [LIVE] PASS |
@@ -38,14 +49,18 @@ Statut `[LIVE]` = exécuté avec serveur/DB réels (E2E) ou logique réelle sur 
 
 | US | État | Raison / recommandation |
 |----|------|-------------------------|
-| US-02 | Non couverte (E2E) | Gestion catalogue back-office : logique PATCH/garde-fou plafond à couvrir en E2E prochaine vague. |
-| US-05 | Partielle | Accès dashboard authentifié validé via l'E2E auth ; contenu (prime, quotas, 403 cross-parrain UI) à étoffer. |
-| US-07 | Non couverte | Validation de conformité (référence fiche obligatoire, 403 non-admin) : à ajouter. |
 | US-08 | Non couverte | Droits RGPD : formulaire public existant, parcours à tester. |
+
+## Boucle visuelle — états du composant `OfferCta`
+
+- `scripts/screenshots.mjs` : accueil + page-offre (états `default`), 3 devices → `tests/screenshots/`.
+- `scripts/screenshots-cta.mjs` (nouveau) : états **`empty`** (attribution 404) et **`error`** (attribution 500)
+  du composant `OfferCta`, forcés par interception réseau (`route.fulfill`), 3 devices, `reducedMotion` →
+  `tests/screenshots/cta-{empty,error}-{mobile,tablet,desktop}.png`. Lus visuellement (critères Thomas) : PASS.
 
 ## Enrichissements recommandés (non bloquants pour cette vague)
 
-- axe-core dans chaque E2E (accessibilité WCAG 2.2 AA) — nécessite `@axe-core/playwright`.
 - Test de concurrence réel du verrouillage transactionnel (US-03 crit.6) : SQLite sérialise les écritures,
   couvert indirectement par le plafond exact unitaire ; un test 2 requêtes simultanées reste à ajouter.
 - Régression visuelle pixel-diff sur les baselines `tests/screenshots/` (produites par @fullstack).
+- Étendre axe-core aux parcours clavier dédiés (ordre de focus, piège) par écran.
