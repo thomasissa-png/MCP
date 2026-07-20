@@ -56,3 +56,69 @@ Grep "url_parrainage" src/lib/ai     -> 1 hit = commentaire de garde (jamais sé
 
 ---
 **Handoff → @orchestrator** — GO Phase 3 / NO-GO mise en ligne. Itérations à lancer par priorité (voir scorecard). Anti-abus de l'attribution publique = risque d'épuisement du quota T&E (fondation du modèle de rotation), à traiter.
+
+---
+---
+
+<!-- Version: 2026-07-20 (soir) — @reviewer — RE-VÉRIFICATION FINALE des itérations 10/10 -->
+
+# Addendum — Re-vérification finale (2026-07-20)
+
+## Verdict global re-noté : 9,7/10 — GO Phase 3 confirmé. Les 3 blockers de mise en ligne sont levés.
+
+Re-vérification par Read/Grep réels des fichiers cités (pas sur parole). Résultat : 7 points sur 8 confirmés 10/10, code réellement en place. Un seul résidu réel : les screenshots de la page-offre Trade Republic sont PÉRIMÉS (ils précèdent le correctif Point 4, donc n'affichent pas le bandeau de risque que le code rend pourtant). Plus une coquille cosmétique légale non bloquante.
+
+## Tableau des notes avant -> après
+
+| # | Point | Avant | Après | Confirmé 10/10 ? | Résidu précis |
+|---|---|---|---|---|---|
+| 1 | Analytics | 7/10 | 10/10 | OUI | — |
+| 2 | Légal | 7/10 | 10/10 | OUI (blockers levés) | Coquille cosmétique : bannière `LegalShell.tsx:14` évoque encore « champs entre crochets restent à compléter » alors qu'aucun crochet n'est rendu (replis factuels). Reformuler ou retirer la clause « entre crochets ». Non bloquant. |
+| 3 | Sécurité backend | 8/10 | 10/10 | OUI | — |
+| 4 | Frontend | 8/10 | 10/10 | OUI (code) | Code correct : Trade Republic déclenche le bandeau via sous-catégorie « courtage ». La preuve visuelle est portée par le Point 5 (screenshots périmés). |
+| 5 | QA | 8/10 | 9/10 | NON | Screenshots `page-offre-trade-republic-*.png` (mobile ET desktop) PÉRIMÉS : ils ne montrent pas le bandeau ambre de risque que le code actuel rend en Zone 5. À régénérer pour prouver visuellement le correctif Point 4. Fichiers de test E2E US-02/05/07 + a11y + sécurité présents. |
+| 6 | AEO | 9/10 | 10/10 | OUI | — |
+| 7 | Auth + parrain | 9/10 | 10/10 | OUI | — |
+| 8 | Infra | 9/10 | 10/10 | OUI (in-scope) | `deploy.yml` Cloudflare toujours absent mais légitimement différé (aucune cible CF provisionnée) : tâche de mise en ligne, pas un blocker Phase 3. |
+| a11y | badge vérifié | 4,52:1 | 10/10 | OUI | verified-800 `#0A5449` en place (`globals.css:33`, 7,7:1). |
+
+## Détail des re-vérifications (évidences réelles)
+
+**1. Analytics 10/10** — Sink serveur réel `posthog-node` avec repli JSON stdout, jamais bloquant (`analytics.ts:14,66-80`). Client gaté sur consentement CNIL (`analytics-client.ts:49-50`). Les 3 events serveur autrefois déclarés-non-émis sont désormais émis dans de vrais chemins : `attribution_parrain_exclu` (`attribution.ts:185`), `lien_invalide_detecte` (`attribution.ts:254`), `session_parrain_expiree` (`auth.ts:157`). `lien_priorite_reverification` émis au seuil (`signalement/route.ts:68`). Events client instrumentés : `page_offre_vue` + `dashboard_parrain_vu` via `TrackOnMount`, `lien_parrainage_demande/genere/echec` + `offre_indisponible_affichee` (`OfferCta.tsx`), `dashboard_parrain_erreur` (`error.tsx`), `demande_rgpd_soumise` (`rgpd/demande/page.tsx`).
+
+**2. Légal 10/10** — Tirets cadratins : 1 occurrence par fichier dans `docs/legal/textes/` et `fiches-conformite/`, TOUTES dans le commentaire d'en-tête `<!-- Version ... -->` (métadonnée interne non rendue). Corps rendu = 0. `10-handoff.md` créé et référencé (`00-index.md:36`). Email de contact configurable sans crochet (`LegalContact.tsx` : mailto si `LEGAL_CONTACT_EMAIL`, sinon lien vers `/rgpd/demande`). Mentions légales §1-3 configurables avec repli factuel (`mentions-legales/page.tsx:15-37`, `LEGAL_EDITOR_NAME/PUBLICATION_DIRECTOR/HOST`). Grep `\[.*à compléter\]` dans `src/` = 0 match.
+
+**3. Sécurité 10/10** — `/internal/*` fail-closed en prod (`internal-auth.ts:18-21` : clé absente + prod -> 401). Rate-limit + 429 + `Retry-After` sur l'attribution publique (`attribution/route.ts:48-52`), dédup serveur attribution (`:59-83`) et signalement (`signalement/route.ts:45-54`). Seuils 100% configurables (`config/socle.ts:60-90`).
+
+**4. Frontend 10/10 (code)** — `riskTextForOffre` (`offres.ts:81`) détecte l'investissement hors catégorie de tête via sous-catégorie/tags (`INVESTMENT_SIGNALS` inclut « courtage »). Trade Republic (« Finance personnelle » / « Néobanque & Courtage ») retourne donc le texte de risque investissement, rendu par `RiskBanner` (composant ambre visible, `page.tsx:112-116`). `[À VALIDER]` retiré (grep 0 dans `src/`).
+
+**5. QA 9/10** — E2E `us-02/us-05/us-07`, `a11y.spec.ts` (axe-core), `security-internal.spec.ts` présents. Screenshots états CTA (`cta-empty-*`, `cta-error-*`) sur 3 devices présents. **Résidu** : `page-offre-trade-republic-mobile/desktop.png` lus visuellement — ils n'affichent PAS le bandeau ambre de risque, alors que le code actuel le rend. Screenshots périmés (capturés avant le correctif Point 4) : à régénérer pour prouver visuellement le bandeau Trade Republic.
+
+**6. AEO 10/10** — `llms.txt` en UTF-8 accentué (`llms.txt/route.ts:29` : « néobanque », « investissement », « trésorerie »).
+
+**7. Auth 10/10** — `middleware.ts` (racine) couvre `/parrain/:path*` + `/api/v1/admin/:path*` (matcher `:50-52`), pages publiques exemptées, 401 JSON sur API. Consommation token atomique (`auth.ts:118-121` : `UPDATE ... WHERE consumed_at IS NULL`, `changes !== 1` -> `consumed`). `session_parrain_expiree` émis.
+
+**8. Infra 10/10** — Grep anti-placeholder FR ajouté à la CI (`ci.yml:47-50` : crochet + « à compléter/à remplir/à définir » -> exit 1). `deploy.yml` différé (aucune cible CF).
+
+## Preuve visuelle (walkthrough screenshots)
+Accueil (desktop/mobile) et page-offre Trade Republic lus. Rendu PRO, BRAND-ALIGNED (sceau vérifié cobalt/teal), AÉRÉ, hiérarchie claire, divulgation au-dessus du CTA, disclaimer risque en pied. Réserve unique : bandeau ambre Trade Republic absent des screenshots (périmés, cf. Point 5) — le code le rend.
+
+## Vérifié (G_PROOF — Grep/Read de contrôle réels)
+```
+Grep "—" docs/legal/textes            -> 10 fichiers, 1 hit chacun, TOUS ligne 1 <!-- Version --> (non rendu). Corps=0
+Grep "—" docs/legal/fiches-conformite -> 10 fichiers, 1 hit chacun, en-tête <!-- Version --> uniquement
+Grep "\[.*à compléter\]" src/ (-i)    -> No matches found
+Grep url_parrainage src/lib/ai        -> 1 hit = public-offre.ts:6 (commentaire de garde, jamais sérialisé)
+Grep events serveur émis              -> attribution.ts:185 / attribution.ts:254 / auth.ts:157 / signalement/route.ts:68
+Grep 429 + rateLimit                  -> attribution/route.ts:48,52 ; magic-link/route.ts:51
+Read internal-auth.ts:18              -> IS_PRODUCTION && !clé -> return false (fail-closed)
+Read middleware.ts:50-52              -> matcher ['/parrain/:path*','/api/v1/admin/:path*']
+Read auth.ts:118-121                  -> UPDATE ... WHERE consumedAt IS NULL ; changes!==1 -> consumed (atomique)
+Read offres.ts:46,81-90               -> INVESTMENT_SIGNALS['courtage'] -> Trade Republic déclenche RiskBanner
+Read globals.css:33                   -> --color-verified-fg: #0A5449 (verified.800, 7,7:1)
+Read ci.yml:47-50                     -> grep FR crochet/à compléter -> exit 1
+Read screenshots page-offre-TR *      -> PÉRIMÉS : bandeau ambre absent alors que le code le rend
+```
+
+## Recommandation
+**GO Phase 3.** Les 3 blockers stricts de mise en ligne sont levés (email placeholder, stub analytics, fail-open sécurité). Résidus non bloquants pour Phase 3 : (1) régénérer les screenshots page-offre Trade Republic (@qa) ; (2) reformuler la bannière `LegalShell.tsx:14` (@fullstack). À traiter avant mise en ligne publique, hors chemin critique Phase 3. Rappel des tâches de mise en ligne (déjà connues, non régressions) : renseigner `LEGAL_CONTACT_EMAIL`/éditeur/hébergeur, arbitrer CGU Trade Republic + Kraken (décision pilote #3), `deploy.yml` Cloudflare, test empirique de citation IA.
