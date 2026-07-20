@@ -44,7 +44,11 @@ jobs:
             echo "::error::Cle placeholder detectee dans src/ — deploiement bloque."
             exit 1
           fi
-          echo "OK : aucun placeholder de cle dans src/."
+          if grep -REn "\[[^]]*(à compléter|a completer|à remplir|a remplir|à définir|a definir|À COMPLÉTER|À REMPLIR)" src/; then
+            echo "::error::Placeholder FR (crochet à compléter) detecte dans src/ — G15, deploiement bloque."
+            exit 1
+          fi
+          echo "OK : aucun placeholder (cle ou crochet FR) dans src/."
 
       - name: Build (next build)
         run: npm run build

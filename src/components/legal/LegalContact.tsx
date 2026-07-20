@@ -2,7 +2,7 @@
  * Rend le moyen de contact legal SANS jamais afficher de crochet placeholder (garde-fou G15).
  *
  * - `LEGAL_CONTACT_EMAIL` defini -> lien mailto.
- * - sinon -> lien vers le formulaire /rgpd/demande (aucun email fictif, aucun `[a completer]`).
+ * - sinon -> lien vers le formulaire /rgpd/demande (aucun email fictif, aucun crochet residuel).
  *
  * Valeur reelle a confirmer a la revue juridique finale (voir .env.example : LEGAL_CONTACT_EMAIL).
  */

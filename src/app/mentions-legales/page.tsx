@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 import { LegalShell } from '@/components/legal/LegalShell';
 import { LegalContact } from '@/components/legal/LegalContact';
+import { LEGAL_EDITOR_NAME, LEGAL_PUBLICATION_DIRECTOR, LEGAL_HOST } from '@/config/socle';
 
 export const metadata: Metadata = { title: 'Mentions légales' };
 
@@ -11,18 +12,29 @@ export default function MentionsLegalesPage() {
       <section>
         <h2>1. Éditeur du site</h2>
         <p>
-          Le site Parrainly est édité par Thomas [nom à compléter] et Emmanuel [nom à compléter]. Le site étant
-          à visée commerciale (perception de commissions de parrainage), une déclaration d&apos;activité est
-          requise. Adresse et contact : [à compléter].
+          {LEGAL_EDITOR_NAME
+            ? `Le site Parrainly est édité par ${LEGAL_EDITOR_NAME}.`
+            : 'Le site Parrainly est édité par ses deux parrains fondateurs, Thomas et Emmanuel, en cercle fermé.'}{' '}
+          Le site étant à visée commerciale (perception de commissions de parrainage), une déclaration
+          d&apos;activité est requise. Les coordonnées complètes de l&apos;éditeur sont précisées lors de la mise
+          en ligne publique. Pour toute question, contactez-nous via <LegalContact />.
         </p>
       </section>
       <section>
         <h2>2. Directeur de la publication</h2>
-        <p>[Nom à compléter selon la structure juridique retenue.]</p>
+        <p>
+          {LEGAL_PUBLICATION_DIRECTOR
+            ? `La direction de la publication est assurée par ${LEGAL_PUBLICATION_DIRECTOR}.`
+            : "La direction de la publication est assurée par l'éditeur du site."}
+        </p>
       </section>
       <section>
         <h2>3. Hébergement</h2>
-        <p>Hébergeur : [à compléter selon le choix d&apos;infrastructure]. Adresse et contact : [à compléter].</p>
+        <p>
+          {LEGAL_HOST
+            ? `Le site est hébergé par ${LEGAL_HOST}.`
+            : "Le site est hébergé sur une infrastructure cloud. Les coordonnées de l'hébergeur sont précisées lors de la mise en ligne publique."}
+        </p>
       </section>
       <section>
         <h2>4. Nature du site et absence de statut réglementé</h2>

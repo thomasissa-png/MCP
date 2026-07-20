@@ -100,6 +100,16 @@ export const SIGNALEMENT_REVERIFICATION_WINDOW_SECONDS = intFromEnv('SOCLE_SIGNA
  */
 export const LEGAL_CONTACT_EMAIL = (process.env.LEGAL_CONTACT_EMAIL ?? '').trim();
 
+/**
+ * Identite editeur / directeur de publication / hebergeur affichee sur les mentions legales.
+ * Si NON definies, les pages rendent une formulation factuelle du pilote (cercle ferme T&E, coordonnees
+ * precisees a la mise en ligne publique) SANS crochet placeholder (garde-fou G15). Valeurs reelles a
+ * renseigner a la revue juridique finale / au provisioning infra (voir .env.example).
+ */
+export const LEGAL_EDITOR_NAME = (process.env.LEGAL_EDITOR_NAME ?? '').trim();
+export const LEGAL_PUBLICATION_DIRECTOR = (process.env.LEGAL_PUBLICATION_DIRECTOR ?? '').trim();
+export const LEGAL_HOST = (process.env.LEGAL_HOST ?? '').trim();
+
 /** URL publique de base pour composer les liens /r/{token} et les liens magiques. */
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
