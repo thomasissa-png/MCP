@@ -91,9 +91,14 @@ async function main() {
       row ? `id=${row.attribution_id} date_redirection=${row.date_redirection}` : 'ligne absente',
     );
 
-    // 4) token bidon -> 404
+    // 4) token bidon -> redirection 307 vers la page stylee /lien-invalide (vague 2b)
     const bogus = await fetch(`${BASE}/r/ZZZbogusZZZ`, { redirect: 'manual' });
-    check('GET /r/{token bidon} -> 404', bogus.status === 404, `status=${bogus.status}`);
+    const bogusLoc = bogus.headers.get('location') ?? '';
+    check(
+      'GET /r/{token bidon} -> 307 vers /lien-invalide',
+      bogus.status === 307 && bogusLoc.endsWith('/lien-invalide'),
+      `status=${bogus.status} location=${bogusLoc}`,
+    );
 
     // 5) job fraicheur -> 200 + compteurs (catalogue intact au seuil par defaut)
     const fresh = await fetch(`${BASE}/internal/freshness-check/run`, {

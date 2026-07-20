@@ -1,0 +1,12 @@
+{
+  "name": "Parrainly",
+  "short_name": "Parrainly",
+  "description": "Le parrainage, vérifié avant d'être cité.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8F9FB",
+  "theme_color": "#1F3A5F",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

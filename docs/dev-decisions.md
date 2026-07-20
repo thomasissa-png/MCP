@@ -47,3 +47,31 @@ Toute la logique métier est dans `src/lib/` (`attribution.ts`, `freshness.ts`, 
 - Détection automatique de lien mort par ping HTTP (US-04) : `liens_invalides` reste 0, deferee.
 - Espace parrain (US-02/05/07/09), endpoint `POST /api/v1/offres/{id}/attribution` (US-01 génération côté front), signalement (US-06 endpoint) : vague 2b.
 - Auth magic-link parrain (P1-a) : non spécifiée, bloque l'espace parrain.
+
+## Vague 2b : frontend du socle demandeur (public)
+
+### Pages livrées
+- `/` (accueil, SSR dynamique) : hero tagline, comment ça marche, pourquoi la vérification, grille catégories, grille 9 offres avec recherche live, preuve factuelle, FAQ (JSON-LD FAQPage pour GEO), CTA. Copy = homepage-copy.md verbatim.
+- `/offres/{slug}` (page-offre, SSR) : 10 zones wireframes.md, Variante A (split 70/30 desktop). Ordre imposé identité → divulgation → risque → conditions → CTA. Slug dérivé du nom_programme (`lib/slug.ts`).
+- `/categories/{slug}` (SSR) : en-tête + grille filtrée.
+- `/lien-invalide` (SSG, noindex) : page stylée cible de la redirection de `/r`.
+- Coquilles conformité (SSG) : `/cgu`, `/confidentialite`, `/mentions-legales`, `/divulgation`, `/rgpd/demande`. Textes = docs/legal/textes/ (drafts @legal, placeholders `[à compléter]` conservés = vraies décisions en attente, bannière provisoire).
+- Bandeau cookies CNIL (`CookieBanner`, opt-in strict, 3 actions équivalentes, renouvellement 6 mois).
+- Favicon SVG (sceau de vérification, dark mode intégré) + site.webmanifest + métadonnées OG/Twitter/icons dans le layout.
+
+### Endpoints front
+- `POST /api/v1/offres/{id}/attribution` (US-01) : appelle `generateAttribution`, retourne `{attribution_id, token, lien_genere, date_verification_offre}`. Dédup double-clic côté client (`inFlight` ref + bouton désactivé) + timeout 3s (AbortController → état erreur).
+- `POST /api/v1/offres/{id}/signalement` (US-06) : signalement anonyme au niveau OFFRE (le lien contextuel de la page-offre n'a pas toujours d'attribution). Le signalement rattaché à une attribution précise relève de l'espace parrain (vague 2b+).
+
+### Changement de contrat vs vague 2a
+- `/r/{token}` invalide/expiré : renvoie désormais une **redirection 307 vers `/lien-invalide`** (page stylée) au lieu du 404 HTML inline. Smoke test 2a mis à jour en conséquence (assertion 307 + location `/lien-invalide`). Le cas token valide reste un 301 vers l'enseigne.
+
+### Écarts assumés vs compositions (à traiter en polish/vague suivante)
+- CTA mobile **non sticky** (implémenté inline) : simplification, fonctionnel.
+- Animations : `fade-up` au chargement seulement (pas d'intersection observer / stagger au scroll). Respecte `prefers-reduced-motion`.
+- Lien « donnée structurée (JSON) » de la zone 8 (wireframe) omis (endpoint JSON public non construit) : remplacé par le lien de signalement + « Comment ça marche ».
+- Toggle dark mode manuel non câblé (les tokens supportent `prefers-color-scheme`, bascule auto OK).
+- Bandeau risque Trade Republic (Finance personnelle) : absent par défaut (règle checkpoint), `[À VALIDER]` @product-manager/@legal (legal 06 recommande de l'activer vu les ETF).
+
+### Boucle visuelle
+6 baselines dans `tests/screenshots/` (accueil + page-offre Trade Republic × mobile 375 / tablette 768 / desktop 1280), consentement cookies pré-enregistré pour des captures propres. Comparées à page-compositions.md : conformes (Variante A, ordre des zones, grilles responsive, hiérarchie). Script rejouable : `node scripts/screenshots.mjs` (Chromium `/opt/pw-browsers`).

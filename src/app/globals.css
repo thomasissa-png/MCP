@@ -141,3 +141,24 @@
     }
   }
 }
+
+/*
+ * Animation par defaut (page-compositions.md) : fade-up translateY(20px->0) 300ms ease-out, stagger 100ms.
+ * Applique au chargement (les pages-offre doivent afficher fraicheur/divulgation/risque immediatement).
+ * Neutralise par prefers-reduced-motion via la regle ci-dessus.
+ */
+@keyframes app-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: app-fade-up 300ms cubic-bezier(0, 0, 0.2, 1) both;
+}
+
