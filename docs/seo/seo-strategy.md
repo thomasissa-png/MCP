@@ -33,15 +33,15 @@ Parrainly n'est pas un blog : c'est un registre de fiches transactionnelles. La 
 
 ```
 Parrainly (accueil, hub)
-├── Finance personnelle (catégorie) → Trade Republic, Qonto (offres)
-├── Investissement (catégorie) → Ramify, Finary (offres)
-├── Gestion de patrimoine (catégorie) → Finary (offre, si applicable au recoupement catégorie réel)
+├── Finance personnelle (catégorie) → Trade Republic (offre)
+├── Investissement (catégorie) → Ramify (offre)
+├── Gestion de patrimoine (catégorie) → Finary (offre)
 ├── Placement trésorerie (catégorie) → Spiko (offre)
 ├── Services entrepreneur (catégorie) → Qonto, Revolut Business, Dougs (offres)
 └── Crypto (catégorie) → Kraken, Meria (offres)
 ```
 
-`[HYPOTHÈSE]` le rattachement exact catégorie ↔ programme au-delà de ce qui est documenté dans `project-context.md` (ex. Finary peut relever à la fois d'Investissement et de Gestion de patrimoine selon le produit exact) n'a pas été confirmé par une lecture directe de la base réelle (`data/base-parrainage-emmanuel-v3.xlsx` illisible par les outils texte, limite déjà signalée par `@copywriter`). À faire confirmer par Emmanuel/`@fullstack` lors de l'extraction technique du xlsx.
+Ce rattachement catégorie ↔ programme est aligné sur la source d'autorité `docs/legal/fiches-conformite/00-index.md` (mapping 9/9 identique à `docs/copy/fiches-categories.md`), correction du checkpoint @reviewer (`docs/reviews/checkpoint-phase3.md`, G7). `[HYPOTHÈSE]` un même programme pourrait relever de plusieurs catégories selon le produit exact (ex. Finary, suivi patrimoine vs investissement) : à confirmer par Emmanuel/`@fullstack` lors de l'extraction technique de la base réelle (`data/base-parrainage-emmanuel-v3.xlsx`, illisible par les outils texte, limite déjà signalée par `@copywriter`), qui reste la source de vérité DB.
 
 **Pas de cluster « article de blog »** au pilote : la mécanique de contenu récurrent obligatoire (commandement 5) est traitée au niveau de la **fraîcheur des fiches**, pas d'un blog. Le contenu qui se régénère en continu, ce n'est pas un article, c'est la date de vérification et le statut de chaque offre, recalculés par `/internal/freshness-check/run` (déjà en place, cf. `audit-technique.md` §4). C'est la bonne substitution pour ce modèle : le signal de fraîcheur EST le mécanisme de contenu récurrent GEO-pertinent, pas une addition de blog qui diluerait le budget de crawl sur un catalogue de 9 pages.
 
