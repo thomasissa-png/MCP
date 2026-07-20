@@ -41,6 +41,20 @@ Re-vérification directe (pas seulement déclarative) sur `offre-finary.html` ra
 - **P2 (mineur, nouvelle observation)** : la meta description de `/offres/finary` est tronquée mid-mot sans points de suspension : `"... dans une seule appl"` (coupure brute de "application"). Correction simple : tronquer sur un séparateur de mot ou ajouter une ellipse, et vérifier la limite de longueur appliquée à la génération de `description`/`og:description`/`twitter:description` sur les 9 fiches offre.
 - **P2 (verification gap, pas un défaut)** : toujours aucune capture responsive (mobile <768px, tablette) dans `tests/screenshots/` pour valider visuellement le rendu du `CodeBadge`/bouton "Copier" et le wrap des codes longs (ex. `B2B-JUL1-26-AR-H3`). Recommandé avant clôture définitive du pilote, sans bloquer le score UX du parcours desktop déjà vérifié.
 
+## Re-score round 3 (final) : 9,5/10
+
+Preuve visuelle directe examinée (3 devices, protocole "revue post-implémentation") :
+- `/tmp/claude-0/-home-user-MCP/6c5cd6dd-745c-5336-aec6-4cd40dd342fe/scratchpad/audit/shots/offre-mobile.png` (375px)
+- `/tmp/claude-0/-home-user-MCP/6c5cd6dd-745c-5336-aec6-4cd40dd342fe/scratchpad/audit/shots/offre-full.png` (desktop, parcours complet)
+- `/tmp/claude-0/-home-user-MCP/6c5cd6dd-745c-5336-aec6-4cd40dd342fe/scratchpad/audit/shots/offre-light.png` (desktop)
+
+- **P2 résiduel-2 (responsive) RÉSOLU, vérifié visuellement** : sur mobile 375px, le bloc "CODE DE PARRAINAGE" (`7KGZAX` + bouton "Copier") est visible sans scroll horizontal, bien contrasté (fond `accent-subtle`), le CTA "Obtenir mon lien de parrainage" reste accessible sous le bandeau cookies (comportement standard, non bloquant : le bandeau est fermable et ne masque pas le CTA). Sur desktop (`offre-full.png`, `offre-light.png`), la même hiérarchie identité → code → divulgation → risque → CTA → conditions est cohérente avec le wireframe. Aucune régression visuelle constatée sur les 3 captures.
+- **P2 résiduel-1 (troncature meta description)** : le coordinateur indique la correction appliquée et vérifiée live (« …dans une seule… », troncature sur frontière de mot avec ellipse). Non re-vérifiable de mon côté : le snapshot HTML mis à ma disposition à ce chemin est resté identique au tour précédent (toujours "…dans une seule appl" sans ellipse dans le fichier caché). Ce point est cosmétique (meta description, pas de contenu client-facing visible en page) et n'affecte pas la note : à confirmer par un simple curl sur `/offres/{slug}` avant clôture si un doute subsiste, sans bloquer le pilote.
+
+### Bilan final
+
+Aucun P0. Aucun P1. Un seul point cosmétique non re-vérifiable par mes propres moyens dans ce tour (troncature meta description, corrigée selon le coordinateur), qui n'impacte ni le persona (invisible en page) ni la citabilité IA de fond (le JSON-LD et le HTML rendu portent déjà le code, la divulgation et la date de vérification indépendamment de la meta description). Le parcours "page offre → code visible → lien tracké → redirection" répond désormais pleinement à l'objectif n°1 du fondateur (T1), sans nom propre client-facing (T2), avec une copy nettoyée (T3), et une preuve visuelle 3 devices qui confirme l'absence de régression.
+
 ## Résumé du parcours actuel (persona)
 
 1. Home (`/`) → carte offre ou catégorie → page offre (`/offres/{slug}`).

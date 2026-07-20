@@ -112,6 +112,33 @@ signalés par le coordinateur.
 3. Correctif dashboard ("Bonjour Emmanuel" → "Espace opérateur") toujours non re-vérifié
    indépendamment par cet audit design faute de nouveau snapshot/capture du back-office fourni.
 
+## Re-score round 3 (final) : 10/10
+
+Preuve visuelle levée : captures réelles lues (`shots/offre-light.png`, `offre-dark.png`,
+`offre-full.png`) + lecture de code (`src/components/parrain/ParrainNav.tsx`).
+
+- **Résiduel 1 (dark mode) LEVÉ.** `offre-dark.png` confirme un remapping sémantique cohérent et
+  lisible sur toute la page : `CodeBadge` en fond bleu nuit avec code blanc gras bien contrasté,
+  `RiskBanner` en ambre foncé avec triangle et libellé lisibles, `DisclosureBanner` neutre sombre
+  distinct du risque, CTA en bleu clair (cobalt-400) avec texte foncé, contraste confortable. Le
+  remapping "vrai" (pas une inversion, cf. round 1) se vérifie visuellement, pas seulement dans le code.
+
+- **Résiduel 2 (CTA au-dessus du pli) LEVÉ.** `offre-full.png` montre le bouton "Obtenir mon lien de
+  parrainage" à environ 615px de haut de page desktop, avant "Conditions et avantages" (~684px) :
+  visible sans scroll sur un viewport standard (768-900px de hauteur). L'ordre identité → CodeBadge →
+  divulgation → risque → CTA est confirmé visuellement, pas seulement dans le JSX.
+
+- **Résiduel 3 (dashboard T2) LEVÉ.** `src/components/parrain/ParrainNav.tsx` L34 affiche
+  `<span>Espace opérateur</span>` : plus aucune salutation nominative. Confirmation directe en code
+  (plus fiable qu'une capture pour une chaîne statique), acceptable comme preuve étant donné la
+  contrainte d'authentification pour capturer cet écran.
+
+**Bilan.** Les 3 P0 du round 1 sont résolus et prouvés (code + JSON-LD + visuel). Les P1 des rounds 2 et
+2b sont résolus et prouvés (H1, focus-ring, distinction des bandeaux, dark mode, position CTA, dashboard).
+Aucun résiduel ouvert. Le design du pilote remplit désormais les deux lectures cibles : le persona voit
+son code et son CTA au premier écran ; l'IA visiteuse dispose du code en texte brut ET en JSON-LD
+structuré (`additionalProperty.code_parrainage`), sans avoir à deviner.
+
 ## Findings P0 (bloquants) — état initial (round 1, pour mémoire)
 
 **P0-1 — Rendre le code de parrainage visible en HTML statique dès le chargement de la page offre.**
