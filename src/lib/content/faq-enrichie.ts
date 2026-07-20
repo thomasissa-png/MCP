@@ -59,6 +59,10 @@ export const FAQ_ENRICHIE: FaqEntry[] = [
     q: 'Un clic sur un lien garantit-il l\'obtention de l\'avantage annoncé ?',
     a: "Non. Le clic ouvre l'accès au parcours d'ouverture du programme concerné. L'avantage n'est obtenu que si l'ensemble des conditions publiées par le programme est rempli (par exemple un dépôt minimum atteint dans le délai imparti), indépendamment du fait d'avoir cliqué sur le lien.",
   },
+  {
+    q: 'Comment savoir si mon clic est bien attribué au bon parrain et à la bonne offre, et pas mélangé avec un autre visiteur ?',
+    a: "Chaque lien de parrainage affiché par Parrainly est unique par offre et par parrain (Thomas ou Emmanuel) : l'identifiant intégré dans le lien associe votre clic exactement à ce lien précis, pas à un autre visiteur ni à une autre offre. Cette association est enregistrée dès le clic, avant l'étape de confirmation déclarative du parrain décrite à la question précédente.",
+  },
   // 5. La fiabilite des codes et liens de parrainage
   {
     q: 'Un programme utilise-t-il un lien ou un code de parrainage ?',

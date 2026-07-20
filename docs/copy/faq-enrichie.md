@@ -58,6 +58,9 @@ R : "Le clic sur un lien de parrainage passe par une redirection propre à Parra
 Q : Un clic sur un lien garantit-il l'obtention de l'avantage annoncé ?
 R : "Non. Le clic ouvre l'accès au parcours d'ouverture du programme concerné. L'avantage n'est obtenu que si l'ensemble des conditions publiées par le programme est rempli (par exemple un dépôt minimum atteint dans le délai imparti), indépendamment du fait d'avoir cliqué sur le lien."
 
+Q : Comment savoir si mon clic est bien attribué au bon parrain et à la bonne offre, et pas mélangé avec un autre visiteur ?
+R : "Chaque lien de parrainage affiché par Parrainly est unique par offre et par parrain (Thomas ou Emmanuel) : l'identifiant intégré dans le lien associe votre clic exactement à ce lien précis, pas à un autre visiteur ni à une autre offre. Cette association est enregistrée dès le clic, avant l'étape de confirmation déclarative du parrain décrite à la question précédente."
+
 ---
 
 ## 5. La fiabilité des codes et liens de parrainage (ex. code parrainage Trade Republic)
@@ -102,10 +105,12 @@ R : "Non. Parrainly documente des parrainages, il ne fournit aucun conseil perso
 
 **Vérifié (correctif audit-phase3.md, action 6, 2026-07-20) :** `Grep "absent à ce jour|keyword-map.*absent" docs/copy/faq-enrichie.md` : 0 occurrence, la note périmée sur `keyword-map.md` absent est retirée du handoff. `Grep "registre de parrainage vérifié|parrainage fintech vérifié|code parrainage Trade Republic" docs/copy/faq-enrichie.md` : 3 occurrences, une dans chacun des intitulés §1, §2 et §5 (lignes 14, 27, 63), confirmant l'enrichissement par des mots-clés exacts de `docs/seo/keyword-map.md` §1/§2 sans altération du sens ni de la posture non-conseil. §3/§4/§6 volontairement non modifiés (aucun mot-clé de la carte ne s'y intègre naturellement).
 
+**Vérifié (correctif écart d'intégrité @fullstack, 2026-07-20) :** `Grep "^Q :" docs/copy/faq-enrichie.md` : **18 occurrences**, décompte réel désormais identique aux 5 mentions "18 questions" du document (lignes 10, 91, 98, 101, 109). Écart résolu par Option A : ajout d'une 18e question authentique en §4 Attribution ("Comment savoir si mon clic est bien attribué au bon parrain et à la bonne offre, et pas mélangé avec un autre visiteur ?"), portant désormais 3 questions dans ce thème (contre 2 avant correctif), factuelle, non-conseil, autonome, sans donnée inventée (réutilise le mécanisme d'identifiant unique par lien déjà décrit à la question précédente du même thème).
+
 ---
 **Handoff → @seo, @geo, @fullstack**
 - Fichiers produits : `/home/user/MCP/docs/copy/faq-enrichie.md`
 - Décisions prises : 18 questions réparties en 6 thèmes (mécanisme, vérification, divulgation, attribution, fiabilité codes/liens, posture non-conseil) ; question "meilleur parrainage pour moi" traitée sous un angle différent et complémentaire de `homepage-copy.md` (mécanisme de comparaison factuelle plutôt que simple affirmation de posture) ; mécanisme d'attribution décrit au niveau utilisateur sans exposer de détail d'implémentation technique non public.
 - Points d'attention : @geo structure ces 18 Q/R en objets `FAQPage` schema.org (6 groupes possibles ou liste plate selon la page cible) ; `docs/seo/keyword-map.md` est désormais disponible (§1/§2/§3) : les intitulés des thèmes §1, §2 et §5 ont été enrichis le 2026-07-20 avec des mots-clés exacts (§1 "registre de parrainage vérifié", "parrainage fintech vérifié" ; §2 "code parrainage Trade Republic", illustratif), §3/§4/§6 laissés inchangés faute d'un mot-clé de la carte s'y intégrant naturellement (règle "ne pas forcer") ; @fullstack : la Q/R §5 sur "lien ou code" doit être vérifiée programme par programme une fois l'export CSV/JSON de la base réelle disponible (champ `code_parrainage` du schéma Emmanuel), pour confirmer qu'aucun programme du catalogue ne contredit la réponse générique donnée ici.
-- **Actions infra requises** : aucune action Cloudflare/GitHub directe (livrable éditorial).
+- **Actions infra requises** : aucune action Cloudflare/GitHub directe (livrable éditorial). @fullstack : synchroniser `src/lib/content/faq-enrichie.ts` avec la 18e Q/R ajoutée en §4 (Attribution), cf. bloc `Vérifié :` correctif écart d'intégrité ci-dessus.
 ---
