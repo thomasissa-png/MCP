@@ -27,7 +27,7 @@
 | 0 — Fondations | creative-strategy → product-manager → data-analyst ; legal ‖ | **COMPLETE** (refresh corrections Thomas intégré : Parrainly, banques/fintech incluses, V1 cercle fermé, personas A1/A2 fintech, schéma Emmanuel ; alignment C7 : 0 Léa/EDF actif ; 9/9 gates/livrable) |
 | 0b — Agents custom | @agent-factory si specs le recommandent | à évaluer |
 | 1 — Expérience | ux → design ; copywriter ‖ | **COMPLETE** (@ux, @copywriter, @design 9/9 gates) + checkpoint specs @reviewer = GO CONDITIONNEL (0 P0, 3 P1) |
-| 2 — Développement | infrastructure → fullstack + ia → ux review → qa → infra | **EN COURS** (P1-b levé ; infra + socle demandeur backend/frontend + AEO livrés, build vert, smoke 6/6, 6 screenshots ; espace parrain + auth magic-link en cours ; @qa à venir) |
+| 2 — Développement | infrastructure → fullstack + ia → ux review → qa → infra | **COMPLETE** (P1-b levé ; infra + socle demandeur backend/frontend + AEO + espace parrain US-02/05/07/09 + auth magic-link livrés ; @qa : 36 unit + 8 E2E verts + CI + 1 bug US-03 corrigé ; build vert) |
 | 3 — Contenu | copywriter → seo + geo | à venir (critique) |
 | 4 — Acquisition | growth + social ; sales-enablement | à venir |
 | 5 — Conformité & dernier km | legal + revue finale chirurgicale (qa 21 dim → fullstack → qa) | à venir |
@@ -57,14 +57,22 @@
 | 2026-07-20 | 2 | @data-analyst | +4 events auth P1-a | PASS | total 27 events, C4/C7/G7 préservés |
 | 2026-07-20 | 2 | @fullstack (2b) | frontend socle : pages-offre/accueil/catégories/coquilles + boucle visuelle | build vert, smoke 6/6 | 6 screenshots conformes compositions, /r invalide→307 |
 | 2026-07-20 | 2 | @ia | couche AEO : JSON-LD + miroir JSON + robots/sitemap/llms | build vert | url_parrainage jamais exposé, 19 crawlers IA, fuite=0 |
-| 2026-07-20 | 2 | @fullstack (2c) | espace parrain US-02/05/07/09 + auth magic-link | EN COURS | mailer pluggable (console pilote) |
+| 2026-07-20 | 2 | @fullstack (2c) | espace parrain US-02/05/07/09 + auth magic-link | build vert, smoke 13/13 | mailer pluggable (console pilote), 7 screenshots parrain |
+| 2026-07-20 | 2 | @qa | 36 tests unit + 8 E2E + CI | VERT | fix bug US-03 (bascule en_attente_parrain rollback), anti-flaky port dynamique |
 
 ### Décision fondateur (Thomas, 2026-07-20 #3) : PILOTE EXHAUSTIF
 Garder un maximum de codes/liens ACTIFS pour tester (9 offres, TR + Kraken inclus). Revue juridique reportée à la TOUTE FIN (avant mise en ligne réelle). Mécanisme `statut` conservé comme levier, aucune offre masquée pour le pilote.
 
 ## Reprise (multi-sessions)
 Commande : « Lis project-context.md et docs/orchestration-plan.md, continue où on s'est arrêté. »
-Phase en cours : **2 (Développement) EN COURS.** Fait : P1-b levé (analytics + re-vérif @reviewer PASS), P1-c légal, infra Next.js, socle demandeur backend+frontend+boucle visuelle, couche AEO @ia, P1-a volet UX + 4 events. EN COURS : espace parrain US-02/05/07/09 + auth magic-link (@fullstack). RESTE : @qa (tests E2E + audit 21 dim), puis Phase 3 (contenu/SEO/GEO). Revue juridique finale (TR/Kraken diffusion) avant mise en ligne réelle.
+Phase en cours : **2 (Développement) COMPLETE → prête pour PHASE 3 (Contenu/SEO/GEO, critique).** Fait Phase 2 : P1-b levé (analytics + @reviewer PASS), P1-c légal, infra Next.js, socle demandeur (backend + frontend + boucle visuelle), couche AEO @ia, P1-a (UX + implémentation magic-link), espace parrain US-02/05/07/09, @qa (36 unit + 8 E2E + CI, 1 bug US-03 corrigé). Pilote fonctionnel de bout en bout, 9 offres réelles testables.
+
+### À FAIRE au démarrage de PHASE 3 :
+1. **@seo + @geo** (Phase 3 critique — le contenu cité EST le canal) : keyword-map absent (slots `[MOT-CLÉ SEO]` dans homepage/copy), seo-strategy, contenu GEO/AEO exploitant la couche JSON-LD/miroir/llms.txt déjà posée par @ia. @copywriter en amont si besoin de contenu.
+2. **Test empirique de citation IA** (trou n°1 hérité, G_PROOF empirique 0/6) : maintenant possible, les pages-offre sont en ligne. Tester une requête réelle sur ChatGPT/Perplexity/Claude.
+3. **Provisionnement infra prod** (@infrastructure) : projet Cloudflare (Pages/Workers + D1), secrets (INTERNAL_API_KEY, RESEND_API_KEY, emails T&E réels, NEXT_PUBLIC_SITE_URL), migration D1 + port des transactions better-sqlite3 en batch().
+4. **Revue juridique finale** (avant mise en ligne publique réelle) : arbitrage diffusion Trade Republic + Kraken, champs `[à compléter]` mentions légales (identité éditeur, hébergeur, email), validation avocat.
+5. Enrichissements QA non bloquants : E2E US-02/07/08, a11y axe-core, test concurrence transactionnelle réel.
 
 ### À FAIRE EN PRIORITÉ au démarrage de la session Phase 2 (dans l'ordre) :
 1. **P1-b (resync analytics — seul FAIL de gate)** : relancer @data-analyst pour aligner `docs/analytics/kpi-framework.md` + `tracking-plan.md` sur functional-specs actuel (events US-02/US-07 à jour : `offre_mise_a_jour`, `offre_validee_conformite`… ; retirer `lien_soumis`/`soumission_validee` périmés ; persona « Karim » → Thomas & Emmanuel cercle fermé). Puis re-vérif @reviewer ciblée C4/C7/G7.
