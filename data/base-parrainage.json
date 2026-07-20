@@ -1,0 +1,511 @@
+{
+  "Programmes": [
+    {
+      "id": "REF-001",
+      "nom_programme": "Trade Republic",
+      "categorie": "Finance personnelle",
+      "sous_categorie": "Néobanque & Courtage",
+      "cible": "Jeune actif; Entrepreneur",
+      "pays": "FR / EU",
+      "langue": "fr",
+      "url_parrainage": "https://ref.trade.re/1dw9h6jf",
+      "code_parrainage": "1dw9h6jf",
+      "description_courte": "Néobanque et courtier en ligne : compte rémunéré, actions, ETF, plans d'investissement programmés.",
+      "avantage_filleul": "3% d'intérêts pendant 3 mois sur le compte courant",
+      "avantage_parrain": "3% d'intérêts pendant 3 mois sur le compte courant",
+      "conditions": "Verser 100 EUR dans les 21 premiers jours et effectuer 3 investissements.",
+      "statut": "actif",
+      "priorite_affichage": "1",
+      "tags_mcp": "banque; courtage; ETF; épargne; compte rémunéré; PEA alternatif",
+      "date_ajout": "2026-07-15",
+      "date_verification": "2026-07-15",
+      "source": "Linktree EmelGoez — extraction 15/07/2026",
+      "notes": ""
+    },
+    {
+      "id": "REF-006",
+      "nom_programme": "Qonto",
+      "categorie": "Services entrepreneur",
+      "sous_categorie": "Banque professionnelle",
+      "cible": "Entrepreneur",
+      "pays": "FR / EU",
+      "langue": "fr",
+      "url_parrainage": "https://qonto.com/r/ux2pft",
+      "code_parrainage": "ux2pft",
+      "description_courte": "Néobanque professionnelle : compte pro, cartes, gestion des dépenses et facturation pour sociétés et indépendants.",
+      "avantage_filleul": "80 EUR + 80 EUR (deux paliers)",
+      "avantage_parrain": "80 EUR + 80 EUR (deux paliers)",
+      "conditions": "Palier 1 : 50 EUR dépensés en carte physique + 1 paiement d'abonnement Qonto dans les 2 premiers mois → 80 EUR chacun. Palier 2 : 3 000 EUR dépensés en carte physique dans les 2 premiers mois → 80 EUR supplémentaires chacun.",
+      "statut": "actif",
+      "priorite_affichage": "1",
+      "tags_mcp": "banque pro; compte pro; entrepreneur; facturation; SASU; SARL",
+      "date_ajout": "2026-07-15",
+      "date_verification": "2026-07-15",
+      "source": "Linktree EmelGoez — extraction 15/07/2026",
+      "notes": ""
+    },
+    {
+      "id": "REF-007",
+      "nom_programme": "Revolut Business",
+      "categorie": "Services entrepreneur",
+      "sous_categorie": "Banque professionnelle",
+      "cible": "Entrepreneur",
+      "pays": "FR / EU",
+      "langue": "fr; en",
+      "url_parrainage": "https://business.revolut.com/signup?promo=B2B-JUL1-26-AR-H3&ext=00dcd3ec-7f84-490f-8f4f-247f15f9e4e5&context=B2B_REFERRAL",
+      "code_parrainage": "B2B-JUL1-26-AR-H3",
+      "description_courte": "Compte professionnel multi-devises : paiements internationaux, cartes équipe, intégrations comptables.",
+      "avantage_filleul": "850 EUR",
+      "avantage_parrain": "850 EUR",
+      "conditions": "Inscription via le lien, création d'un compte Revolut Business, validation des contrôles d'éligibilité (entreprise + personnelle), commande d'une carte physique, alimentation du compte, puis au moins 50 EUR d'achats (jeux et virements exclus).",
+      "statut": "actif",
+      "priorite_affichage": "2",
+      "tags_mcp": "banque pro; multi-devises; international; compte pro; entrepreneur",
+      "date_ajout": "2026-07-15",
+      "date_verification": "2026-07-15",
+      "source": "Linktree EmelGoez — extraction 15/07/2026",
+      "notes": "Code promo extrait du paramètre 'promo' de l'URL — campagne datée (JUL1-26), vérifier sa validité régulièrement."
+    },
+    {
+      "id": "REF-002",
+      "nom_programme": "Ramify",
+      "categorie": "Investissement",
+      "sous_categorie": "Plateforme d'investissement",
+      "cible": "Jeune actif; Entrepreneur",
+      "pays": "FR",
+      "langue": "fr",
+      "url_parrainage": "https://app.ramify.fr/creer-un-compte?code=JHOHSV",
+      "code_parrainage": "JHOHSV",
+      "description_courte": "Plateforme d'investissement française : assurance-vie, PER, private equity, SCPI, gestion pilotée.",
+      "avantage_filleul": "3 mois de frais de gestion offerts (produits à frais de gestion) OU remise de 1% du montant souscrit (produits à frais d'acquisition)",
+      "avantage_parrain": "50 EUR (1er investissement ≥ 1 000 EUR), 100 EUR (≥ 10 000 EUR) ou 250 EUR (≥ 100 000 EUR) — hors produits Cash",
+      "conditions": "Pas de délai pour le 1er investissement du filleul ; ensuite, 30 jours pour souscrire d'autres produits comptant dans la prime.",
+      "statut": "actif",
+      "priorite_affichage": "1",
+      "tags_mcp": "assurance-vie; PER; SCPI; private equity; gestion pilotée; défiscalisation",
+      "date_ajout": "2026-07-15",
+      "date_verification": "2026-07-15",
+      "source": "Linktree EmelGoez — extraction 15/07/2026",
+      "notes": ""
+    },
+    {
+      "id": "REF-003",
+      "nom_programme": "Finary",
+      "categorie": "Gestion de patrimoine",
+      "sous_categorie": "Agrégateur patrimonial",
+      "cible": "Jeune actif; Entrepreneur",
+      "pays": "FR / EU",
+      "langue": "fr; en",
+      "url_parrainage": "https://finary.com/referral/7KGZAX",
+      "code_parrainage": "7KGZAX",
+      "description_courte": "Suivi et analyse de l'ensemble du patrimoine (comptes, immobilier, crypto, actions) dans une seule application.",
+      "avantage_filleul": "1 mois de Premium offert",
+      "avantage_parrain": "1 mois d'abonnement supplémentaire",
+      "conditions": "Être membre gratuit ou abonné via le site web. Abonnements souscrits via iOS/Android non éligibles (limitation technique).",
+      "statut": "actif",
+      "priorite_affichage": "1",
+      "tags_mcp": "patrimoine; agrégateur; tracking; net worth; reporting",
+      "date_ajout": "2026-07-15",
+      "date_verification": "2026-07-15",
+      "source": "Linktree EmelGoez — extraction 15/07/2026",
+      "notes": ""
+    },
+    {
+      "id": "REF-004",
+      "nom_programme": "Dougs",
+      "categorie": "Services entrepreneur",
+      "sous_categorie": "Expertise comptable en ligne",
+      "cible": "Entrepreneur",
+      "pays": "FR",
+      "langue": "fr",
+      "url_parrainage": "https://www.dougs.fr?r=OWNQ93kmgD",
+      "code_parrainage": "OWNQ93kmgD",
+      "description_courte": "Expert-comptable en ligne 100% dématérialisé, comptabilité à partir de 49 EUR/mois. Adapté aux sociétés et indépendants.",
+      "avantage_filleul": "1 mois offert",
+      "avantage_parrain": "1 mois offert",
+      "conditions": "Parrainage validé dès que le filleul choisit un pack.",
+      "statut": "actif",
+      "priorite_affichage": "2",
+      "tags_mcp": "comptabilité; expert-comptable; SASU; SARL; freelance; création entreprise",
+      "date_ajout": "2026-07-15",
+      "date_verification": "2026-07-15",
+      "source": "Linktree EmelGoez — extraction 15/07/2026",
+      "notes": ""
+    },
+    {
+      "id": "REF-008",
+      "nom_programme": "Meria",
+      "categorie": "Crypto",
+      "sous_categorie": "Exchange",
+      "cible": "Jeune actif; Entrepreneur",
+      "pays": "FR / EU",
+      "langue": "fr",
+      "url_parrainage": "https://www.meria.com/r/iOTwY6Zs",
+      "code_parrainage": "iOTwY6Zs",
+      "description_courte": "Plateforme crypto française régulée : achat BTC/ETH, staking et lending, dépôts EUR.",
+      "avantage_filleul": "Part de 10 USDC",
+      "avantage_parrain": "Part de 10 USDC",
+      "conditions": "Inscription via le lien + KYC validé, premier achat spot ≥ 100 EUR (virement ou CB), puis staking ou lending de tout ou partie. Répartition de la récompense définie par le parrain.",
+      "statut": "actif",
+      "priorite_affichage": "2",
+      "tags_mcp": "crypto; bitcoin; ethereum; staking; lending; PSAN",
+      "date_ajout": "2026-07-15",
+      "date_verification": "2026-07-15",
+      "source": "Linktree EmelGoez — extraction 15/07/2026",
+      "notes": ""
+    },
+    {
+      "id": "REF-005",
+      "nom_programme": "Kraken",
+      "categorie": "Crypto",
+      "sous_categorie": "Exchange",
+      "cible": "Jeune actif; Entrepreneur",
+      "pays": "International",
+      "langue": "fr; en",
+      "url_parrainage": "https://invite.kraken.com/JDNW/ozgnzx2r",
+      "code_parrainage": "ozgnzx2r",
+      "description_courte": "Exchange crypto historique et régulé (BTC, ETH...) : dépôts EUR/USD/GBP, trading spot et margin.",
+      "avantage_filleul": "25 à 250 EUR (récompense aléatoire)",
+      "avantage_parrain": "25 à 250 EUR (récompense aléatoire)",
+      "conditions": "Récompense attribuée une fois que le filleul a déposé des fonds et effectué 200 EUR de transactions.",
+      "statut": "actif",
+      "priorite_affichage": "1",
+      "tags_mcp": "crypto; bitcoin; ethereum; exchange; trading",
+      "date_ajout": "2026-07-15",
+      "date_verification": "2026-07-15",
+      "source": "Linktree EmelGoez — extraction 15/07/2026",
+      "notes": ""
+    },
+    {
+      "id": "REF-009",
+      "nom_programme": "Spiko",
+      "categorie": "Placement trésorerie",
+      "sous_categorie": "Fonds monétaires tokenisés",
+      "cible": "Jeune actif; Entrepreneur",
+      "pays": "FR / EU",
+      "langue": "fr; en",
+      "url_parrainage": "https://www.spiko.io/fr/?refer=9751F5C9BC",
+      "code_parrainage": "9751F5C9BC",
+      "description_courte": "Placement de trésorerie (particuliers et entreprises) en fonds monétaires investis en bons du Trésor EU/US, régulé AMF. Intérêts calculés quotidiennement, fonds disponibles à tout moment.",
+      "avantage_filleul": "+0,7 point de rendement pendant 6 mois (selon campagne en cours)",
+      "avantage_parrain": "Paliers selon dépôts du filleul sous 30 jours : 50 EUR (≥ 10 000 EUR), 100 EUR (≥ 50 000 EUR), 250 EUR (≥ 500 000 EUR), 500 EUR (≥ 1 M EUR), 1 000 EUR (≥ 3 M EUR)",
+      "conditions": "Le filleul ouvre son compte via le lien de parrainage et dépose dans l'un des OPC dans les 30 jours calendaires suivant la validation de son compte.",
+      "statut": "actif",
+      "priorite_affichage": "1",
+      "tags_mcp": "trésorerie; trésorerie entreprise; fonds monétaire; T-Bills; compte rémunéré; cash management; AMF",
+      "date_ajout": "2026-07-18",
+      "date_verification": "2026-07-18",
+      "source": "Linktree EmelGoez — extraction 15/07/2026",
+      "notes": "Avantages vérifiés le 18/07/2026 (CGU parrainage Spiko + sources tierces). Le bonus filleul (+0,7 pt / 6 mois) dépend de la campagne en cours — à revérifier périodiquement."
+    }
+  ],
+  "Canaux_Contact": [
+    {
+      "id": "CTC-001",
+      "canal": "LinkedIn",
+      "identifiant": "@EmelGoez",
+      "url": "",
+      "usage_mcp": "Mise en relation professionnelle / preuve d'identité",
+      "statut": "actif"
+    },
+    {
+      "id": "CTC-002",
+      "canal": "WhatsApp",
+      "identifiant": "",
+      "url": "",
+      "usage_mcp": "Contact direct / support filleul",
+      "statut": "actif"
+    },
+    {
+      "id": "CTC-003",
+      "canal": "Email",
+      "identifiant": "",
+      "url": "",
+      "usage_mcp": "Contact asynchrone / notifications",
+      "statut": "actif"
+    }
+  ],
+  "Referentiel_Categories": [
+    {
+      "categorie": "Finance personnelle",
+      "definition": "Comptes bancaires, néobanques, courtage grand public",
+      "exemples_programmes": "Trade Republic",
+      "persona_principal": "Jeune actif",
+      "statut": "active"
+    },
+    {
+      "categorie": "Investissement",
+      "definition": "Plateformes d'investissement long terme (assurance-vie, PER, SCPI, PE)",
+      "exemples_programmes": "Ramify",
+      "persona_principal": "Jeune actif / Entrepreneur",
+      "statut": "active"
+    },
+    {
+      "categorie": "Gestion de patrimoine",
+      "definition": "Agrégation, suivi et pilotage du patrimoine global",
+      "exemples_programmes": "Finary",
+      "persona_principal": "Jeune actif / Entrepreneur",
+      "statut": "active"
+    },
+    {
+      "categorie": "Placement trésorerie",
+      "definition": "Rémunération de la trésorerie (perso ou d'entreprise) : fonds monétaires, comptes rémunérés",
+      "exemples_programmes": "Spiko",
+      "persona_principal": "Entrepreneur / Jeune actif",
+      "statut": "active"
+    },
+    {
+      "categorie": "Services entrepreneur",
+      "definition": "Outils de gestion d'entreprise : banque pro, comptabilité, juridique",
+      "exemples_programmes": "Qonto, Revolut Business, Dougs",
+      "persona_principal": "Entrepreneur",
+      "statut": "active"
+    },
+    {
+      "categorie": "Crypto",
+      "definition": "Exchanges, staking, produits Web3",
+      "exemples_programmes": "Kraken, Meria",
+      "persona_principal": "Jeune actif",
+      "statut": "active"
+    },
+    {
+      "categorie": "Télécom & Énergie",
+      "definition": "Forfaits mobiles, box, fournisseurs d'énergie avec parrainage",
+      "exemples_programmes": "—",
+      "persona_principal": "Jeune actif",
+      "statut": "à venir"
+    },
+    {
+      "categorie": "Mobilité",
+      "definition": "Location de voitures, VTC, assurances auto",
+      "exemples_programmes": "—",
+      "persona_principal": "Jeune actif / Entrepreneur",
+      "statut": "à venir"
+    }
+  ],
+  "Schema_MCP": [
+    {
+      "champ": "id",
+      "type": "string",
+      "obligatoire": "oui",
+      "description": "Identifiant unique stable (clé primaire) — ne jamais réutiliser",
+      "exemple": "REF-004"
+    },
+    {
+      "champ": "nom_programme",
+      "type": "string",
+      "obligatoire": "oui",
+      "description": "Nom commercial du service",
+      "exemple": "Dougs"
+    },
+    {
+      "champ": "categorie",
+      "type": "enum",
+      "obligatoire": "oui",
+      "description": "Catégorie principale (cf. onglet Referentiel_Categories, liste déroulante)",
+      "exemple": "Services entrepreneur"
+    },
+    {
+      "champ": "sous_categorie",
+      "type": "string",
+      "obligatoire": "non",
+      "description": "Précision fonctionnelle",
+      "exemple": "Expertise comptable en ligne"
+    },
+    {
+      "champ": "cible",
+      "type": "liste (séparateur ;)",
+      "obligatoire": "oui",
+      "description": "Persona(s) visé(s) : Entrepreneur / Jeune actif",
+      "exemple": "Entrepreneur"
+    },
+    {
+      "champ": "pays",
+      "type": "string",
+      "obligatoire": "oui",
+      "description": "Zone d'éligibilité",
+      "exemple": "FR / EU / International"
+    },
+    {
+      "champ": "langue",
+      "type": "liste (séparateur ;)",
+      "obligatoire": "non",
+      "description": "Langue(s) du service",
+      "exemple": "fr; en"
+    },
+    {
+      "champ": "url_parrainage",
+      "type": "string (URL)",
+      "obligatoire": "oui",
+      "description": "Lien de parrainage complet, tel que fourni par la plateforme",
+      "exemple": "https://www.dougs.fr?r=OWNQ93kmgD"
+    },
+    {
+      "champ": "code_parrainage",
+      "type": "string",
+      "obligatoire": "oui",
+      "description": "Code extrait de l'URL, utilisable manuellement à l'inscription",
+      "exemple": "OWNQ93kmgD"
+    },
+    {
+      "champ": "description_courte",
+      "type": "string",
+      "obligatoire": "oui",
+      "description": "1-2 phrases, exploitées par le LLM pour matcher l'intention utilisateur",
+      "exemple": "Expert-comptable en ligne 100% dématérialisé..."
+    },
+    {
+      "champ": "avantage_filleul",
+      "type": "string",
+      "obligatoire": "recommandé",
+      "description": "Bénéfice pour le nouvel inscrit — format : montant + condition",
+      "exemple": "1 mois offert"
+    },
+    {
+      "champ": "avantage_parrain",
+      "type": "string",
+      "obligatoire": "recommandé",
+      "description": "Bénéfice pour le parrain",
+      "exemple": "80 EUR + 80 EUR (deux paliers)"
+    },
+    {
+      "champ": "conditions",
+      "type": "string",
+      "obligatoire": "non",
+      "description": "Conditions d'éligibilité condensées (dépôt minimum, KYC, délais...)",
+      "exemple": "Dépôt min. 50 EUR sous 30 jours"
+    },
+    {
+      "champ": "statut",
+      "type": "enum",
+      "obligatoire": "oui",
+      "description": "actif / suspendu / expiré — le serveur MCP ne doit servir que 'actif'",
+      "exemple": "actif"
+    },
+    {
+      "champ": "priorite_affichage",
+      "type": "int",
+      "obligatoire": "non",
+      "description": "Ordre de tri au sein d'une catégorie (1 = prioritaire)",
+      "exemple": "1"
+    },
+    {
+      "champ": "tags_mcp",
+      "type": "liste (séparateur ;)",
+      "obligatoire": "oui",
+      "description": "Mots-clés pour la recherche sémantique / le tool search_referrals",
+      "exemple": "comptabilité; SASU; freelance"
+    },
+    {
+      "champ": "date_ajout",
+      "type": "date ISO",
+      "obligatoire": "oui",
+      "description": "Date d'entrée dans la base",
+      "exemple": "2026-07-15"
+    },
+    {
+      "champ": "date_verification",
+      "type": "date ISO",
+      "obligatoire": "oui",
+      "description": "Dernière vérification de validité du lien — champ critique",
+      "exemple": "2026-07-15"
+    },
+    {
+      "champ": "source",
+      "type": "string",
+      "obligatoire": "non",
+      "description": "Provenance de la donnée",
+      "exemple": "Linktree EmelGoez"
+    },
+    {
+      "champ": "notes",
+      "type": "string",
+      "obligatoire": "non",
+      "description": "Commentaires libres / anomalies détectées",
+      "exemple": ""
+    }
+  ],
+  "Lisez_moi": [
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "Objet : source de données structurée destinée à alimenter un serveur MCP exposant des liens de parrainage"
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "aux assistants IA (tools envisagés : search_referrals, get_referral_by_id, list_categories)."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "LÉGENDE :"
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• Cellules JAUNES = à compléter par vos soins (donnée manquante ou non exploitable en l'état)."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• Cellules ORANGE PÂLE (colonne notes) = anomalie corrigée automatiquement, à confirmer."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• Onglet Programmes = table principale (1 ligne = 1 programme). Listes déroulantes sur 'categorie' et 'statut'."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• Onglet Schema_MCP = dictionnaire de données, à répliquer en JSON Schema côté serveur."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "NETTOYAGE EFFECTUÉ LE 15/07/2026 :"
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "1. IDs manquants attribués : Qonto → REF-006, Revolut Business → REF-007, Meria → REF-008 (IDs existants inchangés)."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "2. Catégories alignées sur le référentiel : 'Banque' n'existait pas → Trade Republic reclassé 'Finance personnelle',"
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "   Qonto et Revolut Business reclassés 'Services entrepreneur' / sous-catégorie 'Banque professionnelle'."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "3. Colonnes 'pays' et 'langue' ajoutées (déclarées au schéma mais absentes de la table) et renseignées."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "4. Kraken : code aligné sur l'URL (ozgnzx2r au lieu de yh4pdpgz) — à confirmer."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "5. Qonto : avantage parrain harmonisé à 80+80 EUR (au lieu de '81 + 80') — à confirmer."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "6. Revolut renommé 'Revolut Business' (lien B2B) ; code extrait du paramètre promo de l'URL."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "7. Conditions condensées en format court exploitable par un LLM ; orthographe corrigée (intérêts, staking, déposé)."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "8. priorite_affichage renseignée (rang au sein de chaque catégorie) ; source renseignée partout."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "BONNES PRATIQUES :"
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• Ne jamais modifier un 'id' existant (clé primaire consommée par le serveur)."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• Mettre à jour 'date_verification' à chaque contrôle de validité d'un lien."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• Passer 'statut' à 'expiré' plutôt que de supprimer une ligne (traçabilité)."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• Format attendu pour les avantages : montant + condition (ex. « 10 EUR offerts après 1er dépôt »)."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "Source des données : https://linktr.ee/EmelGoez — extraction du 15/07/2026."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "MISE À JOUR DU 18/07/2026 :"
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• REF-009 Spiko ajouté et complété : catégorie 'Placement trésorerie' créée au référentiel, code extrait de l'URL,"
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "  avantages parrain (paliers 50 → 1 000 EUR) et filleul (+0,7 pt de rendement / 6 mois) vérifiés en ligne."
+    },
+    {
+      "BASE DE DONNÉES LIENS DE PARRAINAGE — POC SERVEUR MCP": "• priorite_affichage et source restaurés sur toutes les lignes (effacés lors de l'édition précédente)."
+    }
+  ]
+}
