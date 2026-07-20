@@ -1,0 +1,194 @@
+{
+  "$description": "Version: 2026-07-20T05:00 — @design — Design tokens V1 Parrainly (DTCG 3 tiers). Palette calibrée fintech-confiance : neutres 'encre/papier' (pas de gris pur), accent bleu encre desaturé (pas le bleu fintech générique saturé), vert de vérification distinct de l'accent (sémantique fraîcheur), ambre d'attention pour le risque (pas de rouge alarmiste). Dark mode = remapping sémantique, pas inversion. Voir design-system.md pour la justification de palette et l'usage par composant.",
+  "primitives": {
+    "color": {
+      "ink": {
+        "950": "#0B0E13", "900": "#10151C", "800": "#1B222B", "700": "#28313D",
+        "600": "#3A4552", "500": "#54606E", "400": "#78838F", "300": "#A6AEB8"
+      },
+      "paper": {
+        "0": "#FFFFFF", "50": "#F8F9FB", "100": "#F1F3F6", "200": "#E7EAEE", "300": "#DCE1E7"
+      },
+      "cobalt": {
+        "900": "#152A47", "700": "#1F3A5F", "600": "#2A4E7A", "500": "#3E6699",
+        "400": "#6E93BE", "300": "#9DBBDA", "100": "#DCE7F2"
+      },
+      "verified": {
+        "800": "#0A5449", "700": "#0F7B6C", "600": "#14957F", "500": "#2FBFA0",
+        "300": "#8FDCC9", "100": "#DEF5EE"
+      },
+      "attention": {
+        "800": "#6B3E10", "700": "#8A5A2B", "600": "#A9723A", "500": "#C9924D",
+        "300": "#E3C193", "100": "#F6E9D8"
+      },
+      "stale": {
+        "700": "#54606E", "500": "#78838F", "300": "#A6AEB8", "100": "#E7EAEE"
+      },
+      "error": {
+        "700": "#7A241D", "600": "#9C2E24", "500": "#B3261E", "100": "#F7DEDB"
+      }
+    },
+    "font": {
+      "family": {
+        "sans": "'Inter', -apple-system, 'Segoe UI', sans-serif",
+        "mono": "'IBM Plex Mono', 'SF Mono', monospace"
+      },
+      "weight": { "regular": 400, "medium": 500, "bold": 700 },
+      "size": {
+        "xs": 12, "sm": 14, "base": 16, "md": 18, "lg": 20,
+        "xl": 24, "2xl": 30, "3xl": 36, "4xl": 48, "display": 60
+      },
+      "lineHeight": {
+        "xs": 16, "sm": 20, "base": 24, "md": 28, "lg": 28,
+        "xl": 32, "2xl": 36, "3xl": 40, "4xl": 52, "display": 64
+      }
+    },
+    "spacing": { "2xs": 2, "xs": 4, "sm": 8, "md": 16, "lg": 24, "xl": 32, "2xl": 48, "3xl": 64, "4xl": 96 },
+    "radius": { "none": 0, "sm": 4, "md": 8, "lg": 12, "xl": 16, "full": 9999 },
+    "motion": {
+      "duration": { "instant": 0, "fast": 150, "normal": 300, "slow": 500, "glacial": 1000 },
+      "easing": {
+        "standard": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "decelerate": "cubic-bezier(0, 0, 0.2, 1)",
+        "accelerate": "cubic-bezier(0.4, 0, 1, 1)"
+      }
+    },
+    "breakpoint": { "sm": 640, "md": 768, "lg": 1024, "xl": 1280, "2xl": 1536 },
+    "grid": { "columns-desktop": 12, "columns-tablet": 8, "columns-mobile": 4, "max-width": 1280, "gutter": 24, "margin-mobile": 16 }
+  },
+  "semantic": {
+    "light": {
+      "color-background-primary": "{primitives.color.paper.50}",
+      "color-background-secondary": "{primitives.color.paper.100}",
+      "color-surface-card": "{primitives.color.paper.0}",
+      "color-border-default": "{primitives.color.paper.300}",
+      "color-border-strong": "{primitives.color.ink.300}",
+      "color-text-primary": "{primitives.color.ink.900}",
+      "color-text-secondary": "{primitives.color.ink.600}",
+      "color-text-tertiary": "{primitives.color.ink.500}",
+      "color-text-inverse": "{primitives.color.paper.50}",
+      "color-accent-primary": "{primitives.color.cobalt.700}",
+      "color-accent-primary-hover": "{primitives.color.cobalt.900}",
+      "color-accent-primary-subtle": "{primitives.color.cobalt.100}",
+      "color-verified-fg": "{primitives.color.verified.700}",
+      "color-verified-bg": "{primitives.color.verified.100}",
+      "color-verified-border": "{primitives.color.verified.300}",
+      "color-stale-fg": "{primitives.color.stale.700}",
+      "color-stale-bg": "{primitives.color.stale.100}",
+      "color-stale-border": "{primitives.color.stale.300}",
+      "color-attention-fg": "{primitives.color.attention.800}",
+      "color-attention-bg": "{primitives.color.attention.100}",
+      "color-attention-border": "{primitives.color.attention.300}",
+      "color-error-fg": "{primitives.color.error.700}",
+      "color-error-bg": "{primitives.color.error.100}",
+      "color-error-border": "{primitives.color.error.500}",
+      "color-focus-ring": "{primitives.color.cobalt.500}",
+      "shadow-card": "0 1px 2px rgba(16,21,28,0.06), 0 1px 8px rgba(16,21,28,0.05)",
+      "shadow-modal": "0 8px 32px rgba(16,21,28,0.16)"
+    },
+    "dark": {
+      "color-background-primary": "{primitives.color.ink.900}",
+      "color-background-secondary": "{primitives.color.ink.800}",
+      "color-surface-card": "{primitives.color.ink.700}",
+      "color-border-default": "{primitives.color.ink.600}",
+      "color-border-strong": "{primitives.color.ink.400}",
+      "color-text-primary": "{primitives.color.paper.50}",
+      "color-text-secondary": "{primitives.color.ink.300}",
+      "color-text-tertiary": "{primitives.color.ink.400}",
+      "color-text-inverse": "{primitives.color.ink.900}",
+      "color-accent-primary": "{primitives.color.cobalt.400}",
+      "color-accent-primary-hover": "{primitives.color.cobalt.300}",
+      "color-accent-primary-subtle": "{primitives.color.cobalt.900}",
+      "color-verified-fg": "{primitives.color.verified.300}",
+      "color-verified-bg": "{primitives.color.verified.800}",
+      "color-verified-border": "{primitives.color.verified.600}",
+      "color-stale-fg": "{primitives.color.stale.300}",
+      "color-stale-bg": "{primitives.color.ink.800}",
+      "color-stale-border": "{primitives.color.stale.500}",
+      "color-attention-fg": "{primitives.color.attention.300}",
+      "color-attention-bg": "{primitives.color.attention.800}",
+      "color-attention-border": "{primitives.color.attention.600}",
+      "color-error-fg": "{primitives.color.error.100}",
+      "color-error-bg": "{primitives.color.error.700}",
+      "color-error-border": "{primitives.color.error.500}",
+      "color-focus-ring": "{primitives.color.cobalt.400}",
+      "shadow-card": "none",
+      "shadow-modal": "none",
+      "border-card-dark-note": "en dark mode, shadow-card/shadow-modal remplacées par color-border-default (1px) sur la carte/modal, cf. règle 'shadows remplacées par des borders subtiles'"
+    }
+  },
+  "component": {
+    "badge-verified": {
+      "background": "{semantic.*.color-verified-bg}",
+      "text": "{semantic.*.color-verified-fg}",
+      "border": "1px solid {semantic.*.color-verified-border}",
+      "radius": "{primitives.radius.full}",
+      "padding-x": "{primitives.spacing.sm}",
+      "padding-y": "{primitives.spacing.2xs}",
+      "font-size": "{primitives.font.size.xs}",
+      "font-weight": "{primitives.font.weight.medium}",
+      "icon": "check-circle, 14px, couleur = texte"
+    },
+    "badge-stale": {
+      "background": "{semantic.*.color-stale-bg}",
+      "text": "{semantic.*.color-stale-fg}",
+      "border": "1px dashed {semantic.*.color-stale-border}",
+      "radius": "{primitives.radius.full}",
+      "icon": "clock, 14px, indique 'à revérifier' sans alarmisme"
+    },
+    "badge-risk": {
+      "background": "{semantic.*.color-attention-bg}",
+      "text": "{semantic.*.color-attention-fg}",
+      "border": "1px solid {semantic.*.color-attention-border}",
+      "radius": "{primitives.radius.sm}",
+      "icon": "info, 16px, jamais seule (toujours accompagnée de texte, WCAG)"
+    },
+    "badge-category": {
+      "background": "{semantic.*.color-background-secondary}",
+      "text": "{semantic.*.color-text-secondary}",
+      "border": "1px solid {semantic.*.color-border-default}",
+      "radius": "{primitives.radius.sm}",
+      "note": "neutre pour TOUTES les 6 catégories, 0 code couleur par catégorie (évite le registre 'promo multicolore')"
+    },
+    "button-primary": {
+      "background": "{semantic.*.color-accent-primary}",
+      "background-hover": "{semantic.*.color-accent-primary-hover}",
+      "text": "{semantic.*.color-text-inverse}",
+      "radius": "{primitives.radius.md}",
+      "padding-x": "{primitives.spacing.lg}",
+      "padding-y": "{primitives.spacing.sm}",
+      "min-height": 44,
+      "font-weight": "{primitives.font.weight.medium}"
+    },
+    "button-secondary": {
+      "background": "transparent",
+      "border": "1px solid {semantic.*.color-border-strong}",
+      "text": "{semantic.*.color-text-primary}",
+      "radius": "{primitives.radius.md}",
+      "min-height": 44
+    },
+    "card-offer": {
+      "background": "{semantic.*.color-surface-card}",
+      "border": "1px solid {semantic.*.color-border-default}",
+      "radius": "{primitives.radius.lg}",
+      "padding": "{primitives.spacing.lg}",
+      "shadow": "{semantic.*.shadow-card}",
+      "gap-internal": "{primitives.spacing.md}"
+    },
+    "modal": {
+      "background": "{semantic.*.color-surface-card}",
+      "radius-desktop": "{primitives.radius.lg}",
+      "radius-mobile-top": "{primitives.radius.xl}",
+      "shadow": "{semantic.*.shadow-modal}",
+      "padding": "{primitives.spacing.xl}",
+      "focus-trap": true
+    },
+    "disclosure-banner": {
+      "background": "{semantic.*.color-background-secondary}",
+      "text": "{semantic.*.color-text-secondary}",
+      "border-left": "3px solid {semantic.*.color-accent-primary}",
+      "padding": "{primitives.spacing.md}",
+      "note": "jamais un accordéon, toujours visible sans interaction"
+    }
+  }
+}
