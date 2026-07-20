@@ -163,3 +163,8 @@
 - **Schéma (Schema_MCP, 20 champs)** : id, nom_programme, categorie(enum), sous_categorie, cible, pays, langue, url_parrainage, code_parrainage, description_courte, avantage_filleul, avantage_parrain, conditions, statut, priorite_affichage, tags_mcp, date_ajout, date_verification, source, notes.
 - **Canaux de contact** : LinkedIn @EmelGoez, WhatsApp, Email.
 - **IMPACT JURIDIQUE MAJEUR** : crypto (Kraken/Meria → PSAN/MiCA), investissement (Ramify/Finary/Spiko → CIF/AMF), néobanque/courtage (Trade Republic → agrément), banque pro (Qonto/Revolut Business). @legal DOIT réévaluer en configuration "cercle fermé, liens personnels de T&E" (profil de risque différent d'une marketplace à commission tierce).
+
+**[CHOIX UTILISATEUR — 2026-07-20 #3] Cadrage PILOTE (Thomas, AUTORITÉ) :**
+1. **Pilote exhaustif** : objectif = tester avec le MAXIMUM de codes/liens actifs. On garde les 9 offres visibles et testables, Trade Republic et Kraken INCLUS.
+2. **Revue juridique reportée à la toute fin** (avant mise en ligne réelle uniquement). La contrainte de diffusion publique documentée par @legal pour Trade Republic + Kraken (CGU) NE bloque PAS le pilote ; elle sera arbitrée à la revue finale (retrait / CTA privé / publication assumée).
+3. Le mécanisme catalogue piloté par `statut` reste en place comme levier de restriction futur, mais AUCUNE offre n'est masquée pour le pilote. Aucun cas particulier codé par marque.
