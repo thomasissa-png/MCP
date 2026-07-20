@@ -55,6 +55,15 @@ Preuve visuelle directe examinée (3 devices, protocole "revue post-implémentat
 
 Aucun P0. Aucun P1. Un seul point cosmétique non re-vérifiable par mes propres moyens dans ce tour (troncature meta description, corrigée selon le coordinateur), qui n'impacte ni le persona (invisible en page) ni la citabilité IA de fond (le JSON-LD et le HTML rendu portent déjà le code, la divulgation et la date de vérification indépendamment de la meta description). Le parcours "page offre → code visible → lien tracké → redirection" répond désormais pleinement à l'objectif n°1 du fondateur (T1), sans nom propre client-facing (T2), avec une copy nettoyée (T3), et une preuve visuelle 3 devices qui confirme l'absence de régression.
 
+## Re-score final : 10/10
+
+Snapshot `offre-finary.html` re-lu après rafraîchissement. Vérifié directement (pas seulement déclaratif) :
+
+- `<meta name="description">`, `og:description` et `twitter:description` se terminent tous les trois par "... dans une seule…" (ellipse sur frontière de mot, plus de coupe "appl"). Le dernier point non re-vérifiable du tour précédent est levé par lecture directe.
+- Tout le reste déjà vérifié dans les tours précédents reste stable : `CodeBadge` (`7KGZAX` + bouton "Copier" 44px) en HTML SSR, `additionalProperty`/`description` du JSON-LD `Offer` portant le code, `<link rel="alternate" type="application/json">` en `<head>`, 0 nom propre sur toutes les surfaces et le source FAQ, copy hero/meta nettoyée, 3 captures responsive (mobile 375px + desktop) sans régression visuelle.
+
+Aucun P0, aucun P1, aucun P2 résiduel identifié avec preuve à l'appui. Les 3 exigences transverses fondateur (T1 code en GEO, T2 zéro nom propre, T3 copy) sont résolues et vérifiées par lecture directe du HTML rendu, du JSON-LD, du fichier source FAQ et de captures d'écran 3 devices. Seul point hors du périmètre de cet audit UX public : le parcours parrain (`/parrain/*`), confirmé zone privée par le coordinateur, à auditer séparément si son usage impacte l'expérience du parrain en tant que persona secondaire.
+
 ## Résumé du parcours actuel (persona)
 
 1. Home (`/`) → carte offre ou catégorie → page offre (`/offres/{slug}`).
