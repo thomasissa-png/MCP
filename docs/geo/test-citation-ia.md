@@ -59,7 +59,7 @@ La session tourne sur Claude Opus. Sans outil (réponse paramétrique), à « pa
 
 ## 6. Set concurrentiel réel (agrégateurs incumbents à battre/rejoindre)
 
-Récurrents sur ≥ 3 programmes : **1parrainage.com** (9/9, incumbent dominant), **parrainage.co** (8/9), **super-parrain.com**, **parraindeconfiance.com**, **codes-parrain.com**, **planparrainpromo.fr**, **moneyradar.org**, **parraineo.com**, **parrainplus.fr**. Verticalisés crypto : cryptoparrainage.fr, zone-parrainage.com, parrainage-club.fr. Ce sont les entités à analyser pour @seo (gap de contenu, autorité) et @geo (angle de différenciation : **vérification/fraîcheur datée + divulgation**, absents ou faibles chez la plupart).
+Récurrents sur ≥ 3 programmes : **1parrainage.com** (9/9) et **parrainage.co** (9/9) sont les deux incumbents dominants (présents sur les 9 lignes du tableau §3), suivis de **super-parrain.com**, **parraindeconfiance.com**, **codes-parrain.com**, **planparrainpromo.fr**, **moneyradar.org**, **parraineo.com**, **parrainplus.fr**. Verticalisés crypto : cryptoparrainage.fr, zone-parrainage.com, parrainage-club.fr. Ce sont les entités à analyser pour @seo (gap de contenu, autorité) et @geo (angle de différenciation : **vérification/fraîcheur datée + divulgation**, absents ou faibles chez la plupart).
 
 ## 7. Verdict
 
@@ -76,4 +76,4 @@ Récurrents sur ≥ 3 programmes : **1parrainage.com** (9/9, incumbent dominant)
 ### Vérifié (G_PROOF empirique)
 - **11 requêtes réelles exécutées** via WebSearch le 2026-07-20 : 9 d'intention parrainage (1 par programme actif) + 2 d'intention générique.
 - **Résultat brut observé** : agrégateurs de parrainage structurés cités en tête sur 9/9 requêtes parrainage ; comparateurs (0 agrégateur parrainage) sur 2/2 requêtes génériques.
-- **Reproductible** : rejouer les requêtes du §3/§4. Incumbent le plus constant = 1parrainage.com (présent sur les 9). Limite dispositif documentée au §2 (WebSearch ≠ UI live des moteurs de réponse).
+- **Reproductible** : rejouer les requêtes du §3/§4. Incumbents les plus constants = 1parrainage.com et parrainage.co (présents tous deux sur les 9 requêtes parrainage). Limite dispositif documentée au §2 (WebSearch ≠ UI live des moteurs de réponse).
