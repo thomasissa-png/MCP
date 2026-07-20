@@ -91,7 +91,26 @@ Les assistants grand public répondent en majorité via **browsing / answer engi
 
 ## 3. Vérification & fraîcheur des codes
 
-[SECTION_3]
+Un code mort tue deux choses : la confiance de l'utilisateur ET la citabilité par l'IA (une IA qui a servi un code faux nous "dé-cite" ensuite). La fraîcheur est donc le KPI qualité central, pas une option.
+
+### 3.1 Modèle de donnée minimal (dès le Sheet)
+
+Chaque code porte des champs de fraîcheur : `code`, `marchand`, `type` (promo / parrainage), `lien`, `date_ajout`, `date_expiration` (si connue), `verified_at` (dernière vérif), `statut` (`actif` / `à_vérifier` / `expiré` / `retiré`), `source_verif` (auto / humain / signalement).
+
+### 3.2 Niveaux de vérification (du moins au plus coûteux)
+
+1. **Règles / dates (gratuit, immédiat)** : tout code dont `date_expiration` est passée → `expiré` automatiquement. Tout code non vérifié depuis N jours (ex : 14) → `à_vérifier`.
+2. **Heuristique semi-automatique** : cron (GitHub Action quotidienne) qui, par marchand, vérifie que la page/programme de parrainage existe encore (HTTP 200, lien non cassé) et journalise. Ne prouve pas que le code marche, mais détecte les liens morts.
+3. **Vérification effective du code** : difficile à 100 % sans passer commande. Approches réalistes :
+   - **codes de parrainage** (notre cœur au POC) : ils n'expirent quasi pas ; vérif mensuelle que le programme existe suffit.
+   - **codes promo marchands** : signalement communautaire (bouton "ça marche / ça marche pas") + re-test humain priorisé sur les plus consultés. Un LLM peut aider à parser une page marchand pour repérer une mention d'offre, mais **ne jamais affirmer "valide" sans preuve** (règle anti-invention).
+4. **Boucle de confiance** : n'exposer au public/à l'IA QUE les codes `actif`. Un code `à_vérifier` est masqué du flux, pas supprimé. Politique affichée : "codes vérifiés le {verified_at}".
+
+### 3.3 Automatisation recommandée
+
+- POC : **1 GitHub Action quotidienne** lit le Sheet, applique les règles 1 et 2, réécrit les statuts, régénère site + `codes.json`. Coût ~0.
+- V1 : même logique en Worker Cron + table de signalements + dashboard fraîcheur (taux de codes actifs, âge médian de vérification, top codes signalés morts). Alerte si taux de codes `actif` < seuil.
+- **Le `verified_at` est exposé dans le schema.org et l'API** : c'est un argument de citation ("données fraîches") ET de confiance.
 
 ---
 
