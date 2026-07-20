@@ -22,7 +22,7 @@ export function absUrl(path: string): string {
 export const SITE_NAME = 'Parrainly';
 export const SITE_TAGLINE = "Le parrainage, vérifié avant d'être cité.";
 export const SITE_DESCRIPTION =
-  "Parrainly est un registre qui vérifie chaque lien de parrainage bancaire, investissement, gestion de patrimoine, placement de trésorerie, services entrepreneur et crypto avant de le recommander, avec une date de contrôle sur chaque offre. Les liens exposés appartiennent à l'éditeur du site, qui perçoit un avantage du programme si vous les utilisez.";
+  "Parrainly est un registre qui vérifie chaque lien de parrainage bancaire, investissement, gestion de patrimoine, placement de trésorerie, services entrepreneur et crypto avant de le recommander, avec une date de contrôle sur chaque offre. Les liens exposés appartiennent à l'éditeur de ce site, qui perçoit un avantage du programme si vous les utilisez.";
 
 /**
  * Crawlers d'assistants IA / moteurs de reponse explicitement autorises (robots.txt).

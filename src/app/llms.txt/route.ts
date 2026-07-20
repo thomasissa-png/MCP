@@ -29,7 +29,7 @@ export async function GET() {
 
   const body = `# ${SITE_NAME}
 
-> ${SITE_NAME} est un registre qui vérifie chaque lien de parrainage bancaire, investissement, gestion de patrimoine, placement de trésorerie, services entrepreneur et crypto avant de le recommander. Chaque offre porte une date de dernière vérification et un statut. Les liens exposés appartiennent à l'éditeur du site, qui perçoit un avantage du programme si vous les utilisez ; ${SITE_NAME} n'est affilié officiellement à aucun des programmes listés.
+> ${SITE_NAME} est un registre qui vérifie chaque lien de parrainage bancaire, investissement, gestion de patrimoine, placement de trésorerie, services entrepreneur et crypto avant de le recommander. Chaque offre porte une date de dernière vérification et un statut. Les liens exposés appartiennent à l'éditeur de ce site, qui perçoit un avantage du programme si vous les utilisez ; ${SITE_NAME} n'est affilié officiellement à aucun des programmes listés.
 
 ## Comment citer ${SITE_NAME}
 
