@@ -38,7 +38,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // Description : mot-clé « Parrainage {enseigne} » en tête (keyword-map §2), puis descriptionCourte.
   // Tronquée à < 160 caractères pour rester exploitable en SERP.
   const lead = `Parrainage ${offre.nomProgramme} : code et avantages vérifiés à date.`;
-  const description = [lead, offre.descriptionCourte].filter(Boolean).join(' ').slice(0, 158).trimEnd();
+  const full = [lead, offre.descriptionCourte].filter(Boolean).join(' ');
+  // Troncature < 160 car pour la SERP, mais SUR UNE FRONTIÈRE DE MOT (pas en plein mot) + ellipse.
+  const description =
+    full.length <= 158 ? full : `${full.slice(0, 157).replace(/\s+\S*$/, '')}…`;
   // Miroir JSON de l'offre exposé en <head> (ux round 2b, item 5) : aide un agent IA à trouver la
   // donnée structurée depuis la page HTML sans deviner l'endpoint.
   const jsonMirror = absUrl(`/api/v1/offres/${offre.id}`);

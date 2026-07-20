@@ -139,13 +139,21 @@ Non vérifié (hors périmètre outillage disponible) : rendu réel dans Google 
 - `curl -s /offres/finary | grep -oE 'og:image[^>]*'` → image dédiée à l'offre (URL distincte de celle de l'accueil, confirmant un template par segment et pas une image générique réutilisée)
 - `curl -o /dev/null -w "%{http_code}" /offres/inexistant` → **404** ; `/categories/inexistant` → **404** ; `/page-qui-n-existe-vraiment-pas-xyz123` → 404 (contrôle, inchangé) ; body de `/offres/inexistant` = template `not-found.tsx` générique (title « Parrainly · Le parrainage, vérifié avant d'être cité », `noindex`)
 - `curl -s /offres/finary -o offre-finary-2.html && grep -c "7KGZAX" offre-finary-2.html` → 1 occurrence texte visible (« Code de parrainage : 7KGZAX. ») + confirmation dans le graphe JSON-LD (`grep -o '<script type="application/ld+json">.*</script>' | grep -o "7KGZAX"` → 3 occurrences, dont un `PropertyValue` `code_parrainage`)
-- **Résiduel confirmé non corrigé** : `curl -s /offres/finary | grep description` → toujours `descriptionCourte` brute (« Suivi et analyse de l'ensemble du patrimoine... »), sans « parrainage Finary » — P1-2 reste ouvert, n'affecte pas la note P0
+- **Résiduel confirmé non corrigé (round 2, depuis corrigé en round 2b, voir bloc suivant)** : `curl -s /offres/finary | grep description` → toujours `descriptionCourte` brute (« Suivi et analyse de l'ensemble du patrimoine... »), sans « parrainage Finary » — P1-2 restait ouvert à ce stade
+
+### Vérifié round 2b (polish final, ce jour, même URL live)
+
+- `curl -s /offres/{slug} | grep description` sur les 9 slugs offre → toutes portent désormais `Parrainage {Programme} : code et avantages vérifiés à date. {descriptionCourte}` (vérifié mot pour mot sur `finary, kraken, qonto, ramify, spiko, trade-republic, dougs, meria, revolut-business`)
+- `curl -s /categories/{slug} | grep title` sur les 6 slugs catégorie → casse propre confirmée (`Parrainage néobanque vérifié`, `Parrainage plateforme d'investissement`, `Parrainage agrégateur de patrimoine`, `Parrainage placement de trésorerie`, `Parrainage banque pro`, `Parrainage plateforme crypto`)
+- `curl -o /dev/null -w "%{http_code} %{content_type}" /favicon.ico` → `200 image/vnd.microsoft.icon` ; `/icon` → `200 image/png` ; `/apple-icon` → `200 image/png` ; `curl -s / | grep 'rel="icon"\|rel="apple-touch-icon"'` → 4 balises `<link>` cohérentes dans le `<head>` (favicon.ico 16×16, favicon.svg, /icon PNG, /apple-icon PNG)
+- `curl -s /{cgu,mentions-legales,confidentialite,divulgation} | grep description` → 4 meta descriptions uniques et spécifiques à chaque page, plus aucune duplication du texte du layout
+Fichiers additionnels non re-lus (correctifs vérifiés uniquement via curl sur le site live, conforme à la demande du coordinateur « re-vérifie en curl »).
 
 ---
 
 ## Handoff → @fullstack (et @geo pour la vérification finale de la restitution IA)
 
 - Fichier produit : `docs/audit/seo-audit-2.md`
-- Décisions prises : **note finale 8,5/10** (round 2), les 4 P0 sont clos et re-vérifiés en direct sur le site live ; reformulation de la meta description accueil intégrée avec succès (`src/lib/ai/site.ts` comme source unique, confirmé) ; correctifs og:image et code_parrainage confirmés fonctionnels par segment
-- **Résiduels (non bloquants)** : P1-2 (meta description des 9 pages offre toujours sans « parrainage {Programme} » verbatim, vérifié sur Finary), P1-1 (casse minuscule des 6 titles catégorie), P1-3 (favicon.ico/apple-touch-icon.png toujours 404, `Organization.logo` toujours en SVG), P1-4 (3 pages légales avec meta description dupliquée du layout), P1-5 (GSC/Bing Webmaster Tools non vérifiés, IndexNow non implémenté) — aucun testé à nouveau dans ce round 2 car non mentionné dans les correctifs annoncés, présumés encore ouverts sauf preuve contraire
-- Points d'attention : valider visuellement les 3 og:image sur Facebook Sharing Debugger + LinkedIn Post Inspector (hors outillage curl) avant de considérer P0-2 définitivement clos côté rendu social ; référence SERP consultées = aucune (audit 100% code + curl réel, conforme au brief)
+- Décisions prises : **note FINALE pilote = 9,5/10** (round 2b). Les 4 P0 (round 2) et les 4 P1 de code (round 2b : P1-1, P1-2, P1-3 volet favicons, P1-4) sont clos et re-vérifiés en direct sur le site live, aucune régression détectée
+- **Résiduels gated (non scorés contre le pilote, confirmés hors code par le coordinateur)** : (1) GSC/Bing Webmaster Tools + IndexNow — nécessite le compte Thomas ; (2) validation visuelle réelle des 3 `opengraph-image` sur Facebook Sharing Debugger/LinkedIn Post Inspector — QA humaine, le code renvoie bien 200 image/png 1200×630 vérifié en curl ; (3) `Organization.logo` en SVG (`src/lib/ai/jsonld.ts` L87) — arbitrage produit (choix d'un logo PNG dédié), pas un bug
+- Points d'attention : les 3 résiduels gated restent à lever avant une bascule GEO/SEO à pleine échelle (au-delà du pilote) ; référence SERP consultées = aucune (audit 100% code + curl réel, conforme au brief)
