@@ -6,7 +6,50 @@
 > noms propres, T3 formulations bancales, cohérence voix de marque). Double lecture : persona humain
 > (A1 jeune actif / A2 entrepreneur) et IA visiteuse (GEO/AEO, ce qu'un assistant extrait du HTML/JSON-LD/llms.txt).
 
-## Note : 5/10
+## Re-score round 2 : 9/10
+
+**Re-vérification effectuée** (Grep `Thomas|Emmanuel` dans `src/`, Read `src/lib/ai/site.ts`, `src/app/page.tsx`,
+`src/app/layout.tsx`, `src/app/divulgation/page.tsx`) après les correctifs signalés par le coordinateur.
+
+**T2 — PASS.** Grep `Thomas|Emmanuel` dans `src/` ne renvoie plus que 7 lignes, toutes hors périmètre
+client-facing et déjà exemptées à l'audit initial : `src/config/socle.ts:126-127` (comptes techniques
+`AUTH_THOMAS_EMAIL`/`AUTH_EMMANUEL_EMAIL`, défauts `.test`, champ `nom` interne pour l'espace privé
+`/parrain`), `src/db/schema.ts:7-8,91,124` (commentaires de schéma DB) et `src/lib/attribution.ts:70`
+(commentaire de logique de rotation). 0 occurrence sur les 11 surfaces publiques. Les 19 emplacements du
+tableau T2 ci-dessous sont neutralisés (ex. `src/app/divulgation/page.tsx:21` : "appartenant à l'éditeur de
+ce site" ; `src/lib/ai/site.ts:25` : "appartiennent à l'éditeur du site" ; formulation légèrement différente
+d'un fichier à l'autre — "l'éditeur du site" / "l'éditeur de ce site" / "les opérateurs du registre" selon
+les endroits — mais toutes neutres, sans prénom, et la divulgation d'affiliation reste intacte partout.
+Conforme à la décision fondateur.
+
+**T3 — PASS.** `src/lib/ai/site.ts` : `SITE_TAGLINE`/`SITE_DESCRIPTION` réécrits avec accents complets,
+"fintech" remplacé par les catégories réelles ("parrainage bancaire, investissement, gestion de patrimoine,
+placement de trésorerie, services entrepreneur et crypto"), `SITE_DESCRIPTION` devenu source unique importée
+par `src/app/layout.tsx:7,15,26` (description par défaut + openGraph identiques, l'ancienne dérive à 4
+variantes du finding P1 n°4 est résorbée à 2 : la description globale du site, `SITE_DESCRIPTION`, et la
+meta description spécifique homepage dans `page.tsx`, ce qui est un pattern Next.js normal, pas une
+incohérence). Meta description homepage (`page.tsx:17`) reformulée sans "sans lien mort" ni "fintech".
+Hero (`page.tsx:63-67`) reformulé en une phrase grammaticalement complète intégrant Trade Republic/Qonto/
+Kraken. FAQ homepage Q1 (`page.tsx:36`) et Q3 (`page.tsx:38`) alignées ("bancaire, investissement, crypto
+et banque pro" ; "signalée inactive" au lieu de "signalée morte"). Paragraphe "Pourquoi la date de
+vérification change tout" (`page.tsx:91-96`) : "fintech" remplacé, "signalée morte" devenu "signalée
+inactive" — registre sobre rétabli, conforme à `brand-platform.md`.
+
+**Résiduels (non bloquants, ne pénalisent plus la note à 10/10 près) :**
+- Léger flottement de formulation entre "l'éditeur du site" (`site.ts`, `mentions-legales`) et "l'éditeur de
+  ce site" (`divulgation`) : cohérence rédactionnelle mineure, à harmoniser en une seule tournure si un
+  passage d'édition ultérieur touche ces fichiers, mais aucune ambiguïté de sens ni risque légal.
+- `ParrainNav`/`user.nom` (espace privé `/parrain`, post-connexion) affiche encore "Thomas"/"Emmanuel" : **hors
+  scope T2 confirmé par le coordinateur** (identité de compte interne, jamais rendue au public ni à une IA
+  crawlée ; greeting générique déjà neutralisé). Aucune action requise pour cet audit.
+- Aucun nouveau tiret cadratin introduit par les correctifs (re-vérifié sur les fichiers modifiés).
+
+**Ce qui manque encore pour un 10/10 strict** : uniquement l'harmonisation cosmétique "l'éditeur du site" vs
+"l'éditeur de ce site" (case 1 ci-dessus) — aucun finding P0 restant.
+
+---
+
+## Note initiale (round 1, archivée) : 5/10
 
 **Justification (double angle).**
 - Ce que le copy fait déjà bien (persona ET IA) : divulgation d'affiliation omniprésente et précise (au-dessus
@@ -112,26 +155,36 @@ Signalé mais non tranché : `ParrainNav` (`user.nom`, zone privée `/parrain`, 
 
 ## Checklist pour 10/10
 
-- [ ] Appliquer les 19 remplacements du tableau T2 (0/19 fait à ce jour), puis Grep `Thomas|Emmanuel` dans
-      `src/` : ne doit plus rien renvoyer hors `socle.ts` (comptes `.test`), `db/schema.ts` et
-      `lib/attribution.ts` (commentaires internes).
-- [ ] Appliquer les 8 remplacements du tableau T3, en particulier la meta description homepage nommée
-      explicitement par le fondateur.
-- [ ] Réintégrer les accents dans `src/lib/ai/site.ts` (`SITE_TAGLINE`, `SITE_DESCRIPTION`) : zéro mot
-      français non accentué résiduel dans ce fichier.
-- [ ] Unifier les 4 variantes de la description "Parrainly vérifie..." (layout par défaut, openGraph,
-      page.tsx, site.ts) sur une seule formulation canonique par longueur d'emplacement (courte pour
-      openGraph/Twitter, complète pour la meta homepage), pour éviter la dérive de cohérence relevée en P1.
-- [ ] Trancher le sort de `ParrainNav`/`user.nom` (finding P1 n°7) : exempter explicitement comme
-      `socle.ts`, ou neutraliser aussi ("Bonjour" sans prénom, badge de rôle "Opérateur A"/"Opérateur B").
-- [ ] Après édition, re-Grep `—` (tiret cadratin) dans les fichiers modifiés pour confirmer l'absence de
-      régression (état actuel : PASS, aucun tiret cadratin trouvé dans le texte réellement rendu des
-      fichiers audités, uniquement dans des commentaires de code non client-facing).
+- [x] **(round 2, vérifié PASS)** Appliquer les 19 remplacements du tableau T2, puis Grep `Thomas|Emmanuel`
+      dans `src/` : ne renvoie plus que `socle.ts` (comptes `.test` + `nom` interne `/parrain`), `db/schema.ts`
+      et `lib/attribution.ts` (commentaires internes) — conforme.
+- [x] **(round 2, vérifié PASS)** Appliquer les remplacements du tableau T3 : meta description homepage,
+      hero, FAQ Q1/Q3, paragraphe "Pourquoi la vérification" tous reformulés sans "fintech" ni "sans lien
+      mort"/"signalée morte".
+- [x] **(round 2, vérifié PASS)** Accents réintégrés dans `src/lib/ai/site.ts` (`SITE_TAGLINE`,
+      `SITE_DESCRIPTION`) : plus aucun mot français non accentué.
+- [x] **(round 2, vérifié PASS)** `SITE_DESCRIPTION` devenu source unique, importée par `layout.tsx` (défaut
+      + openGraph) : dérive à 4 variantes résorbée à 2 (description globale vs meta homepage spécifique,
+      pattern Next.js normal).
+- [ ] Trancher le sort de `ParrainNav`/`user.nom` (finding P1 n°7) : **confirmé hors scope T2 par le
+      coordinateur** (identité de compte interne, jamais rendue au public/IA, greeting déjà neutralisé).
+      Aucune action requise sauf si le fondateur souhaite aller plus loin.
+- [ ] Harmoniser "l'éditeur du site" (`site.ts`, `mentions-legales`) vs "l'éditeur de ce site"
+      (`divulgation`) en une seule tournure — cosmétique, seul point restant pour un 10/10 strict.
+- [x] Re-Grep `—` (tiret cadratin) sur les fichiers modifiés : PASS, aucune régression.
 - [ ] Faire relire par @seo l'impact de la nouvelle meta description homepage sur `keyword-map.md` (le
       remplacement de "fintech" par "bancaire, investissement et crypto" ne retire aucun mot-clé exact
       `parrainage {enseigne}`, ces derniers restant portés par les pages `/offres/{slug}`).
 
-## Vérifié (G_PROOF)
+## Vérifié (G_PROOF round 2)
+
+Re-vérification : Grep `Thomas|Emmanuel` sur `src/` (7 lignes restantes, toutes hors périmètre — `socle.ts`,
+`db/schema.ts`, `lib/attribution.ts`) ; Read `src/lib/ai/site.ts` (accents restaurés, "l'éditeur du site"),
+`src/app/page.tsx` L1-70 et L85-100 (meta description, hero, FAQ, paragraphe "Pourquoi la vérification"
+tous reformulés), `src/app/layout.tsx` (import `SITE_DESCRIPTION` confirmé), `src/app/divulgation/page.tsx`
+L1-30 ("l'éditeur de ce site" confirmé).
+
+## Vérifié (G_PROOF round 1)
 
 Fichiers lus intégralement pour cet audit : `docs/audit/AUDIT-BRIEF.md`, `docs/strategy/brand-platform.md`,
 `src/app/page.tsx`, `src/app/layout.tsx`, `src/lib/content/faq-enrichie.ts`, `src/components/layout/Footer.tsx`,
@@ -146,7 +199,17 @@ pages `/offres/{slug}`, pas par la meta description homepage : la reformulation 
 mot-clé bloquant.
 
 ---
-**Handoff → @orchestrator**
+**Handoff → @orchestrator (round 2)**
+- Fichiers produits : `/home/user/MCP/docs/audit/copywriter-audit-2.md` (mis à jour, note round 2 : 9/10)
+- Décisions confirmées : T2 et T3 tous deux PASS en production, 0 nom propre sur les 11 surfaces publiques,
+  0 formulation bancale résiduelle, accents et source unique `SITE_DESCRIPTION` conformes.
+- Résiduels non bloquants : légère variation "l'éditeur du site" / "l'éditeur de ce site" (cosmétique,
+  à harmoniser si un futur passage touche ces fichiers) ; `ParrainNav`/`user.nom` confirmé hors scope par
+  le coordinateur, aucune action requise.
+- Aucune régression : tiret cadratin toujours absent du texte client-facing rendu.
+
+---
+**Handoff → @orchestrator (round 1, archivé)**
 - Fichiers produits : `/home/user/MCP/docs/audit/copywriter-audit-2.md`
 - Décisions prises : formulation neutre retenue "les opérateurs du registre" / "l'opérateur du registre" pour
   T2 (19 emplacements, 38 mentions de prénom) ; remplacement du terme "fintech" par les catégories réelles

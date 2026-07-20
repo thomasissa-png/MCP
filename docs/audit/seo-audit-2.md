@@ -70,10 +70,10 @@ Vérifié : `curl .../ | grep google-site-verification` → aucun résultat, auc
 
 ## Ce qui manque précisément pour 10/10
 
-- [ ] Reformuler la meta description accueil (P0-1) et la propager dans `SITE_DESCRIPTION`, le hero, l'OG description (1 seule source à corriger : `src/lib/ai/site.ts`)
-- [ ] Générer et brancher une image `og:image`/`twitter:image` 1200×630 par type de page (home générique, offre = template avec nom de programme, catégorie = template avec nom de catégorie) — tester Facebook Sharing Debugger + LinkedIn Post Inspector avant de considérer clos
-- [ ] Faire remonter à @fullstack la question du status HTTP 200 sur `notFound()` en environnement Cloudflare Workers/OpenNext ; documenter la limite si non corrigeable côté adaptateur
-- [ ] Coordonner avec @geo/@ia l'exposition de `code_parrainage` dans le DOM + JSON-LD (P0-4) — sans ça, la structure SEO reste optimisée pour une donnée que l'IA ne peut pas extraire
+- [x] Reformuler la meta description accueil (P0-1) — **résolu round 2**, vérifié en direct (source unique `SITE_DESCRIPTION`)
+- [x] Générer et brancher une image `og:image`/`twitter:image` 1200×630 par type de page (P0-2) — **résolu round 2**, vérifié 200 image/png sur home/offre/catégorie ; reste à valider visuellement sur Facebook Sharing Debugger + LinkedIn Post Inspector (hors périmètre outillage de cette session, à faire par un humain)
+- [x] Corriger le statut HTTP 200 sur `notFound()` (P0-3) — **résolu round 2** via middleware, vérifié 404 réel sur `/offres/inexistant` et `/categories/inexistant`
+- [x] Exposer `code_parrainage` dans le DOM + JSON-LD (P0-4) — **résolu round 2**, vérifié présent en texte visible et en `PropertyValue` JSON-LD sur `/offres/finary`
 - [ ] Capitaliser les 6 `motCle` de `CATEGORY_META` (`src/lib/offres.ts`)
 - [ ] Réécrire les 9 meta descriptions offre pour inclure « parrainage {Programme} » verbatim
 - [ ] Ajouter `favicon.ico` + `apple-touch-icon.png` (PNG dédié) ; remplacer `Organization.logo` par un PNG/JPG
@@ -108,10 +108,21 @@ Commandes réellement exécutées le 2026-07-20 contre https://parrainly.thomas-
 Fichiers lus : `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/offres/[slug]/page.tsx`, `src/app/categories/[slug]/page.tsx`, `src/lib/ai/jsonld.ts`, `src/lib/ai/site.ts`, `src/lib/ai/public-offre.ts`, `src/lib/offres.ts` (CATEGORY_META), `src/components/ui/DisclosureBanner.tsx`, `src/components/ui/OfferCard.tsx`, `src/components/layout/Footer.tsx`, `src/components/layout/Header.tsx`, `src/app/mentions-legales/page.tsx`, `src/app/cgu/page.tsx`, `src/app/confidentialite/page.tsx`, `src/app/divulgation/page.tsx`.
 Non vérifié (hors périmètre outillage disponible) : rendu réel dans Google Rich Results Test / Bing Webmaster Tools (pas d'accès aux consoles depuis cet environnement) ; test empirique de citation par une IA (propriété @geo, cf. `docs/geo/test-citation-ia.md`).
 
+### Vérifié round 2 (re-score, ce jour, même URL live)
+
+- `curl -s / | grep description` → nouvelle meta desc confirmée (« ...parrainage bancaire, investissement et crypto... statut à jour et date de contrôle sur chaque offre. », 149 caractères), identique en `og:description`
+- `curl -s / | grep 'og:image\|twitter:image'` → 10 balises présentes (`og:image`, `og:image:width=1200`, `og:image:height=630`, `og:image:alt`, `og:image:type=image/png` + équivalents `twitter:image:*`)
+- `curl -o /dev/null -w "%{http_code} %{content_type}" /opengraph-image` → `200 image/png` ; idem sur `/offres/finary/opengraph-image` et `/categories/crypto/opengraph-image` → `200 image/png` chacun
+- `curl -s /offres/finary | grep -oE 'og:image[^>]*'` → image dédiée à l'offre (URL distincte de celle de l'accueil, confirmant un template par segment et pas une image générique réutilisée)
+- `curl -o /dev/null -w "%{http_code}" /offres/inexistant` → **404** ; `/categories/inexistant` → **404** ; `/page-qui-n-existe-vraiment-pas-xyz123` → 404 (contrôle, inchangé) ; body de `/offres/inexistant` = template `not-found.tsx` générique (title « Parrainly · Le parrainage, vérifié avant d'être cité », `noindex`)
+- `curl -s /offres/finary -o offre-finary-2.html && grep -c "7KGZAX" offre-finary-2.html` → 1 occurrence texte visible (« Code de parrainage : 7KGZAX. ») + confirmation dans le graphe JSON-LD (`grep -o '<script type="application/ld+json">.*</script>' | grep -o "7KGZAX"` → 3 occurrences, dont un `PropertyValue` `code_parrainage`)
+- **Résiduel confirmé non corrigé** : `curl -s /offres/finary | grep description` → toujours `descriptionCourte` brute (« Suivi et analyse de l'ensemble du patrimoine... »), sans « parrainage Finary » — P1-2 reste ouvert, n'affecte pas la note P0
+
 ---
 
-## Handoff → @fullstack (et @geo pour P0-4)
+## Handoff → @fullstack (et @geo pour la vérification finale de la restitution IA)
 
 - Fichier produit : `docs/audit/seo-audit-2.md`
-- Décisions prises : note 6,5/10 justifiée persona + IA ; reformulation de la meta description accueil fournie prête à intégrer (`src/lib/ai/site.ts`) ; 4 P0 et 5 P1 en verbe+objet+critère de done
-- Points d'attention : P0-3 (soft 404 en 200) est probablement une limite de l'adaptateur Cloudflare Workers/OpenNext sur `notFound()` — à investiguer côté @fullstack avant de promettre un fix ; P0-4 (code de parrainage absent du HTML/JSON-LD) est piloté par @geo/@ia, je le maintiens dans mon audit car il verrouille l'objectif n°1 du projet, ne pas le corriger deux fois en parallèle ; références SERP consultées = aucune (pas de WebSearch concurrentiel dans cette itération, audit 100% code+curl réel sur demande explicite du brief)
+- Décisions prises : **note finale 8,5/10** (round 2), les 4 P0 sont clos et re-vérifiés en direct sur le site live ; reformulation de la meta description accueil intégrée avec succès (`src/lib/ai/site.ts` comme source unique, confirmé) ; correctifs og:image et code_parrainage confirmés fonctionnels par segment
+- **Résiduels (non bloquants)** : P1-2 (meta description des 9 pages offre toujours sans « parrainage {Programme} » verbatim, vérifié sur Finary), P1-1 (casse minuscule des 6 titles catégorie), P1-3 (favicon.ico/apple-touch-icon.png toujours 404, `Organization.logo` toujours en SVG), P1-4 (3 pages légales avec meta description dupliquée du layout), P1-5 (GSC/Bing Webmaster Tools non vérifiés, IndexNow non implémenté) — aucun testé à nouveau dans ce round 2 car non mentionné dans les correctifs annoncés, présumés encore ouverts sauf preuve contraire
+- Points d'attention : valider visuellement les 3 og:image sur Facebook Sharing Debugger + LinkedIn Post Inspector (hors outillage curl) avant de considérer P0-2 définitivement clos côté rendu social ; référence SERP consultées = aucune (audit 100% code + curl réel, conforme au brief)

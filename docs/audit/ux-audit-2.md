@@ -10,6 +10,24 @@
 
 Justification : l'architecture d'information est solide (fil d'ariane, hiérarchie identité → divulgation → risque → conditions → CTA, badges de fraîcheur cohérents partout, 5 états de CTA gérés, messages d'erreur humains avec action de reprise). Mais le livrable central du produit, le code de parrainage, est **invisible pour le persona sur la page offre ET absent du JSON-LD lu par une IA qui crawle la page**. Le persona qui veut "un code fiable tout de suite" ne voit jamais de code : il ne voit qu'un bouton vague, puis un lien Parrainly. Une IA qui répond à "code parrainage Finary" à partir de la page HTML ou du JSON-LD ne peut RIEN extraire ; elle doit deviner ou renvoyer l'utilisateur cliquer, ce qui contredit l'exigence fondateur (T1). S'ajoutent deux défauts transverses bloquants (noms propres T2, copy bancale T3) qui dégradent la confiance du persona et la qualité de citation par l'IA.
 
+## Re-score round 2 : 8,5/10
+
+Re-vérification sur les snapshots rafraîchis (`home.html`, `offre-finary.html`, `cat-crypto.html`, mêmes chemins scratchpad). Correctifs confirmés par lecture directe :
+
+- **T1 [P0-1] RÉSOLU** : `CodeBadge` affiche `7KGZAX` en clair dans le HTML SSR de `/offres/finary`, en zone identité, au-dessus du pli, AVEC un bouton "Copier" (`aria-label="Copier le code de parrainage"`, cible 44×44px `h-11 min-w-11`) — ce qui règle en même temps l'ancien P1-1 (copier). Le JSON-LD `Offer` porte désormais `additionalProperty` (`code_parrainage: "7KGZAX"`, `date_verification`, `divulgation_affiliation`) ET le champ `description` de l'`Offer` commence par "Code de parrainage : 7KGZAX." Un crawler qui lit soit le HTML rendu, soit uniquement le JSON-LD, extrait le code sans deviner. CTA également remonté avant la section "Conditions et avantages" (divulgation toujours au-dessus, conforme à l'invariant). Le code est visible passivement dès le chargement, la génération du lien tracké reste réservée au clic CTA : l'ancien P1-2 (séparer lecture passive / action engageante) est donc résolu comme effet de bord de ce correctif.
+- **T2 RÉSOLU sur toutes les surfaces vérifiées** : 0 occurrence de "Thomas"/"Emmanuel" dans `home.html`, `offre-finary.html`, `cat-crypto.html`. Footer : "l'éditeur de ce site". Étape 3 "Comment ça marche" : "un lien attribué à l'un des opérateurs du registre, détenteurs réels des programmes du catalogue". Zone conditions offre : "Ce que reçoit l'éditeur du site". Disclosure banner : "l'éditeur de ce site perçoit un avantage". JSON-LD `description`/`disambiguatingDescription` alignés.
+- **T3 RÉSOLU** : meta description et hero home reformulés — "Parrainly vérifie chaque lien de parrainage bancaire, investissement et crypto avant de le recommander : statut à jour et date de contrôle sur chaque offre." Plus de "sans lien mort ni condition expirée" (remplacé par "Parrainly retire une offre du registre dès qu'elle est signalée inactive, expirée ou modifiée"), plus de "parrainage fintech" générique (remplacé par "bancaire, investissement et crypto", plus précis pour Qonto/Kraken/Trade Republic).
+- Bonus non demandé mais positif : `og:image`/`twitter:image` dédiées par page (accueil, catégorie, offre) et `dateModified` ajouté au JSON-LD (signal de fraîcheur supplémentaire pour l'IA).
+
+### Résiduel P0/P1 après round 2
+
+Aucun P0 résiduel. Les 3 blocages fondateur (T1/T2/T3) sont résolus et vérifiés par lecture directe des snapshots rafraîchis.
+
+- **P1 résiduel-1** : parcours parrain (`/parrain/*` : `ConnexionForm`, `AttributionsList`, `OffreEditForm`, `OffreValidationForm`) toujours non audité, snapshots non fournis dans ce tour non plus. À couvrir dans une passe dédiée avant validation finale du pilote.
+- **P1 résiduel-2** : toujours aucune capture responsive (mobile <768px, tablette) dans `tests/screenshots/` : le comportement du `CodeBadge` et du bouton "Copier" sur mobile (sélection du `<code>`, taille du bloc, wrap du code long comme `B2B-JUL1-26-AR-H3` pour Revolut Business) n'est pas vérifié visuellement.
+- **P1 résiduel-3 (mineur)** : pas de `<link rel="alternate" type="application/json">` vers le miroir JSON dans le `<head>` des pages offre. Impact réduit désormais que le JSON-LD porte lui-même le code, mais reste une amélioration de découvrabilité peu coûteuse.
+- **Point de vérification, non un blocage** : le corps des réponses FAQ (`src/lib/content/faq-enrichie.ts`, positions L17-L77 signalées dans `AUDIT-BRIEF.md`) n'a pas pu être relu intégralement dans ce tour (contenu hors des sections capturées des deux snapshots home.html successifs, tronquées à ~44k caractères). Le coordinateur indique 0 prénom sur 11 surfaces publiques ; recommandé de confirmer par un grep direct sur le fichier source avant clôture définitive du pilote.
+
 ## Résumé du parcours actuel (persona)
 
 1. Home (`/`) → carte offre ou catégorie → page offre (`/offres/{slug}`).

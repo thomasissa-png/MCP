@@ -88,10 +88,11 @@ contenir le risque.
 
 ---
 
-## Note /10
+## Note /10 (round 1, avant correctifs — conservée pour traçabilité, voir round 2 ci-dessus)
 
-**4/10 — conformité de l'état actuel du code face à T2, si T2 est exécuté comme un simple
-retrait de texte (sans trancher la structure juridique).**
+**4/10 — conformité de l'état du code round 1 face à T2, si T2 est exécuté comme un simple
+retrait de texte (sans trancher la structure juridique). Dépassée par le re-score round 2 (7/10)
+ci-dessus une fois les correctifs appliqués et vérifiés.**
 
 - Divulgation seule (si isolée) : 9/10, la reformulation générique est juridiquement solide.
 - Mentions légales + confidentialité (si les noms sont retirés sans qu'une entité les remplace,
@@ -289,15 +290,18 @@ point précis mais contredit T2).
 
 ---
 **Handoff → @orchestrator**
-- Fichiers produits : `/home/user/MCP/docs/audit/legal-audit-2.md`
-- Décisions prises : aucune tranchée (audit de faisabilité) — recommandation forte de trancher le
-  statut juridique porteur AVANT tout retrait de code sur les mentions légales/confidentialité ;
-  la divulgation peut être reformulée dès maintenant sans risque.
-- Points d'attention : (1) `mentions-legales/page.tsx` et `confidentialite/page.tsx` ne doivent pas
-  être édités pour retirer les prénoms tant que le point 1 des « Points à trancher » n'est pas
-  décidé par le fondateur ; (2) `DisclosureBanner.tsx`, `divulgation/page.tsx`, `Footer.tsx` peuvent
-  être corrigés dès maintenant (P1-1, sans risque) ; (3) faire valider par un avocat le choix de
-  structure et la formulation finale des mentions légales avant mise en ligne publique réelle ;
-  (4) notifier @fullstack (implémentation des formulations + cohérence `LEGAL_EDITOR_NAME` entre
-  les deux pages legal) une fois la décision de structure prise.
+- Fichiers produits : `/home/user/MCP/docs/audit/legal-audit-2.md` (round 1 note 4/10 + round 2
+  re-score 7/10 après correctifs, mêmes fichier/version)
+- Décisions prises : aucune tranchée sur le fond (statut juridique) — round 2 confirme que les
+  correctifs de code (0 prénom, `LEGAL_EDITOR_NAME` synchronisé entre mentions-légales et
+  confidentialité, TODO tracé dans le code) **contiennent** le risque LCEN pour un pilote
+  non-public, sans le résoudre définitivement.
+- Points d'attention : (1) le point dur reste entier : trancher la structure juridique porteuse
+  (société/EI/statu quo) et renseigner `LEGAL_EDITOR_NAME` avec une vraie raison sociale AVANT
+  toute action qui rend le pilote réellement public (indexation SEO/GEO, growth, annonce) ; (2) la
+  posture actuelle (TODO documenté + statut non-indexé) est un atténuant de bonne foi, pas une
+  exemption légale — ne pas la considérer comme un état stable à long terme ; (3) faire valider par
+  un avocat le choix de structure et la formulation finale avant mise en ligne publique réelle ;
+  (4) notifier @fullstack si `LEGAL_EDITOR_NAME`/`LEGAL_PUBLICATION_DIRECTOR`/`LEGAL_HOST` doivent
+  être renseignés en env de prod dès que la structure est tranchée.
 ---
