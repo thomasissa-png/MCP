@@ -59,6 +59,9 @@
 | 2026-07-20 | 2 | @ia | couche AEO : JSON-LD + miroir JSON + robots/sitemap/llms | build vert | url_parrainage jamais exposé, 19 crawlers IA, fuite=0 |
 | 2026-07-20 | 2 | @fullstack (2c) | espace parrain US-02/05/07/09 + auth magic-link | build vert, smoke 13/13 | mailer pluggable (console pilote), 7 screenshots parrain |
 | 2026-07-20 | 2 | @qa | 36 tests unit + 8 E2E + CI | VERT | fix bug US-03 (bascule en_attente_parrain rollback), anti-flaky port dynamique |
+| 2026-07-20 | 2-audit | @reviewer | audit-phase2.md (scorecard /10) | 8/10 GO Phase 3 | 3 blockers mise en ligne (email placeholder, analytics stub, sécurité fail-open) |
+| 2026-07-20 | 2-audit | @fullstack/@legal/@qa | itérations 10/10 (sécurité, analytics, légal, a11y, E2E US-02/05/07) | VERT | 36 unit + 27 E2E, /internal fail-closed, rate-limit, sink pluggable, a11y axe-core |
+| 2026-07-20 | 2-audit | @reviewer | re-vérif finale audit-phase2.md | **9,7/10 GO Phase 3** | 7/8 points 10/10 puis résidus levés (screenshots TR, LegalShell) = tous 10/10 |
 
 ### Décision fondateur (Thomas, 2026-07-20 #3) : PILOTE EXHAUSTIF
 Garder un maximum de codes/liens ACTIFS pour tester (9 offres, TR + Kraken inclus). Revue juridique reportée à la TOUTE FIN (avant mise en ligne réelle). Mécanisme `statut` conservé comme levier, aucune offre masquée pour le pilote.
