@@ -1,0 +1,348 @@
+<title>Parrainage-IA — Note de faisabilité</title>
+<style>
+  :root{
+    --paper:#f2f4f1; --paper-2:#e9ece7; --card:#ffffff;
+    --ink:#141d19; --ink-soft:#37423d; --muted:#6a736d;
+    --line:#d6dbd4; --line-soft:#e3e7e0;
+    --accent:#0f6b58; --accent-deep:#0a4c3f; --accent-tint:#dcece7;
+    --risk:#b1552a; --risk-tint:#f3e3d8;
+    --gold:#8a6d1f;
+    --shadow:0 1px 2px rgba(20,29,25,.05),0 8px 30px rgba(20,29,25,.06);
+    --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0e1512; --paper-2:#121b17; --card:#151e1a;
+      --ink:#e7ece8; --ink-soft:#b9c2bc; --muted:#8b958e;
+      --line:#26312b; --line-soft:#1e2723;
+      --accent:#41b89c; --accent-deep:#5fccb1; --accent-tint:#16241f;
+      --risk:#d9895f; --risk-tint:#2a1d15;
+      --gold:#c7a54e;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 34px rgba(0,0,0,.36);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#f2f4f1; --paper-2:#e9ece7; --card:#ffffff;
+    --ink:#141d19; --ink-soft:#37423d; --muted:#6a736d;
+    --line:#d6dbd4; --line-soft:#e3e7e0;
+    --accent:#0f6b58; --accent-deep:#0a4c3f; --accent-tint:#dcece7;
+    --risk:#b1552a; --risk-tint:#f3e3d8; --gold:#8a6d1f;
+    --shadow:0 1px 2px rgba(20,29,25,.05),0 8px 30px rgba(20,29,25,.06);
+  }
+  :root[data-theme="dark"]{
+    --paper:#0e1512; --paper-2:#121b17; --card:#151e1a;
+    --ink:#e7ece8; --ink-soft:#b9c2bc; --muted:#8b958e;
+    --line:#26312b; --line-soft:#1e2723;
+    --accent:#41b89c; --accent-deep:#5fccb1; --accent-tint:#16241f;
+    --risk:#d9895f; --risk-tint:#2a1d15; --gold:#c7a54e;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 34px rgba(0,0,0,.36);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--sans);line-height:1.62;
+    font-size:17px;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px}
+  .col{max-width:680px}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.12;text-wrap:balance;letter-spacing:-.01em}
+  p{margin:0 0 1em}
+  a{color:var(--accent);text-underline-offset:2px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0}
+  .tnum{font-variant-numeric:tabular-nums}
+
+  /* Masthead */
+  header{border-bottom:1px solid var(--line);background:
+    radial-gradient(120% 100% at 100% 0%, var(--accent-tint) 0%, transparent 55%);}
+  .mast{padding:64px 0 40px}
+  .mast h1{font-size:clamp(38px,7vw,68px);margin:.32em 0 .28em}
+  .lede{font-size:clamp(19px,2.4vw,23px);color:var(--ink-soft);max-width:30em;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:34px;font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.02em}
+  .meta b{color:var(--ink-soft);font-weight:600}
+
+  /* Verdict */
+  .verdict{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:12px;box-shadow:var(--shadow);padding:26px 28px;margin:38px 0 8px}
+  .verdict .tag{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase;color:#fff;background:var(--accent);padding:4px 11px;border-radius:999px}
+  :root[data-theme="dark"] .verdict .tag,@media (prefers-color-scheme:dark){}
+  .verdict h2{font-size:24px;margin:14px 0 8px}
+  .verdict p{margin:0;color:var(--ink-soft)}
+
+  section{padding:46px 0;border-bottom:1px solid var(--line-soft)}
+  .snum{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+  h2.sh{font-size:clamp(26px,3.6vw,34px);margin:.28em 0 .7em}
+  h3{font-size:20px;margin:1.7em 0 .5em}
+  .sub{color:var(--muted);font-size:15px;margin-top:-.3em}
+
+  /* Stat tiles */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:8px 0 6px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:18px 16px}
+  .stat .n{font-family:var(--serif);font-size:30px;line-height:1;color:var(--accent-deep);letter-spacing:-.02em}
+  .stat .l{font-size:13.5px;color:var(--ink-soft);margin-top:8px;line-height:1.4}
+  .stat .s{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:9px;letter-spacing:.02em}
+
+  ul.clean{margin:0 0 1em;padding:0;list-style:none}
+  ul.clean li{position:relative;padding-left:22px;margin:.5em 0;color:var(--ink-soft)}
+  ul.clean li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:7px;
+    border-radius:2px;background:var(--accent);transform:rotate(45deg)}
+
+  /* Table */
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow)}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:560px;background:var(--card)}
+  th,td{text-align:left;padding:13px 15px;vertical-align:top;border-bottom:1px solid var(--line-soft)}
+  thead th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);background:var(--paper-2);position:sticky;top:0}
+  tbody tr:last-child td{border-bottom:none}
+  td b{color:var(--ink)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .p-direct{background:var(--risk-tint);color:var(--risk)}
+  .p-threat{background:var(--risk-tint);color:var(--risk)}
+  .p-legacy{background:var(--paper-2);color:var(--muted)}
+
+  /* Callout */
+  .call{border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin:16px 0;background:var(--card);box-shadow:var(--shadow)}
+  .call.risk{border-left:4px solid var(--risk)}
+  .call .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--risk)}
+  .call h3{margin:.5em 0 .35em;font-size:20px}
+  .call p{margin:0;color:var(--ink-soft);font-size:15.5px}
+
+  /* Roadmap */
+  .road{display:grid;gap:14px;margin-top:6px}
+  .step{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
+  .step .t{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+    color:#fff;background:var(--accent-deep);border-radius:8px;padding:8px 10px;text-align:center;min-width:78px}
+  :root[data-theme="dark"] .step .t{color:#08110d}
+  .step h3{margin:0 0 .25em;font-size:18.5px}
+  .step p{margin:0;color:var(--ink-soft);font-size:15px}
+  .step .when{font-family:var(--mono);font-size:11.5px;color:var(--accent);margin-top:7px;letter-spacing:.02em}
+
+  /* Decisions */
+  .dec{display:grid;gap:12px}
+  .dec .q{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:16px 18px}
+  .dec .q b{display:block;font-family:var(--serif);font-size:17px;margin-bottom:3px}
+  .dec .q span{color:var(--ink-soft);font-size:14.5px}
+
+  .sources{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.9;word-break:break-word}
+  .sources a{color:var(--muted)}
+  .note{font-size:13.5px;color:var(--muted);background:var(--paper-2);border:1px solid var(--line-soft);
+    border-radius:10px;padding:16px 18px;margin-top:8px}
+  footer{padding:40px 0 64px;color:var(--muted);font-size:13px}
+  .caveat{font-family:var(--mono);font-size:11px;color:var(--gold)}
+
+  @media (prefers-reduced-motion:no-preference){
+    .reveal{opacity:0;transform:translateY(10px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+    @keyframes rise{to{opacity:1;transform:none}}
+  }
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+</style>
+
+<header>
+  <div class="wrap mast reveal">
+    <p class="eyebrow">Note de faisabilité · Confidentiel</p>
+    <h1>Parrainage&#8202;-&#8202;IA</h1>
+    <p class="lede">Un service de liens de parrainage (banque, énergie) conçu pour être la source que les assistants IA citent, au moment où quelqu'un demande le meilleur plan.</p>
+    <div class="meta">
+      <span><b>20 juillet 2026</b></span>
+      <span>Étude : équipe d'agents Gradient (7 experts)</span>
+      <span>Stade : <b>Idée</b></span>
+      <span>Verticales : <b>banques, néobanques, énergie</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="verdict reveal">
+    <span class="tag">Verdict</span>
+    <h2>GO pour un POC, à une condition.</h2>
+    <p>L'idée vise le bon terrain (des primes élevées, une tendance IA réelle). Mais tout repose sur une hypothèse que personne n'a encore testée : une IA reprend&#8209;t&#8209;elle une source tierce quand on lui demande un parrainage&#8201;? Ce test coûte zéro euro. Tant qu'il n'est pas passé, le GO reste théorique. Et deux obstacles sont à gérer de front, pas à contourner : le plafond des liens de parrainage, et la réglementation du secteur financier.</p>
+  </div>
+</div>
+
+<main class="wrap col">
+
+  <section>
+    <span class="snum">01 — Le concept</span>
+    <h2 class="sh">Servir le bon code à l'IA, pas à Google</h2>
+    <p>Quand un particulier demande à ChatGPT, Claude, Perplexity ou Gemini «&#8201;comment se faire parrainer chez Fortuneo&#8201;?&#8201;» ou «&#8201;le meilleur parrainage Boursorama&#8201;», l'assistant répond mal aujourd'hui : il invente, ou recopie de vieux sites pleins de publicité. Le projet veut être <b>la source propre et vérifiée</b> que l'IA cite, en se concentrant sur les parrainages les plus rémunérateurs : banques en ligne, néobanques, fintech, énergie.</p>
+    <p>Le pari de fond : le moat des sites de codes actuels (le référencement Google et la publicité) ne se transpose pas au monde des réponses IA. Une fenêtre s'ouvre pour un acteur pensé pour la réponse machine plutôt que pour le clic humain. Décision actée : <b>pas de serveur MCP</b> (personne ne le branche côté grand public), le canal réel est le contenu web structuré et lu par les IA.</p>
+  </section>
+
+  <section>
+    <span class="snum">02 — Le marché</span>
+    <h2 class="sh">La bonne vague macro, un marché coupon déjà installé</h2>
+    <p>Le marché qui grossit vraiment n'est pas «&#8201;le coupon&#8201;» (mature, consolidé) mais «&#8201;être cité par une IA&#8201;». C'est là que se joue l'opportunité.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="n tnum">+34&#8202;%</div><div class="l">CAGR du marché des services GEO (886&#8202;M$ en 2024 vers 7,3&#8202;Md$ en 2031)</div><div class="s">Omnibound · Cintra</div></div>
+      <div class="stat"><div class="n tnum">900&#8202;M</div><div class="l">utilisateurs hebdomadaires de ChatGPT (fév. 2026), le double d'un an plus tôt</div><div class="s">HubSpot</div></div>
+      <div class="stat"><div class="n tnum">+693&#8202;%</div><div class="l">de trafic shopping référé par les IA sur les fêtes 2025, conversion +31&#8202;%</div><div class="s">Adobe Analytics</div></div>
+      <div class="stat"><div class="n tnum">~55&#8202;%</div><div class="l">des recherches Google affichent désormais un AI Overview</div><div class="s">eMarketer</div></div>
+    </div>
+
+    <h3>Ce que ça vaut, côté parrainage</h3>
+    <p>Les primes des verticales visées sont les plus élevées du marché, ce qui justifie le choix des banques et de l'énergie plutôt que l'e&#8209;commerce&#8201;:</p>
+    <ul class="clean">
+      <li>Parrainage bancaire courant : <b>50 à 200&#8202;€</b>, avec des pics observés à <b>280&#8202;€</b> pour le filleul (Hello bank!, Monabanq) et jusqu'à <b>120 à 150&#8202;€</b> pour le parrain (Fortuneo, Monabanq).</li>
+      <li>Preuve que l'écosystème IA s'organise dans ce sens : Perplexity a lancé début 2026 un programme d'affiliation (10&#8202;$ fixe par inscription Pro + 10&#8202;% récurrent).</li>
+    </ul>
+
+    <div class="note">
+      <span class="caveat">Chiffres à valider avant tout usage externe.</span> Le marché coupon/cashback France (souvent cité à «&#8201;plus de 7&#8202;Md€, 10&#8202;M d'utilisateurs, +12 à 14&#8202;%/an&#8201;») provient de blogs affiliés, pas d'un institut (Xerfi, FEVAD). Les primes de parrainage viennent des comparateurs (ComparaBanques, 2026). Le volume réel de requêtes «&#8201;parrainage&#8201;» adressées aux IA n'est mesuré par aucune étude : c'est un signal qualitatif, à instrumenter nous&#8209;mêmes.
+    </div>
+  </section>
+
+  <section>
+    <span class="snum">03 — Le signal de demande</span>
+    <h2 class="sh">L'usage existe déjà, mal servi</h2>
+    <p>Demander un code ou un parrainage à une IA est un comportement documenté par la presse et des guides pratiques. Le problème de fiabilité est confirmé dans ces mêmes sources : l'IA recopie des sites comme RetailMeNot, ou invente des codes qui ne marchent pas. C'est exactement la faille que le projet veut combler : une réponse dans laquelle l'utilisateur peut avoir confiance. La confiance se reporte d'ailleurs sur l'assistant, pas sur le site source, ce qui rend la place de «&#8201;source fiable citée&#8201;» d'autant plus stratégique.</p>
+  </section>
+
+  <section>
+    <span class="snum">04 — La concurrence</span>
+    <h2 class="sh">Recentrée sur le parrainage, deux vrais dangers</h2>
+    <p>En choisissant le parrainage bancaire, les concurrents ne sont plus Honey ou RetailMeNot, mais les agrégateurs de parrainage français, déjà installés. La vraie question devient : <b>peut&#8209;on être cité par les IA mieux qu'eux&#8201;?</b></p>
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr><th>Acteur</th><th>Position</th><th>Faiblesse face à l'IA</th><th>Menace</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Agrégateurs de parrainage FR</b><br>ComparaBanques, Parrainage.co, Codes-Parrain.com</td>
+            <td>Déjà sur le mot «&#8201;parrainage&#8201;», contenu à jour, ancienneté SEO</td>
+            <td>Même limite structurelle que nous (un seul lien gagnant par visiteur)</td>
+            <td><span class="pill p-direct">Concurrent direct</span></td>
+          </tr>
+          <tr>
+            <td><b>iGraal · Rakuten · Poulpeo</b></td>
+            <td>Cashback, 12&#8202;M membres, catalogues énormes déjà vérifiés</td>
+            <td>Modèle bâti sur le cookie et le clic humain, pas la réponse IA</td>
+            <td><span class="pill p-legacy">Latéral</span></td>
+          </tr>
+          <tr>
+            <td><b>Honey / PayPal</b></td>
+            <td>Extension navigateur, distribution installée</td>
+            <td>Scandale 2024 (vol de commission), extension rendue obsolète par l'achat dans l'IA</td>
+            <td><span class="pill p-legacy">En déclin</span></td>
+          </tr>
+          <tr>
+            <td><b>OpenAI · Perplexity</b></td>
+            <td>Commerce agentique, paiement et affiliation directs dans le chat</td>
+            <td>Aucune : ils sont le canal ET peuvent devenir l'apporteur</td>
+            <td><span class="pill p-threat">Désintermédiation</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:18px">La fenêtre est réelle (aucun de ces acteurs n'expose aujourd'hui de données pensées pour l'IA), mais <b>étroite et non protégée</b> : un agrégateur avec un catalogue déjà constitué peut basculer en quelques semaines. La vitesse d'exécution compte plus que l'idée.</p>
+  </section>
+
+  <section>
+    <span class="snum">05 — Le positionnement</span>
+    <h2 class="sh">Le registre de confiance des codes pour les IA</h2>
+    <p>Recommandation retenue : se positionner sur la <b>fiabilité et la vérification</b> comme promesse centrale, la seule crédible dès le POC et directement branchée sur la frustration n°1 des utilisateurs («&#8201;un truc qui marche jamais&#8201;»).</p>
+    <ul class="clean">
+      <li><b>Promesse&#8201;:</b> la source de parrainages que l'IA peut citer sans se tromper, parce que chaque entrée est vérifiée et datée.</li>
+      <li><b>Trois mots (à valider)&#8201;:</b> vérifié, instantané, IA&#8209;natif. À l'opposé : spammy, publicité intrusive, code mort.</li>
+      <li>L'ambition «&#8201;protocole du parrainage IA&#8209;natif&#8201;» reste une trajectoire à 12 à 18 mois, pas une promesse de lancement.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="snum">06 — Les deux enjeux</span>
+    <h2 class="sh">Ce qui doit être réglé pour que le modèle tienne</h2>
+
+    <div class="call risk">
+      <span class="k">Enjeu 1 · Modèle</span>
+      <h3>Un lien de parrainage est plafonné, donc il faut une place de marché</h3>
+      <p>Contrairement à un code promo public (réutilisable à l'infini), un lien de parrainage est personnel et limité par les programmes, et surveillé pour fraude. Deux codes (Thomas et Emmanuel) saturent vite. Pire : un succès de distribution par l'IA ressemble, vu de la banque, à un pattern de fraude, avec un risque de gel de la prime. La seule issue viable est un modèle de <b>rotation de nombreux parrains</b> (comme le font déjà les agrégateurs), avec une commission sur le flux. Concrètement, le Google Sheet du POC doit intégrer une logique de rotation dès le départ.</p>
+    </div>
+
+    <div class="call risk">
+      <span class="k">Enjeu 2 · Juridique</span>
+      <h3>La banque et l'énergie sont des secteurs réglementés</h3>
+      <p>Orienter des gens vers des produits bancaires ou financiers n'est pas comme diffuser un code e&#8209;commerce. Cela peut relever d'un <b>statut d'apporteur d'affaires ou d'intermédiaire (IOBSP), d'une immatriculation ORIAS</b>, et des règles ACPR/AMF sur la publicité financière, en plus des conditions de parrainage de chaque enseigne. À cela s'ajoute l'obligation de divulgation de la relation d'affiliation (loi Influenceurs 2023, directive Omnibus, DGCCRF). <b>C'est le point à instruire en priorité, avant toute mise en ligne.</b></p>
+    </div>
+  </section>
+
+  <section>
+    <span class="snum">07 — Faisabilité</span>
+    <h2 class="sh">Simple, sans MCP</h2>
+    <p>Le no&#8209;MCP simplifie le projet. L'architecture recommandée tient sur une source unique déclinée en plusieurs canaux&#8201;:</p>
+    <ul class="clean">
+      <li><b>Source&#8201;:</b> le Google Sheet (parrains + liens + rotation), migré ensuite vers une petite base.</li>
+      <li><b>Canal principal&#8201;:</b> un site GEO/AEO&#8209;first, une page par enseigne, structuré en schema.org, que les IA lisent et citent (un contenu structuré est nettement plus repris qu'une page publicitaire).</li>
+      <li><b>Actif pivot&#8201;:</b> une API JSON publique, réutilisable partout ensuite.</li>
+      <li><b>Survie&#8201;:</b> la vérification de fraîcheur des liens est le KPI vital. Un lien mort tue la confiance, donc un contrôle automatisé et un statut «&#8201;vérifié le…&#8201;» sont indispensables.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="snum">08 — Feuille de route</span>
+    <h2 class="sh">Trois temps, en commençant par le moins cher</h2>
+    <div class="road">
+      <div class="step">
+        <div class="t">Temps 0</div>
+        <div>
+          <h3>Le test de distribution</h3>
+          <p>Poser 10 à 15 requêtes réelles aux quatre assistants («&#8201;meilleur parrainage Boursorama&#8201;», «&#8201;comment être parrainé chez Fortuneo&#8201;»). Mesurer : citent&#8209;ils une source tierce&#8201;? laquelle&#8201;? un contenu structuré serait&#8209;il repris&#8201;? C'est le critère d'arrêt : si aucune IA ne reprend de source exploitable, on s'arrête.</p>
+          <div class="when">Cette semaine · 0 € · sans code</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="t">Temps 1</div>
+        <div>
+          <h3>Le POC à rotation</h3>
+          <p>Google Sheet avec logique parrain et rotation, puis génération d'un site GEO/AEO structuré (une page par enseigne) et d'une API. Objectif : mesurer le taux de citation réel par les IA.</p>
+          <div class="when">1 à 2 semaines</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="t">Temps 2</div>
+        <div>
+          <h3>La V1</h3>
+          <p>Ouverture à des parrains externes (la place de marché), vérification automatisée de la validité des liens, tracking d'attribution IA vers conversion, et mise en conformité du secteur financier. Pas de MCP.</p>
+          <div class="when">4 à 8 semaines</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="snum">09 — À trancher</span>
+    <h2 class="sh">Trois décisions avant d'avancer</h2>
+    <div class="dec">
+      <div class="q"><b>Modèle de revenu</b><span>Commission sur les primes de parrainage, abonnement des parrains, ou les deux&#8201;? À caler (le vocal d'Emmanuel le précise peut&#8209;être).</span></div>
+      <div class="q"><b>Périmètre</b><span>Catalogue fermé (Thomas et Emmanuel) ou marketplace ouverte à tout parrain&#8201;? L'enjeu 1 pousse vers l'ouverture pour scaler.</span></div>
+      <div class="q"><b>Verticales de départ</b><span>Confirmer la liste précise des enseignes visées (Boursorama, Fortuneo, BNP, EDF, autres) pour cadrer le test Temps 0.</span></div>
+    </div>
+  </section>
+
+  <section style="border-bottom:none">
+    <span class="snum">10 — Méthode &amp; sources</span>
+    <h2 class="sh">Comment cette note a été produite</h2>
+    <p>Étude menée par sept agents spécialisés (stratégie first&#8209;principles, positionnement, visibilité IA, marché et concurrence, juridique, technique, revue croisée), en parallèle, chacun avec recherche web documentée. Revue de cohérence finale : convergente, sans contradiction bloquante. Les données non institutionnelles sont marquées comme à valider, aucune donnée n'a été inventée. Le seul manque du travail : le test de distribution empirique (Temps 0) n'a pas encore été exécuté.</p>
+    <div class="sources">
+      omnibound.ai/blog/answer-engine-optimization-aeo-statistics · seoscaleup.com/blog/geo-aeo-statistics-2026 · blog.hubspot.com/marketing/answer-engine-optimization-trends · emarketer.com/content/faq-on-geo-aeo · opascope.com/insights/ai-shopping-assistant-guide-2026 · comparabanques.fr/comparatif-banque/parrainage · comparateurbanque.com/guides/prime-parrainage-banque · en.wikipedia.org/wiki/PayPal_Honey · openai.com/index/buy-it-in-chatgpt · consumeraffairs.com (ChatGPT coupons) · voucherify.io/blog (referral fraud)
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  Parrainage&#8202;-&#8202;IA · Note de faisabilité interne, Thomas &amp; Emmanuel · Produit par l'équipe d'agents Gradient · 20 juillet 2026. Document de travail, chiffres marqués «&#8201;à valider&#8201;» à confirmer avant tout usage externe.
+</footer>
+
+<script>
+  (function(){
+    if(matchMedia('(prefers-reduced-motion: no-preference)').matches){
+      var els=[].slice.call(document.querySelectorAll('.reveal'));
+      els.forEach(function(el,i){el.style.animationDelay=(i*90)+'ms';});
+    }
+  })();
+</script>
