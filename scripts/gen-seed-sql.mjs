@@ -92,7 +92,7 @@ function main() {
   for (const p of programmes) {
     const statut = normalizeStatut(p.statut, p.nom_programme);
     const priorite = num(p.priorite_affichage, 99);
-    const divulgation = `Lien de parrainage ${p.nom_programme} : Parrainly perçoit un avantage personnel (Thomas ou Emmanuel) si vous l'utilisez pour vous inscrire.`;
+    const divulgation = `Lien de parrainage ${p.nom_programme} : l'éditeur de ce site perçoit un avantage si vous l'utilisez pour vous inscrire.`;
     const nonAffil = `Parrainly n'est pas affilié officiellement à ${p.nom_programme}.`;
     const risque = mentionRisque(p.categorie);
 
