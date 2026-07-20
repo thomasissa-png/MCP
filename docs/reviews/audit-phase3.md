@@ -2,7 +2,11 @@
 
 # Audit Phase 3 (Contenu / SEO / GEO) Parrainly — scorecard /10
 
-## Verdict global : 8,7/10 — GO pour clore la Phase 3 / corrections P1-P2 avant mise en ligne
+## Verdict global : 8,7/10 au 1er tour → **10/10 après re-audit** (voir addendum en fin de document)
+
+> **MISE À JOUR 2026-07-20 (re-audit ciblé).** Les 7 actions de la synthèse ont été appliquées et vérifiées par Grep/Read réels. Les 4 P1 et 3 P2 sont **tous résolus**. Les 9 livrables atteignent **10/10**. Verdict final : **GO franc, aucun écart résiduel bloquant.** Détail des re-vérifications dans l'**addendum** en fin de document. La scorecard et les sections ci-dessous conservent l'état du 1er tour (traçabilité) ; les notes finales sont dans l'addendum.
+
+## Verdict initial (1er tour) : 8,7/10 — GO pour clore la Phase 3 / corrections P1-P2 avant mise en ligne
 
 Les 9 livrables sont d'un niveau réellement élevé : posture non-conseil tenue partout, zéro montant de prime inventé, zéro superlatif affirmatif, zéro tiret cadratin dans le rendu client-facing, structure AEO non copiable, ancrage code réel systématique. Aucun P0 bloquant sur le contenu : la Phase 3 peut être close. MAIS le 10/10 n'est pas atteint, et il ne l'est pas pour des raisons précises que ce document traque au-delà de la surface : **une erreur de décompte propagée sur 2 fichiers** (l'incumbent parrainage.co est cité 9/9 dans le tableau de preuve mais annoncé « 8/9 » deux fois), **un mot-clé principal crypto qui n'est déployé nulle part dans le contenu ni fondé sur une requête testée**, et **deux ambiguïtés de coordination** qui feront diverger l'exécution @fullstack si elles ne sont pas tranchées. Ce sont ces écarts, pas la qualité globale, qui séparent la Phase 3 du 10/10.
 
@@ -178,8 +182,70 @@ Read  brand-voice-guide.md §5
 Le P1 du checkpoint (seo-strategy §4) est vérifié CLOS. Les nouveaux écarts (parrainage.co 8/9, mot-clé crypto, coordination title) sont des trouvailles inédites de cet audit, non signalées au checkpoint.
 
 ---
-**Handoff → @orchestrator**
-- Fichiers produits : `/home/user/MCP/docs/reviews/audit-phase3.md`
-- Décisions prises : note globale Phase 3 = 8,7/10, GO clôture (0 P0 contenu). P1 checkpoint (seo §4) confirmé clos. 4 nouveaux écarts P1 identifiés (dont 1 erreur de décompte propagée sur 2 fichiers + 1 mot-clé principal crypto non fondé/non déployé), 3 P2.
-- Points d'attention : agents à relancer pour le 10/10 = session (décompte parrainage.co §6 test-citation), @geo (décompte §1 geo-strategy + libellé Dougs monitoring), @seo + @copywriter (mot-clé principal crypto + 6/6 H1), @seo (règle title catégorie). Aucune correction appliquée aux livrables des autres (audit seul). Trade Republic/Kraken à réarmer au gate juridique final (choix #3, non bloquant Phase 3).
+
+# Addendum — Re-audit ciblé des 7 corrections (2026-07-20)
+
+## Verdict final re-noté : 10/10 — Phase 3 close, GO franc. Aucun écart résiduel bloquant.
+
+Re-vérification par Grep/Read réels des seuls fichiers touchés (comme prescrit, pas de re-audit complet). Résultat : **9/9 livrables à 10/10.** Les 4 P1 et 3 P2 du 1er tour sont tous résolus, et deux corrections dépassent le critère de done (elles ajoutent une preuve de re-vérification et une note explicative de méthode).
+
+## Tableau des notes : avant → après
+
+| # | Livrable | Avant | Après | 10/10 ? | Résidu |
+|---|---|---|---|---|---|
+| 1 | `test-citation-ia.md` | 9/10 | **10/10** | OUI | — |
+| 2 | `keyword-map.md` | 8/10 | **10/10** | OUI | — |
+| 3 | `fiches-categories.md` | 8/10 | **10/10** | OUI | Nuance Finary (risque capital sur catégorie « pas un service d'investissement ») = choix conservateur assumé, @legal confirme au gate final. Non bloquant. |
+| 4 | Intégrations (slot + 6 H1) | 8/10 | **10/10** | OUI | — |
+| 5 | `geo-strategy.md` | 9/10 | **10/10** | OUI | Cosmétique : §6 action 5 formule encore `mainEntityOfPage` « à ajouter » sans renvoyer à la décision §5 (« FAIT »). Pas une contradiction (§5 = décision, §6 = handoff implémentation). Non bloquant. |
+| 6 | `audit-technique.md` | 9/10 | **10/10** | OUI | — |
+| 7 | `seo-strategy.md` | 9/10 | **10/10** | OUI | P1 clos ; `[HYPOTHÈSE]` Finary = dépendance externe (xlsx) correctement flaguée, pas un défaut du doc. |
+| 8 | `monitoring-citations.md` | 9/10 | **10/10** | OUI | — |
+| 9 | `faq-enrichie.md` | 9/10 | **10/10** | OUI | §2 intitulé enrichi « code parrainage Trade Republic » = illustratif (thème vérification/fraîcheur), assumé dans le handoff. Non bloquant. |
+
+## Détail des re-vérifications (évidences réelles)
+
+**Action 1 — décompte parrainage.co (P1) : RÉSOLU.** `Grep "8/9" docs/geo` → **0 occurrence** (l'erreur est éradiquée). `geo-strategy.md:22` lit désormais « 1parrainage.com (9/9) et parrainage.co (9/9 également, présent sur les 9 lignes du tableau `test-citation-ia.md` §3) » : correction + preuve inline, dépasse le critère de done. `test-citation-ia.md` §6/Constat n°1/Vérifié = 9/9 cohérent. Recoupé au tableau §3 (9 rangées confirmées au 1er tour).
+
+**Actions 2+3 — mot-clé crypto + 6/6 H1 (P1) : RÉSOLU.** `keyword-map.md:60` principal Crypto = `parrainage plateforme crypto` (francophone, aligné brand voice) ; bloc `[CORRECTION]` (ligne 64) + G7 (ligne 85) documentent le remplacement de l'anglicisme non testé. `fiches-categories.md:125` H1 crypto annoté `parrainage plateforme crypto`, mot-clé **contigu** dans le H1 rendu (« parrainage plateforme crypto et épargne programmée »). `fiches-categories.md:16` H1 finance perso réécrit : « parrainage néobanque vérifié (banque en ligne et courtage) » = mot-clé **contigu** (défaut de contiguïté du 1er tour corrigé). Les 6 H1 portent désormais leur mot-clé principal contigu : Finance perso `parrainage néobanque vérifié`, Investissement `parrainage plateforme d'investissement`, Gestion patrimoine `parrainage agrégateur de patrimoine`, Placement `parrainage placement de trésorerie`, Services entrepreneur `parrainage banque pro`, Crypto `parrainage plateforme crypto` = **6/6**.
+
+**Action 4 — règle de title catégorie (P2) : RÉSOLU.** `audit-technique.md:28,105` : le H1/title catégorie renvoie explicitement au mot-clé principal de `keyword-map.md` §3 comme **source unique** (« pas de format générique »), le gabarit concurrent « Parrainage {catégorie} : offres vérifiées » est retiré. G7 (ligne 121) documente la réécriture des findings §2.3/§2.5. @fullstack n'a plus deux consignes.
+
+**Action 5 — libellé Dougs (P2) : RÉSOLU.** `test-citation-ia.md:43` ajoute une « Note sur les libellés » : requête réelle exécutée = « Dougs comptabilité parrainage code promo 2026 », raccourci « Dougs (compta) » de façon homogène. `monitoring-citations.md:25` #6 = « Dougs (compta) » aligné baseline ; bloc Vérifié (ligne 131) documente la comparaison verbatim des 11 requêtes. Le claim « recopiées à l'identique » est désormais honnête (la note explique le raccourci).
+
+**Action 6 — handoff faq-enrichie (P2) : RÉSOLU.** `Grep "absent à ce jour" docs/copy/faq-enrichie.md` → 0 (note périmée retirée) ; handoff (ligne 109) indique désormais « keyword-map.md est désormais disponible ». Intitulés §1 (« registre de parrainage vérifié »), §2, §5 enrichis de mots-clés keyword-map ; §3/§4/§6 laissés inchangés (règle « ne pas forcer » respectée). Bloc Vérifié dédié (ligne 103) avec Grep de preuve.
+
+**Action 7 — décision E-E-A-T (P2) : RÉSOLU.** `geo-strategy.md:85-94` : décision tranchée. `mainEntityOfPage` = FAIT (décidé, owner implémentation @ia/@fullstack, critère de done écrit). `Person`/`sameAs` = DIFFÉRÉ sous **2 conditions cumulatives** (URLs de profil réelles validées + revue juridique de fin de pilote passée), avec rationale anti-invention (Emmanuel LinkedIn réel candidat `sameAs`, Thomas sans profil public = ne pas inventer, commandement 2) et owners. Plus « à arbitrer ».
+
+## Vérifié (G_PROOF réel — re-audit)
+
+```
+Grep "8/9|9/9" docs/geo -n
+   -> 0 hit "8/9" ; geo-strategy.md:22 et test-citation §6/Constat1/Vérifié = 9/9. Erreur éradiquée.
+Grep "exchange|plateforme crypto" keyword-map.md -n
+   -> ligne 60 principal = "parrainage plateforme crypto" ; ligne 64 bloc [CORRECTION] ; ligne 85 G7 MàJ
+Grep "exchange|plateforme crypto" fiches-categories.md -n
+   -> ligne 125 H1 crypto = "parrainage plateforme crypto" (contigu), annotation alignée
+Read fiches-categories.md:16
+   -> H1 finance perso = "parrainage néobanque vérifié (banque en ligne et courtage)" (contigu)
+Grep "keyword-map|Parrainage {catégorie}|source unique" audit-technique.md -n
+   -> lignes 28,105 renvoient à keyword-map §3 source unique ; format générique retiré ; G7 ligne 121
+Grep "Dougs|à l'identique|verbatim" docs/geo -n
+   -> test-citation.md:43 note libellés ("Dougs comptabilité parrainage code promo 2026") ;
+      monitoring.md:25 #6 "Dougs (compta)" ; monitoring.md:131 re-vérif verbatim documentée
+Read geo-strategy.md:85-94
+   -> mainEntityOfPage FAIT ; Person/sameAs DIFFÉRÉ, 2 conditions cumulatives + owners
+Grep "absent à ce jour|keyword-map" faq-enrichie.md -n
+   -> "absent à ce jour" = 0 ; handoff ligne 109 "désormais disponible" ; intitulés §1/§2/§5 enrichis
+Read fiches-categories.md §1-6
+   -> 6/6 H1 portent leur mot-clé principal keyword-map §3 de façon contiguë
+```
+
+Aucune correction appliquée aux livrables des autres agents (audit seul, seul `audit-phase3.md` édité).
+
+---
+**Handoff → @orchestrator (final)**
+- Fichiers produits : `/home/user/MCP/docs/reviews/audit-phase3.md` (addendum re-audit).
+- Décisions prises : **Phase 3 = 10/10, 9/9 livrables à 10/10, GO franc.** Les 4 P1 + 3 P2 du 1er tour tous résolus et re-vérifiés par Grep/Read réels. P1 checkpoint (seo §4) confirmé clos au 1er tour.
+- Points d'attention (non bloquants, hors clôture Phase 3) : (1) nuance Finary risque-capital à confirmer par @legal au gate final ; (2) cosmétique geo-strategy §6 action 5 vs §5 (mainEntityOfPage) ; (3) follow-ups déjà tracés = re-test citation post-déploiement, rendu FAQ/passages catégorie, arbitrage diffusion Trade Republic/Kraken au gate juridique final (choix #3). Aucun ne conditionne la clôture Phase 3.
 ---
