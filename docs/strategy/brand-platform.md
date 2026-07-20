@@ -27,7 +27,7 @@
 **Catégorie choisie** : nous créons et occupons la catégorie du "registre de confiance du parrainage pour l'IA" : ni un site de codes promo (SEO-first, pensé pour le clic humain), ni un agrégateur de parrainage bancaire classique (contenu humain mis à jour mensuellement), ni un simple tableur interne. Un registre vérifié, structuré, interrogeable par les moteurs de réponse IA, alimenté par un marché ouvert de parrains en rotation.
 
 **Une phrase de positionnement définitive** :
-"[Nom] est le registre que les IA consultent pour ne jamais recommander un parrainage mort, saturé ou invérifié : la seule source de parrainage construite pour être citée, pas cliquée."
+"{marque} est le registre que les IA consultent pour ne jamais recommander un parrainage mort, saturé ou invérifié : la seule source de parrainage construite pour être citée, pas cliquée."
 
 **L'ennemi / le statu quo combattu** : pas un concurrent nommé en premier lieu, mais un statu quo à deux visages.
 1. Le statu quo humain : des pages de codes promo saturées de publicité, optimisées pour le clic, où le lien de parrainage d'un particulier dort dans un post Instagram introuvable.
@@ -80,7 +80,7 @@ Nous ne combattons pas iGraal ou Dealabs frontalement : ils servent un usage dif
 ## 3. Proposition de valeur
 
 **Promesse unique (transformative, pas descriptive)** :
-"Avec [Nom], vous ne demandez plus si un code marche encore : vous obtenez la réponse qui a déjà été vérifiée avant que vous ne posiez la question."
+"Avec {marque}, vous ne demandez plus si un code marche encore : vous obtenez la réponse qui a déjà été vérifiée avant que vous ne posiez la question."
 
 Ce qui change réellement pour Léa : elle passe d'un état de doute permanent ("il faut que je vérifie moi-même en ouvrant 3 onglets") à un état de certitude déléguée à une source qu'elle ne connaît pas mais dont l'assistant en qui elle a confiance garantit la fiabilité. Ce qui change pour Karim : son lien passe d'un actif dormant et invisible à un actif géré, avec une rotation qui protège sa prime au lieu de l'exposer.
 
@@ -121,7 +121,7 @@ Ce qui change réellement pour Léa : elle passe d'un état de doute permanent (
 - "La source que les IA ne se trompent jamais à citer."
 - "Un lien de parrainage qui vit, jamais un lien qui dort."
 
-**Elevator pitch (30 mots)** : "[Nom] est le registre de parrainage que les IA consultent avant de répondre. Chaque lien est vérifié, daté, mis en rotation entre parrains. Léa obtient un parrainage qui marche, le parrain touche sa prime sans se griller."
+**Elevator pitch (30 mots)** : "{marque} est le registre de parrainage que les IA consultent avant de répondre. Chaque lien est vérifié, daté, mis en rotation entre parrains. Léa obtient un parrainage qui marche, le parrain touche sa prime sans se griller."
 
 **3 messages clés par persona** :
 
@@ -141,11 +141,11 @@ Karim (parrain) :
 
 | Critère | Agrégateurs de parrainage bancaire FR (type ComparaBanques/Parrainage.co) | iGraal (cashback/codes) | Statu quo IA (réponse sans registre tiers) | [Nom] |
 |---|---|---|---|---|
-| Positionnement déclaré | Comparateur de primes de parrainage, mise à jour mensuelle par une rédaction humaine | Cashback + codes, reversement de commission d'affiliation au membre | Aucun : l'assistant répond avec ce qu'il trouve (scrape ou invente) | Registre de confiance structuré pour être lu et cité par une IA |
+| Positionnement déclaré | Comparateur de primes de parrainage, mise à jour mensuelle par une rédaction humaine | Cashback + codes, reversement de commission d'affiliation au membre | Aucun : l'assistant répond avec ce qu'il trouve (scrape ou invente) | Registre de confiance structuré pour être lu et cité par une IA ({marque}) |
 | Preuve de fraîcheur visible | Date de mise à jour de la page (mensuelle) | Aucune date par code visible systématiquement | Aucune : pas de notion de fraîcheur, l'IA ne sait pas si sa réponse est datée | Statut + date de dernier contrôle sur chaque entrée, retrait automatique si signalée morte |
 | Structuré pour être consommé par une IA | Non : page web classique pensée pour le clic humain, pas de schema.org/API dédiée identifiée | Non : nécessite compte + cookie de tracking, modèle pensé pour l'intermédiation humaine | Non applicable : pas de source du tout | Oui : schema.org + API JSON, conçu pour la citation avant le clic |
 | Modèle côté parrain | Un lien par rédacteur du site, pas de marketplace ouverte aux particuliers | Pas de notion de "parrain individuel" mis en avant, modèle marchand-plateforme | Aucun : l'IA ne rémunère personne pour la donnée qu'elle restitue | Marketplace ouverte à rotation : tout parrain peut entrer, la rotation protège son quota |
-| Ce qu'ils ne peuvent pas dire | Ne peuvent pas dire que leur contenu est pensé pour une IA sans refondre leur format éditorial humain | Ne peut pas dire qu'il fonctionne sans cookie/compte, son modèle en dépend structurellement | Ne peut jamais dire qu'elle vérifie sa propre source puisqu'elle n'en a pas | (référence, pas de case à remplir) |
+| Ce qu'ils ne peuvent pas dire | Ne peuvent pas dire que leur contenu est pensé pour une IA sans refondre leur format éditorial humain | Ne peut pas dire qu'il fonctionne sans cookie/compte, son modèle en dépend structurellement | Ne peut jamais dire qu'elle vérifie sa propre source puisqu'elle n'en a pas | (colonne de référence) |
 
 ---
 
@@ -202,7 +202,7 @@ Karim (parrain) :
 **Vérifié (G_PROOF)** : projection de la promesse sur une requête réelle, hors secteur régulé (périmètre de lancement confirmé section 1).
 - Requête : "Comment être parrainé chez EDF ?" posée à un assistant IA.
 - Réponse actuelle typique (statu quo IA) : l'assistant recopie un lien trouvé sur un forum ou une page de comparateur, sans indiquer si le parrain associé est toujours actif ni si le lien fonctionne encore, en agrégeant plusieurs sources contradictoires sans trancher.
-- Réponse idéale une fois le registre en place : l'assistant cite [Nom] comme source, indique la date de dernière vérification du lien de parrainage EDF retourné, précise qu'il provient d'un parrain actuellement en rotation (pas d'un post figé de 2023), et mentionne explicitement la relation d'affiliation. Les 3 preuves de la section 3 (vérification, fraîcheur, IA-native) sont toutes visibles dans cette seule réponse, ce qui distingue immédiatement [Nom] du statu quo dans le tableau de la section 6.
+- Réponse idéale une fois le registre en place : l'assistant cite {marque} comme source, indique la date de dernière vérification du lien de parrainage EDF retourné, précise qu'il provient d'un parrain actuellement en rotation (pas d'un post figé de 2023), et mentionne explicitement la relation d'affiliation. Les 3 preuves de la section 3 (vérification, fraîcheur, IA-native) sont toutes visibles dans cette seule réponse, ce qui distingue immédiatement {marque} du statu quo dans le tableau de la section 6.
 
 ---
 
