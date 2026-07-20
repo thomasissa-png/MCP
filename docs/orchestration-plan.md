@@ -24,9 +24,9 @@
 ## Suivi des phases
 | Phase | Contenu | Statut |
 |---|---|---|
-| 0 — Fondations | creative-strategy → product-manager → data-analyst ; legal ‖ | **REFRESH EN COURS** — corrections Thomas au checkpoint (marque Parrainly, banques/fintech INCLUSES, V1 cercle fermé T&E, persona jeune actif/entrepreneur, base réelle Emmanuel). Refresh parallèle : @creative-strategy + @legal + @product-manager |
+| 0 — Fondations | creative-strategy → product-manager → data-analyst ; legal ‖ | **COMPLETE** (refresh corrections Thomas intégré : Parrainly, banques/fintech incluses, V1 cercle fermé, personas A1/A2 fintech, schéma Emmanuel ; alignment C7 : 0 Léa/EDF actif ; 9/9 gates/livrable) |
 | 0b — Agents custom | @agent-factory si specs le recommandent | à évaluer |
-| 1 — Expérience | ux → design ; copywriter ‖ | à venir |
+| 1 — Expérience | ux → design ; copywriter ‖ | **EN COURS — vague A : @ux + @copywriter** (@design en vague B) |
 | 2 — Développement | infrastructure → fullstack + ia → ux review → qa → infra | à venir |
 | 3 — Contenu | copywriter → seo + geo | à venir (critique) |
 | 4 — Acquisition | growth + social ; sales-enablement | à venir |
@@ -44,6 +44,7 @@
 
 ## Reprise (multi-sessions)
 Commande : « Lis project-context.md et docs/orchestration-plan.md, continue où on s'est arrêté. »
-Phase en cours : **0 — COMPLETE, CHECKPOINT en attente de validation utilisateur.**
-Prochaine action : dès validation utilisateur (persona, positionnement, KPI, scope V1 + 5 hypothèses D1-D5) → lancer **Phase 1 (Expérience)** : @ux → @design ; @copywriter ‖.
-Points à trancher par Thomas au checkpoint : nom de marque, verticales exactes hors-régulé, mécanique de commission, plafonds par enseigne, opportunité du test H1.
+Phase en cours : **1 — Expérience, EN COURS.** Vague A lancée : @ux + @copywriter (@design en vague B après @ux).
+Checkpoint Phase 0 validé par Thomas (corrections : Parrainly, banques incluses, V1 cercle fermé, base réelle Emmanuel).
+Prochaine action : à leur retour → @design (vague B), puis checkpoint specs (@reviewer) avant Phase 2.
+Points restant à trancher par Thomas (non bloquants pour la Phase 1) : plafonds de parrainage par programme (via champ `conditions`), vérification CGU des 9 programmes avant mise en ligne réelle, opportunité du test de distribution H1.
