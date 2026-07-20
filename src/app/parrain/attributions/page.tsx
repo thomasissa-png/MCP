@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: 'Mes attributions', robots: { index: 
 
 export default async function AttributionsPage() {
   const user = await requireUser('/parrain/attributions');
-  const rows = getAttributionsAConfirmer(user.parrainId);
+  const rows = await getAttributionsAConfirmer(user.parrainId);
   const items = rows.map((r) => ({
     attributionId: r.attributionId,
     nomProgramme: r.nomProgramme,

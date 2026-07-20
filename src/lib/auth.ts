@@ -6,7 +6,7 @@
  * (lien magique) ou le cookie (session).
  */
 import { and, eq, gte, isNull, lt } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb, rowsAffected } from '@/db';
 import { magicLinkToken, session } from '@/db/schema';
 import { emitEvent } from '@/lib/analytics';
 import {
@@ -49,9 +49,10 @@ export type MagicLinkResult =
 export async function createMagicLinkToken(email: string, returnTo: string | null): Promise<MagicLinkResult> {
   const now = Date.now();
   const emailNorm = email.trim().toLowerCase();
+  const db = await getDb();
 
   // Cooldown : derniere demande < 60 s.
-  const recent = db
+  const recent = await db
     .select({ createdAt: magicLinkToken.createdAt })
     .from(magicLinkToken)
     .where(and(eq(magicLinkToken.email, emailNorm), gte(magicLinkToken.createdAt, new Date(now - MAGIC_LINK_COOLDOWN_SECONDS * 1000))))
@@ -63,7 +64,7 @@ export async function createMagicLinkToken(email: string, returnTo: string | nul
   }
 
   // Plafond horaire.
-  const lastHour = db
+  const lastHour = await db
     .select({ createdAt: magicLinkToken.createdAt })
     .from(magicLinkToken)
     .where(and(eq(magicLinkToken.email, emailNorm), gte(magicLinkToken.createdAt, new Date(now - 3_600_000))))
@@ -73,14 +74,16 @@ export async function createMagicLinkToken(email: string, returnTo: string | nul
   }
 
   // Invalide les tokens anterieurs non consommes.
-  db.update(magicLinkToken)
+  await db
+    .update(magicLinkToken)
     .set({ consumedAt: new Date(now) })
     .where(and(eq(magicLinkToken.email, emailNorm), isNull(magicLinkToken.consumedAt)))
     .run();
 
   const rawToken = generateOpaqueToken();
   const tokenHash = await hashToken(rawToken);
-  db.insert(magicLinkToken)
+  await db
+    .insert(magicLinkToken)
     .values({
       tokenHash,
       email: emailNorm,
@@ -106,29 +109,33 @@ export type ConsumeResult =
  * read-check-update (deux lecteurs voyant le token non consomme puis l'utilisant tous les deux).
  */
 export async function consumeMagicLinkToken(rawToken: string): Promise<ConsumeResult> {
+  const db = await getDb();
   const tokenHash = await hashToken(rawToken);
-  const row = db.select().from(magicLinkToken).where(eq(magicLinkToken.tokenHash, tokenHash)).get();
+  const row = await db.select().from(magicLinkToken).where(eq(magicLinkToken.tokenHash, tokenHash)).get();
   if (!row) return { ok: false, reason: 'invalid' };
   if (row.consumedAt) return { ok: false, reason: 'consumed' };
   if (Date.now() > row.expiresAt.getTime()) return { ok: false, reason: 'expired' };
 
   // Consommation atomique : ne reussit que si le token est encore non consomme au moment de l'ecriture.
-  const res = db
+  // `rowsAffected` normalise le decompte (better-sqlite3 RunResult.changes / D1 D1Result.meta.changes).
+  const res = await db
     .update(magicLinkToken)
     .set({ consumedAt: new Date() })
     .where(and(eq(magicLinkToken.tokenHash, tokenHash), isNull(magicLinkToken.consumedAt)))
     .run();
-  if (res.changes !== 1) return { ok: false, reason: 'consumed' };
+  if (rowsAffected(res) !== 1) return { ok: false, reason: 'consumed' };
 
   return { ok: true, email: row.email, returnTo: row.returnTo };
 }
 
 /** Cree une session et renvoie le token brut (a poser en cookie httpOnly). */
 export async function createSession(email: string): Promise<string> {
+  const db = await getDb();
   const rawToken = generateOpaqueToken(48);
   const tokenHash = await hashToken(rawToken);
   const now = Date.now();
-  db.insert(session)
+  await db
+    .insert(session)
     .values({
       tokenHash,
       email: email.trim().toLowerCase(),
@@ -148,11 +155,12 @@ export type SessionUser = { email: string; nom: string; parrainId: string };
  */
 export async function getSessionUser(rawToken: string | undefined): Promise<SessionUser | null> {
   if (!rawToken) return null;
+  const db = await getDb();
   const tokenHash = await hashToken(rawToken);
-  const row = db.select().from(session).where(eq(session.tokenHash, tokenHash)).get();
+  const row = await db.select().from(session).where(eq(session.tokenHash, tokenHash)).get();
   if (!row) return null;
   if (Date.now() > row.expiresAt.getTime()) {
-    db.delete(session).where(eq(session.tokenHash, tokenHash)).run();
+    await db.delete(session).where(eq(session.tokenHash, tokenHash)).run();
     // Session valide auparavant mais expiree : friction de reconnexion forcee (tracking-plan, etat 12).
     emitEvent('session_parrain_expiree', { email_domaine: row.email.split('@')[1] ?? null });
     return null;
@@ -161,7 +169,8 @@ export async function getSessionUser(rawToken: string | undefined): Promise<Sess
   if (!account) return null; // email retire de l'allowlist entre-temps
 
   const now = Date.now();
-  db.update(session)
+  await db
+    .update(session)
     .set({ lastSeenAt: new Date(now), expiresAt: new Date(now + SESSION_TTL_DAYS * 86_400_000) })
     .where(eq(session.tokenHash, tokenHash))
     .run();
@@ -172,13 +181,15 @@ export async function getSessionUser(rawToken: string | undefined): Promise<Sess
 /** Detruit une session (deconnexion). */
 export async function destroySession(rawToken: string | undefined): Promise<void> {
   if (!rawToken) return;
+  const db = await getDb();
   const tokenHash = await hashToken(rawToken);
-  db.delete(session).where(eq(session.tokenHash, tokenHash)).run();
+  await db.delete(session).where(eq(session.tokenHash, tokenHash)).run();
 }
 
 /** Purge best-effort des tokens/sessions expires (peut etre appelee par un cron). */
-export function purgeExpiredAuth(): void {
+export async function purgeExpiredAuth(): Promise<void> {
+  const db = await getDb();
   const now = new Date();
-  db.delete(magicLinkToken).where(lt(magicLinkToken.expiresAt, now)).run();
-  db.delete(session).where(lt(session.expiresAt, now)).run();
+  await db.delete(magicLinkToken).where(lt(magicLinkToken.expiresAt, now)).run();
+  await db.delete(session).where(lt(session.expiresAt, now)).run();
 }

@@ -36,7 +36,7 @@ export async function POST(
       : null;
 
   try {
-    const result = confirmAttribution(user.parrainId, attributionId, montant);
+    const result = await confirmAttribution(user.parrainId, attributionId, montant);
     if (!result.ok) {
       if (result.error === 'acces_refuse') return NextResponse.json({ error: 'acces_refuse' }, { status: 403 });
       return NextResponse.json({ error: result.error }, { status: 409 });

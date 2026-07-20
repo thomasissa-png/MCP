@@ -14,7 +14,7 @@
  * EMBARQUEES dans la donnee (exigence @legal : l'IA doit pouvoir restituer la relation d'affiliation).
  */
 import { asc } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { offre, type Offre } from '@/db/schema';
 import { CATEGORY_META, isServable, offreSlug } from '@/lib/offres';
 import { slugify } from '@/lib/slug';
@@ -91,8 +91,9 @@ export function toPublicOffre(o: Offre): PublicOffre {
  * `expire`, `en_attente_*`, `suspendu`, `retire` sont exclus du miroir comme du listing public
  * (levier de restriction generique pilote par `statut`, aucun cas particulier code par marque).
  */
-export function listPublicOffres(): PublicOffre[] {
-  const rows = db
+export async function listPublicOffres(): Promise<PublicOffre[]> {
+  const db = await getDb();
+  const rows = await db
     .select()
     .from(offre)
     .orderBy(asc(offre.prioriteAffichage), asc(offre.nomProgramme))
@@ -101,8 +102,9 @@ export function listPublicOffres(): PublicOffre[] {
 }
 
 /** Resout une offre publique par id (REF-001) OU slug (trade-republic). Non servable => undefined. */
-export function getPublicOffre(idOrSlug: string): PublicOffre | undefined {
-  const rows = db.select().from(offre).all();
+export async function getPublicOffre(idOrSlug: string): Promise<PublicOffre | undefined> {
+  const db = await getDb();
+  const rows = await db.select().from(offre).all();
   const key = idOrSlug.trim().toLowerCase();
   const match = rows.find(
     (o) => o.id.toLowerCase() === key || slugify(o.nomProgramme) === key,
@@ -125,8 +127,8 @@ export type PublicCategorie = {
  * Liste des categories actives (CATEGORY_META de lib/offres) avec le nombre d'offres servables.
  * Import dynamique de CATEGORY_META evite un cycle d'import (lib/offres importe deja lib/ai indirectement).
  */
-export function listPublicCategories(): PublicCategorie[] {
-  const publics = listPublicOffres();
+export async function listPublicCategories(): Promise<PublicCategorie[]> {
+  const publics = await listPublicOffres();
   return CATEGORY_META.map((c) => {
     const slug = slugify(c.nom);
     return {

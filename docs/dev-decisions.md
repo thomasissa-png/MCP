@@ -40,7 +40,15 @@ Pool éligible = liens de l'offre `actif`, parrain `actif`, quota non atteint. T
 
 ### Contrainte self-fetch (cible Cloudflare)
 
-Toute la logique métier est dans `src/lib/` (`attribution.ts`, `freshness.ts`, `analytics.ts`) et importée DIRECTEMENT par les route handlers. Aucun appel réseau interne. Prod D1 : `db/index.ts` documente le branchement du binding D1 (même schéma réutilisé). Note : la transaction synchrone better-sqlite3 devra être portée en `batch()` D1 côté @infrastructure.
+Toute la logique métier est dans `src/lib/` (`attribution.ts`, `freshness.ts`, `analytics.ts`) et importée DIRECTEMENT par les route handlers. Aucun appel réseau interne. Prod D1 : `db/index.ts` documente le branchement du binding D1 (même schéma réutilisé).
+
+### Compatibilité Cloudflare D1 — couche DB (Phase A, 2026-07-20)
+
+`src/db/index.ts` : le singleton `db` (better-sqlite3 à l'import) est remplacé par `getDb()` **par requête**. Discriminant `navigator.userAgent === 'Cloudflare-Workers'` (zéro import), imports dynamiques (better-sqlite3 jamais dans le bundle Worker ; `@opennextjs/cloudflare` + `drizzle-orm/d1` jamais chargés en Node). Toute la logique DB est passée **async** : chaque terminal `.get()/.all()/.run()` est `await` (no-op en Node sync, résout la Promise sous D1). `better-sqlite3` déplacé en `devDependencies`.
+
+**Port des transactions → `runAtomic()`** : better-sqlite3 est synchrone avec transaction interactive ; D1 n'a **pas** de transaction interactive, seulement `db.batch([...])`. Architecture uniforme adoptée : `lire → décider (JS) → écrire atomiquement`. `runAtomic(db, [statements])` discrimine au runtime (batch D1 / `transaction()` synchrone better-sqlite3). Concerne l'arbitrage US-03 (quota + insert attribution) et la confirmation US-09 (update + signalement). Le shim `rowsAffected()` normalise le décompte `.run()` (better-sqlite3 `.changes` vs D1 `.meta.changes`).
+
+**Limite sémantique irréductible (documentée)** : sous D1, les lectures qui décident du lot s'exécutent HORS de la portée atomique → un `lire→décider→écrire` n'est pas sérialisé contre un écrivain concurrent (fenêtre de course possible, ex. double incrément de quota sous forte concurrence). Négligeable en cercle fermé V1. Durcissement Phase B : UPDATE conditionnel gardé (`WHERE quota < max`) + vérif `rowsAffected()`, ou verrou Durable Object. Le chemin Node conserve l'atomicité complète (reads+writes dans la même transaction de connexion unique).
 
 ### Points reportés / hors périmètre vague 2a
 

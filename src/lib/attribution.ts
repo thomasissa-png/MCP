@@ -6,7 +6,7 @@
  * jamais appelee via une URL publique. Aucun appel reseau interne.
  */
 import { and, asc, eq, isNull, lt, or, sql } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb, runAtomic } from '@/db';
 import { attribution, lienParrainage, offre, parrain } from '@/db/schema';
 import { emitEvent } from '@/lib/analytics';
 import { CONVERSION_WINDOW_DAYS, TOKEN_LENGTH } from '@/config/socle';
@@ -70,100 +70,102 @@ export type GenerateAttributionResult = {
  * En cercle ferme V1, le pool contient les liens de Thomas et/ou Emmanuel : la rotation FIFO alterne
  * entre leurs deux jeux de liens tant que les deux ont du quota.
  */
-export function generateAttribution(input: GenerateAttributionInput): GenerateAttributionResult {
+export async function generateAttribution(
+  input: GenerateAttributionInput,
+): Promise<GenerateAttributionResult> {
   const startedAt = Date.now();
   const canalSource = input.canalSource ?? 'page_web';
   const origineDetectee = input.origineDetectee ?? 'direct_autre';
+  const db = await getDb();
 
   try {
-    const result = db.transaction((tx) => {
-      // L'offre doit exister et etre diffusable (statut `actif`). `restreint`/`expire`/... -> indisponible.
-      const offreRow = tx.select().from(offre).where(eq(offre.id, input.offreId)).get();
-      if (!offreRow) throw new SocleError('offre_indisponible');
-      if (offreRow.statut !== 'actif') throw new SocleError('offre_indisponible');
+    // Architecture « lire -> decider -> ecrire atomiquement » : D1 n'a pas de transaction interactive,
+    // on lit d'abord (hors batch), on decide en JS, puis on regroupe les ECRITURES dans un lot atomique
+    // (runAtomic = batch D1 / transaction better-sqlite3). Voir limite semantique dans src/db/index.ts.
 
-      // Pool eligible, deja trie (FIFO + departage deterministe).
-      const pool = tx
-        .select({
-          lienId: lienParrainage.id,
-          parrainId: lienParrainage.parrainId,
-          url: lienParrainage.urlParrainage,
-          quotaMax: lienParrainage.quotaMax,
-          quotaUtilise: lienParrainage.quotaUtilise,
-        })
-        .from(lienParrainage)
-        .innerJoin(parrain, eq(parrain.id, lienParrainage.parrainId))
-        .where(
-          and(
-            eq(lienParrainage.offreId, input.offreId),
-            eq(lienParrainage.statut, 'actif'),
-            eq(parrain.statut, 'actif'),
-            or(
-              isNull(lienParrainage.quotaMax),
-              lt(lienParrainage.quotaUtilise, lienParrainage.quotaMax),
-            ),
+    // L'offre doit exister et etre diffusable (statut `actif`). `restreint`/`expire`/... -> indisponible.
+    const offreRow = await db.select().from(offre).where(eq(offre.id, input.offreId)).get();
+    if (!offreRow) throw new SocleError('offre_indisponible');
+    if (offreRow.statut !== 'actif') throw new SocleError('offre_indisponible');
+
+    // Pool eligible, deja trie (FIFO + departage deterministe).
+    const pool = await db
+      .select({
+        lienId: lienParrainage.id,
+        parrainId: lienParrainage.parrainId,
+        url: lienParrainage.urlParrainage,
+        quotaMax: lienParrainage.quotaMax,
+        quotaUtilise: lienParrainage.quotaUtilise,
+      })
+      .from(lienParrainage)
+      .innerJoin(parrain, eq(parrain.id, lienParrainage.parrainId))
+      .where(
+        and(
+          eq(lienParrainage.offreId, input.offreId),
+          eq(lienParrainage.statut, 'actif'),
+          eq(parrain.statut, 'actif'),
+          or(
+            isNull(lienParrainage.quotaMax),
+            lt(lienParrainage.quotaUtilise, lienParrainage.quotaMax),
           ),
-        )
-        .orderBy(
-          asc(lienParrainage.dateDernierTour),
-          asc(lienParrainage.createdAt),
-          asc(lienParrainage.id),
-        )
-        .all();
+        ),
+      )
+      .orderBy(
+        asc(lienParrainage.dateDernierTour),
+        asc(lienParrainage.createdAt),
+        asc(lienParrainage.id),
+      )
+      .all();
 
-      if (pool.length === 0) {
-        // Pool vide (US-03 crit.4 -> US-04). NE PAS basculer l'offre ici : le throw ci-dessous
-        // ROLLBACK la transaction (better-sqlite3), donc tout update fait dans ce bloc serait annule.
-        // La bascule en `en_attente_parrain` est effectuee APRES coup, dans le catch (hors transaction).
-        throw new SocleError('pool_vide');
-      }
+    // Pool vide (US-03 crit.4 -> US-04) : aucune ecriture lancee, la bascule `en_attente_parrain` se
+    // fait dans le catch. Plus de risque de « rollback perdu » : les lectures sont hors portee atomique.
+    if (pool.length === 0) throw new SocleError('pool_vide');
 
-      const chosen = pool[0];
-      if (!chosen) throw new SocleError('pool_vide');
+    const chosen = pool[0];
+    if (!chosen) throw new SocleError('pool_vide');
 
-      // Increment atomique du quota + marquage du tour (rotation FIFO).
-      tx.update(lienParrainage)
+    const attributionId = crypto.randomUUID();
+    const token = generateToken();
+    const now = new Date();
+    const dateExpiration = new Date(now.getTime() + CONVERSION_WINDOW_DAYS * 86_400_000);
+
+    // Ecritures groupees atomiquement : increment de quota + marquage du tour (FIFO), puis creation de
+    // l'attribution. Tout-ou-rien (crit.6 : pas de creation d'attribution sans decompte de quota).
+    await runAtomic(db, [
+      db
+        .update(lienParrainage)
         .set({
           quotaUtilise: sql`${lienParrainage.quotaUtilise} + 1`,
-          dateDernierTour: new Date(),
+          dateDernierTour: now,
         })
-        .where(eq(lienParrainage.id, chosen.lienId))
-        .run();
-
-      const attributionId = crypto.randomUUID();
-      const token = generateToken();
-      const now = new Date();
-      const dateExpiration = new Date(now.getTime() + CONVERSION_WINDOW_DAYS * 86_400_000);
-
-      tx.insert(attribution)
-        .values({
-          attributionId,
-          offreId: input.offreId,
-          parrainId: chosen.parrainId,
-          lienId: chosen.lienId,
-          token,
-          canalSource,
-          origineDetectee,
-          statut: 'en_attente',
-          sessionId: input.sessionId,
-          dateGeneration: now,
-          dateExpiration,
-        })
-        .run();
-
-      return {
+        .where(eq(lienParrainage.id, chosen.lienId)),
+      db.insert(attribution).values({
         attributionId,
-        token,
+        offreId: input.offreId,
         parrainId: chosen.parrainId,
         lienId: chosen.lienId,
-        urlParrainage: chosen.url,
-      } satisfies GenerateAttributionResult;
-    });
+        token,
+        canalSource,
+        origineDetectee,
+        statut: 'en_attente',
+        sessionId: input.sessionId,
+        dateGeneration: now,
+        dateExpiration,
+      }),
+    ]);
+
+    const result: GenerateAttributionResult = {
+      attributionId,
+      token,
+      parrainId: chosen.parrainId,
+      lienId: chosen.lienId,
+      urlParrainage: chosen.url,
+    };
 
     // Equite de rotation (US-03) : trace chaque parrain ayant un lien sur l'offre mais ecarte du pool
     // (quota atteint / parrain ou lien non actif). Best-effort, n'affecte jamais la selection deja faite.
     try {
-      const candidats = db
+      const candidats = await db
         .select({
           parrainId: lienParrainage.parrainId,
           lienStatut: lienParrainage.statut,
@@ -197,11 +199,12 @@ export function generateAttribution(input: GenerateAttributionInput): GenerateAt
     return result;
   } catch (err) {
     const code = err instanceof SocleError ? err.code : 'moteur_indisponible';
-    // Pool vide : l'offre bascule "en attente de parrain" HORS transaction (celle-ci a rollback).
-    // REGRESSION: bascule en_attente_parrain perdue car ecrite dans la transaction qui throw
-    // (better-sqlite3 rollback) — fixe le 2026-07-20. Test: tests/unit/attribution.test.ts.
+    // Pool vide : l'offre bascule "en attente de parrain". Les lectures ayant lieu hors de toute portee
+    // atomique (architecture lire->decider->ecrire, cf. src/db/index.ts), cette ecriture est independante
+    // et ne peut plus etre "perdue" par un rollback. Test: tests/unit/attribution.test.ts.
     if (code === 'pool_vide') {
-      db.update(offre)
+      await db
+        .update(offre)
         .set({ statut: 'en_attente_parrain', updatedAt: new Date() })
         .where(eq(offre.id, input.offreId))
         .run();
@@ -226,11 +229,12 @@ export type RedirectResolution =
  *   - fenetre de conversion depassee -> attribution passee `expiree`, `token_expire`.
  *   - sinon : journalise la redirection (une seule fois) et renvoie l'URL du lien attribue.
  */
-export function resolveAndRecordRedirect(
+export async function resolveAndRecordRedirect(
   token: string,
   referrer: string | null,
-): RedirectResolution {
-  const row = db
+): Promise<RedirectResolution> {
+  const db = await getDb();
+  const row = await db
     .select({
       attributionId: attribution.attributionId,
       statut: attribution.statut,
@@ -264,7 +268,8 @@ export function resolveAndRecordRedirect(
   const now = Date.now();
   if (row.dateExpiration && now > row.dateExpiration.getTime()) {
     if (row.statut === 'en_attente') {
-      db.update(attribution)
+      await db
+        .update(attribution)
         .set({ statut: 'expiree' })
         .where(eq(attribution.attributionId, row.attributionId))
         .run();
@@ -274,7 +279,8 @@ export function resolveAndRecordRedirect(
 
   // Journalise le premier clic reel (US-01 crit.3). Les clics ulterieurs redirigent sans reecrire.
   if (!row.dateRedirection) {
-    db.update(attribution)
+    await db
+      .update(attribution)
       .set({ dateRedirection: new Date(now), referrerRedirection: referrer })
       .where(eq(attribution.attributionId, row.attributionId))
       .run();

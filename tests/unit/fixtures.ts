@@ -3,7 +3,7 @@
  * minimal et controle (independant des 9 offres reelles) via la meme connexion `@/db` que la logique
  * testee. Appele en beforeEach : chaque test part d'un etat connu.
  */
-import { db } from '@/db';
+import { getDb } from '@/db';
 import {
   attribution,
   lienParrainage,
@@ -14,15 +14,19 @@ import {
   signalement,
 } from '@/db/schema';
 
+// Les fixtures utilisent la MEME connexion que le code teste (`getDb()` -> singleton Node), donc aucun
+// probleme de visibilite cross-connexion. Elles sont async pour refleter l'API reelle (D1-compatible).
+
 /** Vide toutes les tables (ordre respectant les FK : enfants avant parents). */
-export function resetDb(): void {
-  db.delete(signalement).run();
-  db.delete(attribution).run();
-  db.delete(lienParrainage).run();
-  db.delete(offre).run();
-  db.delete(parrain).run();
-  db.delete(magicLinkToken).run();
-  db.delete(session).run();
+export async function resetDb(): Promise<void> {
+  const db = await getDb();
+  await db.delete(signalement).run();
+  await db.delete(attribution).run();
+  await db.delete(lienParrainage).run();
+  await db.delete(offre).run();
+  await db.delete(parrain).run();
+  await db.delete(magicLinkToken).run();
+  await db.delete(session).run();
 }
 
 /** ISO YYYY-MM-DD a N jours dans le passe (dates metier de fraicheur). */
@@ -36,8 +40,10 @@ export const EMMANUEL = 'PAR-EMMANUEL';
 /**
  * Seed les 2 parrains T&E. `statut` surchargeable pour tester l'exclusion (US-03 crit.9).
  */
-export function seedParrains(opts: { thomasStatut?: 'actif' | 'suspendu'; emmanuelStatut?: 'actif' | 'suspendu' } = {}): void {
-  db.insert(parrain)
+export async function seedParrains(opts: { thomasStatut?: 'actif' | 'suspendu'; emmanuelStatut?: 'actif' | 'suspendu' } = {}): Promise<void> {
+  const db = await getDb();
+  await db
+    .insert(parrain)
     .values([
       { id: THOMAS, nom: 'Thomas', email: 'thomas@parrainly.test', statut: opts.thomasStatut ?? 'actif' },
       { id: EMMANUEL, nom: 'Emmanuel', email: 'emmanuel@parrainly.test', statut: opts.emmanuelStatut ?? 'actif' },
@@ -46,7 +52,7 @@ export function seedParrains(opts: { thomasStatut?: 'actif' | 'suspendu'; emmanu
 }
 
 /** Cree une offre `actif` par defaut (dateVerification fraiche). */
-export function seedOffre(
+export async function seedOffre(
   id: string,
   over: Partial<{
     nomProgramme: string;
@@ -55,8 +61,10 @@ export function seedOffre(
     dateVerification: string | null;
     urlParrainage: string;
   }> = {},
-): void {
-  db.insert(offre)
+): Promise<void> {
+  const db = await getDb();
+  await db
+    .insert(offre)
     .values({
       id,
       nomProgramme: over.nomProgramme ?? `Programme ${id}`,
@@ -71,7 +79,7 @@ export function seedOffre(
 /**
  * Cree un lien (unite de rotation). `dateDernierTour` en ms (FIFO), quotaMax null = illimite.
  */
-export function seedLien(
+export async function seedLien(
   id: string,
   parrainId: string,
   offreId: string,
@@ -83,8 +91,10 @@ export function seedLien(
     url: string;
     createdAt: Date;
   }> = {},
-): void {
-  db.insert(lienParrainage)
+): Promise<void> {
+  const db = await getDb();
+  await db
+    .insert(lienParrainage)
     .values({
       id,
       parrainId,

@@ -12,9 +12,9 @@ import { BASE_URL, absUrl, SITE_NAME } from '@/lib/ai/site';
 
 export const dynamic = 'force-dynamic';
 
-export function GET() {
-  const offres = listPublicOffres();
-  const categories = listPublicCategories().filter((c) => c.nombre_offres > 0);
+export async function GET() {
+  const offres = await listPublicOffres();
+  const categories = (await listPublicCategories()).filter((c) => c.nombre_offres > 0);
 
   const categoriesBlock = categories
     .map((c) => `- ${c.nom} (${c.nombre_offres}) : ${c.url_categorie}`)

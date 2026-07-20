@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     // corps vide : on garde le seuil par defaut.
   }
 
-  const result = runFreshnessCheck(maxAgeDays);
+  const result = await runFreshnessCheck(maxAgeDays);
   return NextResponse.json(
     {
       offres_expirees: result.offres_expirees,

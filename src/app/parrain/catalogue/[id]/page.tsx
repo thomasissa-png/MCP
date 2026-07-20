@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { eq } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { offre } from '@/db/schema';
 import { requireUser } from '@/lib/session-server';
 import { ParrainNav } from '@/components/parrain/ParrainNav';
@@ -15,7 +15,8 @@ export const metadata: Metadata = { title: 'Modifier une offre', robots: { index
 export default async function OffreEditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requireUser(`/parrain/catalogue/${id}`);
-  const row = db.select().from(offre).where(eq(offre.id, id)).get();
+  const db = await getDb();
+  const row = await db.select().from(offre).where(eq(offre.id, id)).get();
   if (!row) notFound();
 
   return (

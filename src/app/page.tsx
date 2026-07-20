@@ -44,7 +44,7 @@ export default async function HomePage() {
   const [offres, categories] = await Promise.all([getAllOffres(), getCategoriesWithCount()]);
   const catalogue = sortForCatalogue(offres);
   // JSON-LD (AEO/GEO) : identite de marque (Organization/WebSite), catalogue citable (ItemList) et FAQ.
-  const publicOffres = listPublicOffres();
+  const publicOffres = await listPublicOffres();
   const jsonLd = [
     organizationJsonLd(),
     webSiteJsonLd(),

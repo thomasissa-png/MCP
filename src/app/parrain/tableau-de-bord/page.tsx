@@ -14,9 +14,11 @@ export const metadata: Metadata = { title: 'Tableau de bord parrain', robots: { 
 
 export default async function DashboardPage() {
   const user = await requireUser('/parrain/tableau-de-bord');
-  const liens = getLiensForParrain(user.parrainId);
-  const prime = getPrimeEstimee(user.parrainId);
-  const aConfirmer = getAttributionsAConfirmer(user.parrainId);
+  const [liens, prime, aConfirmer] = await Promise.all([
+    getLiensForParrain(user.parrainId),
+    getPrimeEstimee(user.parrainId),
+    getAttributionsAConfirmer(user.parrainId),
+  ]);
 
   const statutLabel: Record<string, string> = {
     actif: 'actif',

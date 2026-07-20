@@ -4,7 +4,7 @@
  */
 import { beforeEach, describe, expect, it } from 'vitest';
 import { and, eq, isNull } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { magicLinkToken } from '@/db/schema';
 import {
   consumeMagicLinkToken,
@@ -17,8 +17,8 @@ import { resetDb } from './fixtures';
 
 const EMMANUEL_EMAIL = 'emmanuel@parrainly.test';
 
-beforeEach(() => {
-  resetDb();
+beforeEach(async () => {
+  await resetDb();
 });
 
 describe('findParrainAccount — allowlist stricte T&E', () => {
@@ -49,7 +49,8 @@ describe('createMagicLinkToken + consume — usage unique', () => {
   it('ne stocke jamais le token brut : seul le hash SHA-256 est en base', async () => {
     const created = await createMagicLinkToken(EMMANUEL_EMAIL, null);
     if (!created.ok) return;
-    const rows = db.select().from(magicLinkToken).all();
+    const db = await getDb();
+    const rows = await db.select().from(magicLinkToken).all();
     expect(rows).toHaveLength(1);
     expect(rows[0]?.tokenHash).toBe(await hashToken(created.rawToken));
     expect(rows[0]?.tokenHash).not.toBe(created.rawToken);
@@ -62,7 +63,9 @@ describe('createMagicLinkToken + consume — usage unique', () => {
   it('token expire -> expired (jamais consomme si perime)', async () => {
     const raw = generateOpaqueToken();
     const tokenHash = await hashToken(raw);
-    db.insert(magicLinkToken)
+    const db = await getDb();
+    await db
+      .insert(magicLinkToken)
       .values({
         tokenHash,
         email: EMMANUEL_EMAIL,
@@ -91,8 +94,10 @@ describe('createMagicLinkToken — cooldown, plafond horaire, invalidation', () 
   it('plafond horaire : 5 demandes deja passees dans l heure -> rate_limit', async () => {
     // On insere 5 tokens dto il y a 5 min (hors fenetre cooldown 60 s, dans la fenetre 1 h).
     const fiveMinAgo = Date.now() - 5 * 60_000;
+    const db = await getDb();
     for (let i = 0; i < 5; i += 1) {
-      db.insert(magicLinkToken)
+      await db
+        .insert(magicLinkToken)
         .values({
           tokenHash: await hashToken(generateOpaqueToken()),
           email: EMMANUEL_EMAIL,
@@ -110,7 +115,9 @@ describe('createMagicLinkToken — cooldown, plafond horaire, invalidation', () 
   it('invalide les tokens anterieurs non consommes (un seul lien valide a la fois)', async () => {
     // Token anterieur non consomme, cree il y a 2 min (hors cooldown).
     const oldRaw = generateOpaqueToken();
-    db.insert(magicLinkToken)
+    const db = await getDb();
+    await db
+      .insert(magicLinkToken)
       .values({
         tokenHash: await hashToken(oldRaw),
         email: EMMANUEL_EMAIL,
@@ -126,7 +133,7 @@ describe('createMagicLinkToken — cooldown, plafond horaire, invalidation', () 
     // L ancien token est desormais consomme -> inutilisable.
     expect(await consumeMagicLinkToken(oldRaw)).toEqual({ ok: false, reason: 'consumed' });
     // Aucun token non consomme autre que le nouveau.
-    const openTokens = db
+    const openTokens = await db
       .select()
       .from(magicLinkToken)
       .where(and(eq(magicLinkToken.email, EMMANUEL_EMAIL), isNull(magicLinkToken.consumedAt)))

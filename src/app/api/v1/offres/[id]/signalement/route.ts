@@ -11,7 +11,7 @@
  */
 import { NextResponse, type NextRequest } from 'next/server';
 import { and, eq, gte } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { offre, signalement } from '@/db/schema';
 import { emitEvent } from '@/lib/analytics';
 import {
@@ -25,8 +25,9 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
+  const db = await getDb();
 
-  const offreRow = db.select({ id: offre.id }).from(offre).where(eq(offre.id, id)).get();
+  const offreRow = await db.select({ id: offre.id }).from(offre).where(eq(offre.id, id)).get();
   if (!offreRow) {
     return NextResponse.json({ error: 'offre_inconnue' }, { status: 404 });
   }
@@ -48,7 +49,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   }
 
   const signalementId = crypto.randomUUID();
-  db.insert(signalement)
+  await db
+    .insert(signalement)
     .values({ id: signalementId, offreId: id, sessionId, statut: 'ouvert' })
     .run();
   dedupSet(dedupKey, signalementId);
@@ -57,7 +59,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
 
   // Seuil de re-vérification : compte les signalements distincts de l'offre sur la fenêtre glissante.
   const windowStart = new Date(Date.now() - SIGNALEMENT_REVERIFICATION_WINDOW_SECONDS * 1000);
-  const recent = db
+  const recent = await db
     .select({ id: signalement.id })
     .from(signalement)
     .where(and(eq(signalement.offreId, id), gte(signalement.createdAt, windowStart)))

@@ -41,8 +41,8 @@ function maxDate(dates: (Date | null)[]): Date {
   return valid.reduce((a, b) => (b.getTime() > a.getTime() ? b : a));
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const offres = listPublicOffres();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const offres = await listPublicOffres();
   const offreDates = offres.map((o) => parseDate(o.date_verification));
   const catalogueLastModified = maxDate(offreDates);
 
@@ -54,7 +54,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: absUrl('/confidentialite'), lastModified: CONTENT_LAST_MODIFIED, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
-  const categoryPages: MetadataRoute.Sitemap = listPublicCategories()
+  const categoryPages: MetadataRoute.Sitemap = (await listPublicCategories())
     .filter((c) => c.nombre_offres > 0)
     .map((c) => ({
       url: c.url_categorie,

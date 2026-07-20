@@ -9,8 +9,8 @@ import { BASE_URL } from '@/lib/ai/site';
 
 export const dynamic = 'force-dynamic';
 
-export function GET() {
-  const categories = listPublicCategories();
+export async function GET() {
+  const categories = await listPublicCategories();
   return NextResponse.json(
     {
       version: 'v1',

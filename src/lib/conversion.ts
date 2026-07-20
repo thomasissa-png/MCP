@@ -6,7 +6,7 @@
  * passe `en_verification_manuelle` (pas `confirmee`) et un signalement est créé pour revue back-office.
  */
 import { and, eq, gte, isNotNull } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb, runAtomic } from '@/db';
 import { attribution, signalement } from '@/db/schema';
 import { emitEvent } from '@/lib/analytics';
 import { PLAUSIBILITY_WINDOW_DAYS } from '@/config/socle';
@@ -15,76 +15,90 @@ export type ConfirmResult =
   | { ok: true; statut: 'confirmee' | 'en_verification_manuelle' }
   | { ok: false; error: 'acces_refuse' | 'redirection_absente' | 'fenetre_expiree' };
 
-export function confirmAttribution(
+export async function confirmAttribution(
   parrainId: string,
   attributionId: string,
   montantCommission: number | null,
-): ConfirmResult {
-  return db.transaction((tx): ConfirmResult => {
-    const row = tx.select().from(attribution).where(eq(attribution.attributionId, attributionId)).get();
-    if (!row || row.parrainId !== parrainId) return { ok: false, error: 'acces_refuse' };
+): Promise<ConfirmResult> {
+  const db = await getDb();
 
-    // Idempotence (US-09 crit.6) : déjà confirmée -> on renvoie le statut sans re-traiter.
-    if (row.statut === 'confirmee') return { ok: true, statut: 'confirmee' };
-    if (row.statut === 'en_verification_manuelle') return { ok: true, statut: 'en_verification_manuelle' };
+  // Architecture « lire -> decider -> ecrire atomiquement » (D1 sans transaction interactive, cf.
+  // src/db/index.ts). Les lectures/decisions ci-dessous ne mutent rien ; seules les ecritures finales
+  // sont regroupees dans un lot atomique via runAtomic.
+  const row = await db.select().from(attribution).where(eq(attribution.attributionId, attributionId)).get();
+  if (!row || row.parrainId !== parrainId) return { ok: false, error: 'acces_refuse' };
 
-    if (!row.dateRedirection) return { ok: false, error: 'redirection_absente' };
+  // Idempotence (US-09 crit.6) : déjà confirmée -> on renvoie le statut sans re-traiter.
+  if (row.statut === 'confirmee') return { ok: true, statut: 'confirmee' };
+  if (row.statut === 'en_verification_manuelle') return { ok: true, statut: 'en_verification_manuelle' };
 
-    const now = Date.now();
-    if (row.statut === 'expiree' || (row.dateExpiration && now > row.dateExpiration.getTime())) {
-      tx.update(attribution).set({ statut: 'expiree' }).where(eq(attribution.attributionId, attributionId)).run();
-      return { ok: false, error: 'fenetre_expiree' };
-    }
+  if (!row.dateRedirection) return { ok: false, error: 'redirection_absente' };
 
-    const windowStart = new Date(now - PLAUSIBILITY_WINDOW_DAYS * 86_400_000);
+  const now = Date.now();
+  if (row.statut === 'expiree' || (row.dateExpiration && now > row.dateExpiration.getTime())) {
+    await db.update(attribution).set({ statut: 'expiree' }).where(eq(attribution.attributionId, attributionId)).run();
+    return { ok: false, error: 'fenetre_expiree' };
+  }
 
-    // Redirections suivies par ce parrain sur la fenêtre.
-    const redirections = tx
+  const windowStart = new Date(now - PLAUSIBILITY_WINDOW_DAYS * 86_400_000);
+
+  // Redirections suivies par ce parrain sur la fenêtre.
+  const redirections = (
+    await db
       .select({ id: attribution.attributionId })
       .from(attribution)
       .where(and(eq(attribution.parrainId, parrainId), isNotNull(attribution.dateRedirection), gte(attribution.dateRedirection, windowStart)))
-      .all().length;
+      .all()
+  ).length;
 
-    // Confirmations déjà enregistrées par ce parrain sur la fenêtre.
-    const confirmations = tx
+  // Confirmations déjà enregistrées par ce parrain sur la fenêtre.
+  const confirmations = (
+    await db
       .select({ id: attribution.attributionId })
       .from(attribution)
       .where(and(eq(attribution.parrainId, parrainId), eq(attribution.statut, 'confirmee'), isNotNull(attribution.dateConfirmation), gte(attribution.dateConfirmation, windowStart)))
-      .all().length;
+      .all()
+  ).length;
 
-    const depasse = confirmations + 1 > redirections;
-    const statut: 'confirmee' | 'en_verification_manuelle' = depasse ? 'en_verification_manuelle' : 'confirmee';
+  const depasse = confirmations + 1 > redirections;
+  const statut: 'confirmee' | 'en_verification_manuelle' = depasse ? 'en_verification_manuelle' : 'confirmee';
 
-    const delaiJ = Math.max(0, Math.round((now - row.dateGeneration.getTime()) / 86_400_000));
+  const delaiJ = Math.max(0, Math.round((now - row.dateGeneration.getTime()) / 86_400_000));
 
-    tx.update(attribution)
-      .set({
-        statut,
-        dateConfirmation: new Date(now),
-        delaiConfirmationJ: delaiJ,
-        montantCommission: montantCommission ?? undefined,
-        modeConfirmation: 'declaratif_parrain',
-      })
-      .where(eq(attribution.attributionId, attributionId))
-      .run();
+  const updateStmt = db
+    .update(attribution)
+    .set({
+      statut,
+      dateConfirmation: new Date(now),
+      delaiConfirmationJ: delaiJ,
+      montantCommission: montantCommission ?? undefined,
+      modeConfirmation: 'declaratif_parrain',
+    })
+    .where(eq(attribution.attributionId, attributionId));
 
-    if (depasse) {
-      // Signalement pour revue back-office (US-09 crit.7), sans exposer le motif au parrain.
-      tx.insert(signalement)
-        .values({ id: crypto.randomUUID(), attributionId, offreId: row.offreId, statut: 'ouvert' })
-        .run();
-    }
+  // Confirmation (+ signalement si plausibilite depassee) atomiques : tout-ou-rien (US-09 crit.7,
+  // on ne cree jamais un signalement sans le passage en verification manuelle, ni l'inverse).
+  if (depasse) {
+    // Signalement pour revue back-office (US-09 crit.7), sans exposer le motif au parrain.
+    await runAtomic(db, [
+      updateStmt,
+      db
+        .insert(signalement)
+        .values({ id: crypto.randomUUID(), attributionId, offreId: row.offreId, statut: 'ouvert' }),
+    ]);
+  } else {
+    await runAtomic(db, [updateStmt]);
+  }
 
-    emitEvent('attribution_confirmee', {
-      attribution_id: attributionId,
-      parrain_id: parrainId,
-      offre_id: row.offreId,
-      delai_confirmation_jours: delaiJ,
-      montant_commission: montantCommission,
-      mode_confirmation: 'declaratif_parrain',
-      resultat: depasse ? 'en_verification_manuelle' : 'confirme_direct',
-    });
-
-    return { ok: true, statut };
+  emitEvent('attribution_confirmee', {
+    attribution_id: attributionId,
+    parrain_id: parrainId,
+    offre_id: row.offreId,
+    delai_confirmation_jours: delaiJ,
+    montant_commission: montantCommission,
+    mode_confirmation: 'declaratif_parrain',
+    resultat: depasse ? 'en_verification_manuelle' : 'confirme_direct',
   });
+
+  return { ok: true, statut };
 }

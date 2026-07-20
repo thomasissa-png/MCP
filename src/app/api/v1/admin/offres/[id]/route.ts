@@ -7,7 +7,7 @@
  */
 import { NextResponse, type NextRequest } from 'next/server';
 import { eq } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { OFFRE_STATUTS, offre } from '@/db/schema';
 import { getSessionUser } from '@/lib/auth';
 import { emitEvent } from '@/lib/analytics';
@@ -22,7 +22,8 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   if (!user) return NextResponse.json({ error: 'non_autorise' }, { status: 401 });
 
   const { id } = await ctx.params;
-  const current = db.select().from(offre).where(eq(offre.id, id)).get();
+  const db = await getDb();
+  const current = await db.select().from(offre).where(eq(offre.id, id)).get();
   if (!current) return NextResponse.json({ error: 'offre_inconnue' }, { status: 404 });
 
   let body: Record<string, unknown> = {};
@@ -56,7 +57,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   next.statut = statut;
   next.dateVerification = new Date().toISOString().slice(0, 10); // repasse à aujourd'hui (US-02 crit.1)
 
-  db.update(offre).set(next).where(eq(offre.id, id)).run();
+  await db.update(offre).set(next).where(eq(offre.id, id)).run();
 
   emitEvent('offre_mise_a_jour', { offre_id: id, statut, operateur: user.nom.toLowerCase() });
   if (statut === 'actif' && current.statut !== 'actif') emitEvent('offre_activee', { offre_id: id });

@@ -9,7 +9,7 @@
  */
 import { NextResponse, type NextRequest } from 'next/server';
 import { eq } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { offre } from '@/db/schema';
 import { generateAttribution, SocleError } from '@/lib/attribution';
 import {
@@ -62,13 +62,14 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   }
 
   try {
-    const result = generateAttribution({
+    const result = await generateAttribution({
       offreId: id,
       canalSource,
       sessionId,
     });
 
-    const offreRow = db
+    const db = await getDb();
+    const offreRow = await db
       .select({ dateVerification: offre.dateVerification })
       .from(offre)
       .where(eq(offre.id, id))

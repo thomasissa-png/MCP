@@ -2,7 +2,7 @@
  * Accès lecture aux données de l'espace parrain (US-05/US-09). Server-side, importé par les pages.
  */
 import { and, desc, eq, isNotNull } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { attribution, lienParrainage, offre } from '@/db/schema';
 
 export type LienRow = {
@@ -14,7 +14,8 @@ export type LienRow = {
   dateReinitialisation: string | null;
 };
 
-export function getLiensForParrain(parrainId: string): LienRow[] {
+export async function getLiensForParrain(parrainId: string): Promise<LienRow[]> {
+  const db = await getDb();
   return db
     .select({
       offreId: lienParrainage.offreId,
@@ -32,8 +33,9 @@ export function getLiensForParrain(parrainId: string): LienRow[] {
 }
 
 /** Prime estimée cumulée = somme des commissions des attributions confirmées du parrain. */
-export function getPrimeEstimee(parrainId: string): number {
-  const rows = db
+export async function getPrimeEstimee(parrainId: string): Promise<number> {
+  const db = await getDb();
+  const rows = await db
     .select({ montant: attribution.montantCommission })
     .from(attribution)
     .where(and(eq(attribution.parrainId, parrainId), eq(attribution.statut, 'confirmee')))
@@ -49,7 +51,8 @@ export type AttributionEnAttente = {
 };
 
 /** Attributions confirmables : statut `en_attente` avec une redirection déjà suivie (US-09 défaut). */
-export function getAttributionsAConfirmer(parrainId: string): AttributionEnAttente[] {
+export async function getAttributionsAConfirmer(parrainId: string): Promise<AttributionEnAttente[]> {
+  const db = await getDb();
   return db
     .select({
       attributionId: attribution.attributionId,

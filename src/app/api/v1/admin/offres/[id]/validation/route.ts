@@ -7,7 +7,7 @@
  */
 import { NextResponse, type NextRequest } from 'next/server';
 import { eq } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { offre } from '@/db/schema';
 import { getSessionUser } from '@/lib/auth';
 import { emitEvent } from '@/lib/analytics';
@@ -20,7 +20,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   if (!user) return NextResponse.json({ error: 'non_autorise' }, { status: 401 });
 
   const { id } = await ctx.params;
-  const current = db.select({ id: offre.id, conditions: offre.conditions }).from(offre).where(eq(offre.id, id)).get();
+  const db = await getDb();
+  const current = await db.select({ id: offre.id, conditions: offre.conditions }).from(offre).where(eq(offre.id, id)).get();
   if (!current) return NextResponse.json({ error: 'offre_inconnue' }, { status: 404 });
 
   let body: { decision?: unknown; reference_fiche_conformite?: unknown } = {};
@@ -40,13 +41,13 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     if (!current.conditions || current.conditions.trim().length === 0) {
       return NextResponse.json({ error: 'plafond_manquant' }, { status: 400 });
     }
-    db.update(offre).set({ statut: 'actif', updatedAt: new Date() }).where(eq(offre.id, id)).run();
+    await db.update(offre).set({ statut: 'actif', updatedAt: new Date() }).where(eq(offre.id, id)).run();
     emitEvent('offre_validee_conformite', { offre_id: id, admin_id: user.nom.toLowerCase(), reference_fiche: reference });
     return NextResponse.json({ statut: 'actif' }, { status: 200 });
   }
 
   if (body.decision === 'bloquer') {
-    db.update(offre).set({ statut: 'en_attente_verification', updatedAt: new Date() }).where(eq(offre.id, id)).run();
+    await db.update(offre).set({ statut: 'en_attente_verification', updatedAt: new Date() }).where(eq(offre.id, id)).run();
     emitEvent('offre_bloquee_conformite', { offre_id: id, admin_id: user.nom.toLowerCase() });
     return NextResponse.json({ statut: 'en_attente_verification' }, { status: 200 });
   }

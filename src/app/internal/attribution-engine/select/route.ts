@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       : undefined;
 
   try {
-    const result = generateAttribution({
+    const result = await generateAttribution({
       offreId,
       canalSource: canalSource as (typeof CANAUX)[number] | undefined,
       origineDetectee,

@@ -6,7 +6,7 @@
  * aucun retrait par defaut. A la limite exacte de fraicheur = expiree (crit.7, precaution).
  */
 import { and, eq, isNull, lt, or } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb, type AppDatabase } from '@/db';
 import { lienParrainage, offre, parrain } from '@/db/schema';
 import { emitEvent } from '@/lib/analytics';
 import { FRESHNESS_MAX_DAYS } from '@/config/socle';
@@ -27,8 +27,8 @@ function ageInDays(isoDate: string | null): number {
 }
 
 /** Nombre de liens eligibles (parrain actif, lien actif, quota non atteint) pour une offre. */
-function eligibleCount(offreId: string): number {
-  return db
+async function eligibleCount(db: AppDatabase, offreId: string): Promise<number> {
+  const rows = await db
     .select({ id: lienParrainage.id })
     .from(lienParrainage)
     .innerJoin(parrain, eq(parrain.id, lienParrainage.parrainId))
@@ -40,22 +40,25 @@ function eligibleCount(offreId: string): number {
         or(isNull(lienParrainage.quotaMax), lt(lienParrainage.quotaUtilise, lienParrainage.quotaMax)),
       ),
     )
-    .all().length;
+    .all();
+  return rows.length;
 }
 
-export function runFreshnessCheck(maxAgeDays: number = FRESHNESS_MAX_DAYS): FreshnessResult {
+export async function runFreshnessCheck(maxAgeDays: number = FRESHNESS_MAX_DAYS): Promise<FreshnessResult> {
   let offresExpirees = 0;
   let offresEnAttente = 0;
 
   try {
-    const actives = db.select().from(offre).where(eq(offre.statut, 'actif')).all();
+    const db = await getDb();
+    const actives = await db.select().from(offre).where(eq(offre.statut, 'actif')).all();
 
     for (const row of actives) {
       try {
         // 1) Fraicheur : date_verification trop ancienne -> expire (a la limite exacte = expiree).
         const age = ageInDays(row.dateVerification);
         if (!Number.isNaN(age) && age >= maxAgeDays) {
-          db.update(offre)
+          await db
+            .update(offre)
             .set({ statut: 'expire', updatedAt: new Date() })
             .where(eq(offre.id, row.id))
             .run();
@@ -65,8 +68,9 @@ export function runFreshnessCheck(maxAgeDays: number = FRESHNESS_MAX_DAYS): Fres
         }
 
         // 2) Pool vide -> en attente de parrain (US-04 crit.3).
-        if (eligibleCount(row.id) === 0) {
-          db.update(offre)
+        if ((await eligibleCount(db, row.id)) === 0) {
+          await db
+            .update(offre)
             .set({ statut: 'en_attente_parrain', updatedAt: new Date() })
             .where(eq(offre.id, row.id))
             .run();

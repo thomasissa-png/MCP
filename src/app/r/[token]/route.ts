@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ token: stri
 
   let resolution;
   try {
-    resolution = resolveAndRecordRedirect(token, referrer);
+    resolution = await resolveAndRecordRedirect(token, referrer);
   } catch {
     // Fail-safe : jamais de 500 cote demandeur, on renvoie la page generique stylee.
     return NextResponse.redirect(new URL('/lien-invalide', req.url), 307);

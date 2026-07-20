@@ -13,9 +13,9 @@ import { BASE_URL } from '@/lib/ai/site';
 
 export const dynamic = 'force-dynamic';
 
-export function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const categorieSlug = req.nextUrl.searchParams.get('categorie');
-  let offres = listPublicOffres();
+  let offres = await listPublicOffres();
   if (categorieSlug) {
     const key = categorieSlug.trim().toLowerCase();
     offres = offres.filter((o) => slugify(o.categorie) === key);

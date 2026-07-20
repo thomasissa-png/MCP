@@ -3,7 +3,7 @@
  * Aucune donnée inventée : tout vient de la table `offre` seedée depuis data/base-parrainage.json.
  */
 import { asc, eq } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { offre, type Offre } from '@/db/schema';
 import { slugify } from '@/lib/slug';
 
@@ -131,6 +131,7 @@ export function riskTextForOffre(
 }
 
 export async function getAllOffres(): Promise<Offre[]> {
+  const db = await getDb();
   return db.select().from(offre).orderBy(asc(offre.prioriteAffichage), asc(offre.nomProgramme)).all();
 }
 
@@ -153,7 +154,8 @@ export async function getOffreBySlug(slug: string): Promise<Offre | undefined> {
 export async function getOffresByCategorieSlug(slug: string): Promise<{ categorie: string; offres: Offre[] } | undefined> {
   const meta = CATEGORY_META.find((c) => slugify(c.nom) === slug);
   if (!meta) return undefined;
-  const rows = db.select().from(offre).where(eq(offre.categorie, meta.nom as Offre['categorie'])).all();
+  const db = await getDb();
+  const rows = await db.select().from(offre).where(eq(offre.categorie, meta.nom as Offre['categorie'])).all();
   return { categorie: meta.nom, offres: sortForCatalogue(rows) };
 }
 

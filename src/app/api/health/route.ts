@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sql } from 'drizzle-orm';
-import { db } from '@/db';
+import { getDb } from '@/db';
 
 /**
  * Health check — /api/health (protocole @infrastructure).
@@ -8,10 +8,11 @@ import { db } from '@/db';
  */
 export const dynamic = 'force-dynamic';
 
-export function GET() {
+export async function GET() {
   let dbOk = false;
   try {
-    db.get(sql`SELECT 1`);
+    const db = await getDb();
+    await db.get(sql`SELECT 1`);
     dbOk = true;
   } catch {
     dbOk = false;
