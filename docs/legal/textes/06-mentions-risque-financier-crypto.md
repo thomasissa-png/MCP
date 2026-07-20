@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Texte 6/11 checklist §7 (item 7) : Mentions de risque produits financiers/crypto, gabarits par catégorie -->
 
-# Mentions de risque obligatoires — gabarits par catégorie
+# Mentions de risque obligatoires : gabarits par catégorie
 
 **Usage** : ces gabarits doivent apparaître sur chaque fiche produit de la catégorie concernée, de façon visible (pas en petite police/pied de page noyé). Voir `legal-strategy.md` §4bis pour la justification réglementaire complète.
 

@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Texte 4/11 checklist §7 : Bandeau cookies conforme CNIL + politique cookies -->
 
-# Bandeau cookies et politique cookies — Parrainly
+# Bandeau cookies et politique cookies Parrainly
 
 **[À VÉRIFIER PAR UN JURISTE]** Texte conforme aux lignes directrices CNIL sur les cookies (consentement positif, refus aussi simple que l'acceptation). Implémentation technique à la charge de @fullstack (voir points d'attention en fin de fichier).
 
@@ -12,7 +12,7 @@
 > [Tout accepter] [Tout refuser] [Personnaliser mes choix]
 
 **Exigences CNIL non négociables** (à respecter dans l'implémentation) :
-- Les 3 boutons doivent être **de visibilité et de facilité d'action équivalentes** — "Tout refuser" ne doit pas être un lien discret en petit caractère alors que "Tout accepter" est un gros bouton coloré.
+- Les 3 boutons doivent être **de visibilité et de facilité d'action équivalentes** : "Tout refuser" ne doit pas être un lien discret en petit caractère alors que "Tout accepter" est un gros bouton coloré.
 - **Aucun cookie non essentiel ne doit être déposé avant l'action positive de l'utilisateur** (pas de tracking par défaut, opt-in strict).
 - Le refus doit être aussi facilement réversible que l'acceptation (accès à "Personnaliser mes choix" à tout moment via un lien en pied de page).
 - Renouvellement du recueil du consentement tous les 6 mois maximum (recommandation CNIL) `[À VALIDER par @infrastructure lors de l'implémentation]`.
@@ -29,7 +29,7 @@
 
 **Qu'est-ce qu'un cookie ?** Un cookie est un petit fichier texte déposé sur votre appareil lors de votre visite, qui permet de reconnaître votre navigateur lors de visites ultérieures.
 
-**Quels cookies utilisons-nous ?** Voir tableau ci-dessus. La liste exacte des cookies déposés (nom technique, durée de vie, éditeur) sera complétée par @infrastructure/@fullstack au moment de l'implémentation technique — `[DONNÉE MANQUANTE, à compléter après choix technique définitif]`.
+**Quels cookies utilisons-nous ?** Voir tableau ci-dessus. La liste exacte des cookies déposés (nom technique, durée de vie, éditeur) sera complétée par @infrastructure/@fullstack au moment de l'implémentation technique (`[DONNÉE MANQUANTE, à compléter après choix technique définitif]`).
 
 **Comment gérer vos préférences ?** Via le lien "Gérer mes cookies" présent en pied de page à tout moment, ou via les paramètres de votre navigateur.
 

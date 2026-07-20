@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Fiche de conformité CGU : Spiko -->
 
-# Fiche de conformité CGU — Spiko
+# Fiche de conformité CGU : Spiko
 
 - **Catégorie** : Placement trésorerie (Fonds monétaires tokenisés)
 - **ID base** : REF-009, priorité d'affichage 1
@@ -10,7 +10,7 @@
 
 **Pas d'interdiction explicite de diffusion publique trouvée, mais deux clauses connexes identifiées :**
 1. **Clause de confidentialité** : le parrain doit respecter la confidentialité des informations obtenues sur ses filleuls, en particulier ne pas divulguer à des tiers le solde détenu par ses filleuls. Cette clause concerne la confidentialité des DONNÉES des filleuls (non pertinente pour la diffusion du lien lui-même, mais à respecter strictement si Parrainly venait à afficher des statistiques de filleuls).
-2. **Clause d'usage non abusif** : l'utilisation du programme de parrainage ne doit pas être abusive ; l'objectif déclaré est de "permettre un partage naturel de la solution et de ses avantages avec d'autres clients" — cette formulation ("partage naturel") pourrait être interprétée comme visant un partage de proximité plutôt qu'une diffusion de masse via un site web cité par des IA, mais ce n'est pas une interdiction explicite. `[À VÉRIFIER PAR UN JURISTE]`.
+2. **Clause d'usage non abusif** : l'utilisation du programme de parrainage ne doit pas être abusive ; l'objectif déclaré est de "permettre un partage naturel de la solution et de ses avantages avec d'autres clients". Cette formulation ("partage naturel") pourrait être interprétée comme visant un partage de proximité plutôt qu'une diffusion de masse via un site web cité par des IA, mais ce n'est pas une interdiction explicite. `[À VÉRIFIER PAR UN JURISTE]`.
 
 ## Éléments de contexte utiles
 

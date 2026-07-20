@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Fiche de conformité CGU : Dougs -->
 
-# Fiche de conformité CGU — Dougs
+# Fiche de conformité CGU : Dougs
 
 - **Catégorie** : Services entrepreneur (Expertise comptable en ligne)
 - **ID base** : REF-004, priorité d'affichage 2

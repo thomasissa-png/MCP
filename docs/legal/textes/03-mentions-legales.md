@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Texte 3/11 checklist §7 : Mentions légales -->
 
-# Mentions légales — Parrainly
+# Mentions légales Parrainly
 
 **[À VÉRIFIER PAR UN JURISTE]** Le contenu exact de cette page dépend d'une décision non tranchée à ce jour : Thomas et Emmanuel publient-ils le Site en leur nom propre (personnes physiques) ou via une structure à créer (auto-entreprise, société) ? Cette décision impacte directement le contenu légal obligatoire ci-dessous (art. 6-III de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique, LCEN). Le squelette ci-dessous couvre les deux cas ; à trancher avant publication.
 
@@ -34,7 +34,7 @@
 
 ## 4. Nature du Site et absence de statut réglementé
 
-Le Site Parrainly référence des programmes de parrainage tiers et met à disposition les liens de parrainage personnels de son éditeur. **Le Site n'est ni un établissement de crédit, ni un prestataire de services d'investissement, ni un intermédiaire en opérations de banque et services de paiement (IOBSP), ni un conseiller en investissements financiers (CIF), ni un prestataire de services sur crypto-actifs (PSCA).** Le Site agit en qualité d'apporteur d'affaires / indicateur non régulé au sens du droit commun. `[À VÉRIFIER PAR UN JURISTE]` — qualification motivée dans `legal-strategy.md` §2, non jurisprudentiellement tranchée pour ce type de diffusion.
+Le Site Parrainly référence des programmes de parrainage tiers et met à disposition les liens de parrainage personnels de son éditeur. **Le Site n'est ni un établissement de crédit, ni un prestataire de services d'investissement, ni un intermédiaire en opérations de banque et services de paiement (IOBSP), ni un conseiller en investissements financiers (CIF), ni un prestataire de services sur crypto-actifs (PSCA).** Le Site agit en qualité d'apporteur d'affaires / indicateur non régulé au sens du droit commun. `[À VÉRIFIER PAR UN JURISTE]` : qualification motivée dans `legal-strategy.md` §2, non jurisprudentiellement tranchée pour ce type de diffusion.
 
 ## 5. Non-affiliation officielle aux marques citées
 

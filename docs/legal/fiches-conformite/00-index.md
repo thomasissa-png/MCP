@@ -1,8 +1,8 @@
 <!-- Version: 2026-07-20 — @legal — Fiches de conformité CGU par programme (checklist §7 item 6, DoR bloquant) -->
 
-# Index des fiches de conformité CGU — 9 programmes réels
+# Index des fiches de conformité CGU : 9 programmes réels
 
-## Résumé exécutif — risques en 5 points (pour Thomas/Emmanuel)
+## Résumé exécutif : risques en 5 points (pour Thomas/Emmanuel)
 
 1. **2 programmes sur 9 interdisent EXPLICITEMENT la diffusion publique** du lien de parrainage, confirmé par WebSearch cette session : **Trade Republic** et **Kraken**. Publier ces fiches en l'état (site public cité par des IA) est une violation directe et documentée de leurs CGU respectives.
 2. **Un précédent de marché existe** : de nombreux sites publics (parrainage.co, super-parrain.com, comparabanques.fr, milesopedia.fr, etc.) diffusent déjà publiquement ces mêmes 9 programmes sans que cela ait, à notre connaissance, entraîné de fermeture massive documentée. **Ce n'est PAS une justification légale** (la clause contractuelle reste valable et opposable à Thomas/Emmanuel personnellement), seulement un élément de calibration de risque pratique à connaître.

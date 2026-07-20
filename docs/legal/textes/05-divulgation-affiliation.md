@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Texte 5/11 checklist §7 : Page "Divulgation affiliation / Comment ça marche" -->
 
-# Comment ça marche — Divulgation de l'affiliation
+# Comment ça marche : divulgation de l'affiliation
 
 **Note pour @copywriter** : ce texte est un draft juridique fonctionnel (fond imposé, forme à retravailler pour le ton de marque défini par `brand-platform.md`). Ne pas retirer d'information, seulement reformuler le style.
 

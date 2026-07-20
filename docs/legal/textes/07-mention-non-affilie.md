@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Texte 7/11 checklist §7 (item 8) : Mention "non affilié officiellement" -->
 
-# Mention de non-affiliation officielle — gabarit
+# Mention de non-affiliation officielle : gabarit
 
 **Usage** : cette mention doit apparaître sur chaque fiche produit (pied de fiche), en plus des mentions légales générales (`03-mentions-legales.md` §5).
 
@@ -23,4 +23,4 @@ Cette mention protège contre deux risques distincts (§8 de `legal-strategy.md`
 À insérer, avec le nom exact du programme, sur chacune des 9 fiches : Trade Republic, Qonto, Revolut Business, Ramify, Finary, Dougs, Meria, Kraken, Spiko. Le champ `date_verification` existe déjà dans le schéma de données (`data/base-parrainage.json`), directement exploitable pour l'interpolation dynamique de la mention.
 
 ---
-**Sources** : art. L.713-1 du Code de la propriété intellectuelle (contrefaçon de marque) ; principe de l'usage nominatif descriptif loyal d'une marque (jurisprudence constante, non citée précisément faute de recherche dédiée cette session — `[À VÉRIFIER PAR UN JURISTE]` sur la jurisprudence exacte applicable à l'usage de logos).
+**Sources** : art. L.713-1 du Code de la propriété intellectuelle (contrefaçon de marque) ; principe de l'usage nominatif descriptif loyal d'une marque (jurisprudence constante, non citée précisément faute de recherche dédiée cette session, `[À VÉRIFIER PAR UN JURISTE]` sur la jurisprudence exacte applicable à l'usage de logos).

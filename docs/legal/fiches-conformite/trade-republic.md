@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Fiche de conformité CGU : Trade Republic -->
 
-# Fiche de conformité CGU — Trade Republic
+# Fiche de conformité CGU : Trade Republic
 
 - **Catégorie** : Finance personnelle (Néobanque & Courtage)
 - **ID base** : REF-001, priorité d'affichage 1

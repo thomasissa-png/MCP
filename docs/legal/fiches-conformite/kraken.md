@@ -1,10 +1,10 @@
 <!-- Version: 2026-07-20 — @legal — Fiche de conformité CGU : Kraken -->
 
-# Fiche de conformité CGU — Kraken
+# Fiche de conformité CGU : Kraken
 
 - **Catégorie** : Crypto (Exchange)
 - **ID base** : REF-005, priorité d'affichage 1
-- **Lien testé (source WebSearch)** : kraken.com/legal/referrals (Kraken Referral Programs — Terms and Conditions)
+- **Lien testé (source WebSearch)** : kraken.com/legal/referrals (Kraken Referral Programs, Terms and Conditions)
 
 ## Clause de diffusion identifiée
 
@@ -30,4 +30,4 @@
 **Vérifié - interdit (WebSearch)**, non encore relu directement sur le compte de Thomas/Emmanuel. Date de vérification WebSearch : 2026-07-20.
 
 ---
-**Sources** : kraken.com/legal/referrals (Kraken Referral Programs — Terms and Conditions, consulté via WebSearch cette session).
+**Sources** : kraken.com/legal/referrals (Kraken Referral Programs, Terms and Conditions, consulté via WebSearch cette session).

@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Texte 8/11 checklist §7 (item 9) : Divulgation embarquée dans la donnée retournée (texte/JSON) -->
 
-# Divulgation embarquée dans la donnée — gabarits techniques
+# Divulgation embarquée dans la donnée : gabarits techniques
 
 **Destinataires** : @ia (structuration des données consommées par les assistants IA), @fullstack (implémentation HTML/JSON).
 
@@ -27,7 +27,7 @@ Version crypto (à combiner avec la mention de risque, `06-mentions-risque-finan
 }
 ```
 
-`[À VALIDER PAR @ia]` : nom exact des champs à ajouter au schéma `Schema_MCP` de `base-parrainage.json` (20 champs actuels) — ce document propose 3 champs supplémentaires (`divulgation_affiliation`, `mention_risque`, `mention_non_affiliation`), calculables dynamiquement depuis les gabarits ci-dessus plutôt que stockés en dur ligne par ligne (éviter la dérive de cohérence si le texte légal change).
+`[À VALIDER PAR @ia]` : nom exact des champs à ajouter au schéma `Schema_MCP` de `base-parrainage.json` (20 champs actuels). Ce document propose 3 champs supplémentaires (`divulgation_affiliation`, `mention_risque`, `mention_non_affiliation`), calculables dynamiquement depuis les gabarits ci-dessus plutôt que stockés en dur ligne par ligne (éviter la dérive de cohérence si le texte légal change).
 
 ## C. Placement HTML sur la page-offre
 

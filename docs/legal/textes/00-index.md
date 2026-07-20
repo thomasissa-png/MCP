@@ -1,8 +1,8 @@
 <!-- Version: 2026-07-20 — @legal — P1-c : textes juridiques prêts à intégrer (blocker mise en ligne publique) -->
 
-# Index des textes juridiques — Parrainly (checklist legal-strategy.md §7)
+# Index des textes juridiques Parrainly (checklist legal-strategy.md §7)
 
-## Résumé exécutif — risques en 5 points (pour Thomas/Emmanuel, non-juristes)
+## Résumé exécutif : risques en 5 points (pour Thomas/Emmanuel, non-juristes)
 
 1. **Ces textes sont des drafts de référence, pas un avis juridique formé.** Avant toute mise en ligne publique réelle, faire relire par un avocat spécialisé droit bancaire/financier + droit de la consommation les points marqués `[À VÉRIFIER PAR UN JURISTE]` (nombreux sur ce projet car le secteur fintech/crypto est une zone de frontière fine, cf. `legal-strategy.md`).
 2. **Le vrai point dur n'est pas ces textes mais les CGU des 9 programmes** (dossier `docs/legal/fiches-conformite/`) : Trade Republic et Kraken **interdisent explicitement** la diffusion publique du lien (confirmé par recherche cette session, sources en tête de chaque fiche). Publier leur fiche en l'état expose T&E à la perte de la prime, voire à la clôture du compte.
@@ -29,7 +29,7 @@
 ## Ce qui reste bloquant après ce livrable
 
 - **Trade Republic et Kraken** : clause de diffusion publique explicitement violée par le modèle actuel (site public cité par IA). Voir fiches de conformité correspondantes pour le détail et les options d'atténuation. Décision produit à trancher par Thomas/Emmanuel avant mise en ligne de ces 2 fiches précisément.
-- Structure juridique porteuse du site (personnes physiques T&E vs société à créer) `[À VALIDER]` — impacte la rédaction finale des mentions légales (`03-mentions-legales.md`, champs à compléter).
+- Structure juridique porteuse du site (personnes physiques T&E vs société à créer) `[À VALIDER]` : impacte la rédaction finale des mentions légales (`03-mentions-legales.md`, champs à compléter).
 - Validation avocat sur la qualification indicateur/IOBSP-CIF (frontière fine, non tranchée par la doctrine, cf. `legal-strategy.md` §2).
 
 ---

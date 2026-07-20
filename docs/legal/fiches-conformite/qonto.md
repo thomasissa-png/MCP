@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Fiche de conformité CGU : Qonto -->
 
-# Fiche de conformité CGU — Qonto
+# Fiche de conformité CGU : Qonto
 
 - **Catégorie** : Services entrepreneur (Banque professionnelle)
 - **ID base** : REF-006, priorité d'affichage 1
@@ -25,7 +25,7 @@
 
 ## Statut
 
-**À vérifier** — aucune clause trouvée en source publique, à confirmer par lecture directe du compte. Date de recherche WebSearch : 2026-07-20.
+**À vérifier** : aucune clause trouvée en source publique, à confirmer par lecture directe du compte. Date de recherche WebSearch : 2026-07-20.
 
 ---
 **Sources** : support-be.qonto.com/hc/en-us/articles/39856950344977 (page d'aide, pas les CGU juridiques du programme).

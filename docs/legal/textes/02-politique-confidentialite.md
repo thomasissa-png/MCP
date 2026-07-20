@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Texte 2/11 checklist §7 : Politique de confidentialité RGPD -->
 
-# Politique de confidentialité — Parrainly
+# Politique de confidentialité Parrainly
 
 **[À VÉRIFIER PAR UN JURISTE]** Draft de référence, calibré sur le flux de données réel documenté par `legal-strategy.md` §6 (V1 cercle fermé, un seul flux : tracking d'attribution).
 
@@ -8,7 +8,7 @@
 
 ## 1. Qui sommes-nous
 
-Parrainly est édité par [Thomas / Emmanuel / structure juridique à créer]. Le responsable de traitement des données personnelles collectées sur le Site est [MÊME ENTITÉ — à confirmer selon la structure juridique retenue].
+Parrainly est édité par [Thomas / Emmanuel / structure juridique à créer]. Le responsable de traitement des données personnelles collectées sur le Site est [MÊME ENTITÉ, à confirmer selon la structure juridique retenue].
 
 ## 2. Quelles données nous collectons (V1)
 
@@ -33,7 +33,7 @@ Les données de mesure d'audience/tracking sont conservées **13 mois maximum**,
 
 ## 5. Destinataires des données
 
-Les données peuvent être traitées par nos sous-traitants techniques (hébergeur, outil de mesure d'audience — `[À COMPLÉTER selon le choix technique de @infrastructure/@data-analyst]`). Aucune donnée n'est vendue à des tiers. Aucun transfert hors Union européenne n'est prévu à ce stade `[À VALIDER selon l'hébergeur retenu]`.
+Les données peuvent être traitées par nos sous-traitants techniques (hébergeur, outil de mesure d'audience : `[À COMPLÉTER selon le choix technique de @infrastructure/@data-analyst]`). Aucune donnée n'est vendue à des tiers. Aucun transfert hors Union européenne n'est prévu à ce stade `[À VALIDER selon l'hébergeur retenu]`.
 
 ## 6. Vos droits
 

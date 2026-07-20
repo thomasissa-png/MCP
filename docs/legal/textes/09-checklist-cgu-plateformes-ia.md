@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Texte 9/11 checklist §7 (item 10) : Checklist CGU développeur par plateforme IA -->
 
-# Checklist CGU développeur — plateformes IA (revue trimestrielle)
+# Checklist CGU développeur : plateformes IA (revue trimestrielle)
 
 **Usage interne** (pas client-facing) : document de veille, à revoir a minima chaque trimestre, et systématiquement avant toute intégration technique nouvelle (API, plugin, MCP en V1.5).
 
@@ -11,8 +11,8 @@ Repris et opérationnalisé depuis `legal-strategy.md` §5 et `conformite-parrai
 | Plateforme | Règle identifiée | Statut de conformité Parrainly | Date de dernière vérification | Action si non conforme |
 |---|---|---|---|---|
 | OpenAI (ChatGPT) | App Developer Terms + App submission guidelines : interdiction de chercher à influencer le modèle pour se faire préférer à d'autres apps/sources, ou de dénigrer des concurrents | Conforme dans son principe : contenu factuel, sourcé, vérifiable (fraîcheur des codes via `date_verification`), pas de technique manipulatoire | 2026-07-20 (WebSearch session `legal-strategy.md`) | Revoir la structuration si une technique d'optimisation agressive est envisagée (cloaking, keyword stuffing) |
-| Perplexity | Intègre déjà publicité et affiliation dans ses propres résultats (signal de tolérance sectorielle) ; pas de politique anti-manipulation spécifique identifiée pour les sources tierces à ce jour | `[À VÉRIFIER / VEILLE]` — pas de règle bloquante identifiée | 2026-07-20 | Revérifier au prochain trimestre (politique évolutive) |
-| Google (AI Overviews / Gemini) | Pas de CGU spécifique identifiée sur la citation de sources d'affiliation tierces lors de cette recherche | `[À VÉRIFIER / VEILLE]` — absence de règle documentée ne signifie pas absence de risque futur | 2026-07-20 | Revérifier au prochain trimestre |
+| Perplexity | Intègre déjà publicité et affiliation dans ses propres résultats (signal de tolérance sectorielle) ; pas de politique anti-manipulation spécifique identifiée pour les sources tierces à ce jour | `[À VÉRIFIER / VEILLE]` : pas de règle bloquante identifiée | 2026-07-20 | Revérifier au prochain trimestre (politique évolutive) |
+| Google (AI Overviews / Gemini) | Pas de CGU spécifique identifiée sur la citation de sources d'affiliation tierces lors de cette recherche | `[À VÉRIFIER / VEILLE]` : absence de règle documentée ne signifie pas absence de risque futur | 2026-07-20 | Revérifier au prochain trimestre |
 | Anthropic (Claude) | Pas de CGU spécifique identifiée sur la citation de sources d'affiliation tierces lors de cette recherche | `[À VÉRIFIER / VEILLE]` | 2026-07-20 | Revérifier au prochain trimestre |
 
 ## Principe transversal retenu pour la V1 cercle fermé

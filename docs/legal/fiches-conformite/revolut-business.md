@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Fiche de conformité CGU : Revolut Business -->
 
-# Fiche de conformité CGU — Revolut Business
+# Fiche de conformité CGU : Revolut Business
 
 - **Catégorie** : Services entrepreneur (Banque professionnelle)
 - **ID base** : REF-007, priorité d'affichage 2
@@ -26,7 +26,7 @@
 
 ## Statut
 
-**À vérifier** — clause de diffusion non localisée en source publique, à confirmer par lecture directe des deux documents CGU applicables. Date de recherche WebSearch : 2026-07-20.
+**À vérifier** : clause de diffusion non localisée en source publique, à confirmer par lecture directe des deux documents CGU applicables. Date de recherche WebSearch : 2026-07-20.
 
 ---
 **Sources** : revolut.com/fr-FR/legal/c2b-referrals-terms/, revolut.com/fr-FR/legal/user-level-business-referrals/ (existence et objet des documents confirmés, contenu détaillé de la clause de diffusion non extrait par cette recherche).

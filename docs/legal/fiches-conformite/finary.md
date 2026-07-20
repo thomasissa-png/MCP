@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Fiche de conformité CGU : Finary -->
 
-# Fiche de conformité CGU — Finary
+# Fiche de conformité CGU : Finary
 
 - **Catégorie** : Gestion de patrimoine (Agrégateur patrimonial)
 - **ID base** : REF-003, priorité d'affichage 1
@@ -25,7 +25,7 @@
 
 ## Statut
 
-**À vérifier** — clause de diffusion non localisée. Date de recherche WebSearch : 2026-07-20.
+**À vérifier** : clause de diffusion non localisée. Date de recherche WebSearch : 2026-07-20.
 
 ---
 **Sources** : help.finary.com/en/articles/8907933-refer-your-friends-on-finary (page d'aide) ; CGU juridiques complètes non localisées, à obtenir par Thomas/Emmanuel via leur espace client.

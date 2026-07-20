@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Texte 1/11 checklist §7 : CGU du site -->
 
-# Conditions Générales d'Utilisation — Parrainly
+# Conditions Générales d'Utilisation Parrainly
 
 **[À VÉRIFIER PAR UN JURISTE]** Ce texte est un draft de référence rédigé pour le lancement V1 (cercle fermé). Il doit être validé par un avocat avant publication, en particulier les sections 4 (nature du contenu), 6 (responsabilité) et 9 (droit applicable).
 
@@ -19,7 +19,7 @@ Le Site est, en l'état actuel (V1), un **catalogue de fiches informatives** pr�
 - un établissement financier, un conseiller en investissement, un intermédiaire en opérations de banque, ou tout autre statut réglementé,
 - un service de conseil personnalisé, de recommandation adaptée à la situation individuelle de l'utilisateur, ou de comparaison à valeur ajoutée entre les programmes listés.
 
-Le Site se limite à un rôle d'**apporteur d'affaires / indicateur non régulé** : les fiches sont descriptives (nom du programme, avantage, conditions, lien), sans classement, conseil ni recommandation personnalisée. `[À VÉRIFIER PAR UN JURISTE]` — cette qualification est motivée dans `legal-strategy.md` §2 mais n'est pas jurisprudentiellement tranchée pour ce type de diffusion.
+Le Site se limite à un rôle d'**apporteur d'affaires / indicateur non régulé** : les fiches sont descriptives (nom du programme, avantage, conditions, lien), sans classement, conseil ni recommandation personnalisée. `[À VÉRIFIER PAR UN JURISTE]` : cette qualification est motivée dans `legal-strategy.md` §2 mais n'est pas jurisprudentiellement tranchée pour ce type de diffusion.
 
 ## 3. Accès au Site
 

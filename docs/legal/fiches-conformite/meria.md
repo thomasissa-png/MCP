@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Fiche de conformité CGU : Meria -->
 
-# Fiche de conformité CGU — Meria
+# Fiche de conformité CGU : Meria
 
 - **Catégorie** : Crypto (Exchange)
 - **ID base** : REF-008, priorité d'affichage 2
@@ -26,7 +26,7 @@
 
 ## Statut
 
-**À vérifier** — clause de diffusion non extraite du PDF officiel disponible. Statut réglementaire (PSCA) en revanche confirmé positif. Date de recherche WebSearch : 2026-07-20.
+**À vérifier** : clause de diffusion non extraite du PDF officiel disponible. Statut réglementaire (PSCA) en revanche confirmé positif. Date de recherche WebSearch : 2026-07-20.
 
 ---
 **Sources** : meria.com/resources/terms.pdf (existence confirmée, contenu détaillé non extrait) ; agrégateurs tiers cités à titre de constat de marché uniquement.

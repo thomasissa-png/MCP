@@ -1,6 +1,6 @@
 <!-- Version: 2026-07-20 — @legal — Fiche de conformité CGU : Ramify -->
 
-# Fiche de conformité CGU — Ramify
+# Fiche de conformité CGU : Ramify
 
 - **Catégorie** : Investissement (Plateforme d'investissement)
 - **ID base** : REF-002, priorité d'affichage 1
@@ -12,7 +12,7 @@
 
 ## Éléments de contexte utiles
 
-- Prime parrain : 50 EUR (≥ 1 000 EUR investis), 100 EUR (≥ 10 000 EUR), 250 EUR (≥ 100 000 EUR) — hors produits Cash.
+- Prime parrain : 50 EUR (≥ 1 000 EUR investis), 100 EUR (≥ 10 000 EUR), 250 EUR (≥ 100 000 EUR), hors produits Cash.
 - Programme d'investissement (assurance-vie, PER, SCPI, private equity) : soumis aux mentions de risque obligatoires (`06-mentions-risque-financier-crypto.md`) et au point de vigilance CIF/démarchage financier renforcé (`legal-strategy.md` §2b), indépendamment de la question de diffusion CGU traitée ici.
 
 ## Verdict : **À VÉRIFIER** (signal de marché neutre à légèrement favorable, non probant juridiquement)
@@ -25,7 +25,7 @@
 
 ## Statut
 
-**À vérifier** — clause de diffusion non localisée. Date de recherche WebSearch : 2026-07-20.
+**À vérifier** : clause de diffusion non localisée. Date de recherche WebSearch : 2026-07-20.
 
 ---
 **Sources** : recherche WebSearch de cette session (agrégateurs tiers cités à titre de constat de marché, pas de valeur juridique probante) ; CGU officielles Ramify non localisées directement, à obtenir par Thomas/Emmanuel via leur espace client.
