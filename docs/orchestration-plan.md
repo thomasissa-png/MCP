@@ -73,6 +73,8 @@
 | 2026-07-20 | 3-audit | @reviewer | re-audit ciblé audit-phase3.md | **10/10 les 9 livrables, GO franc** | Corrections vérifiées Grep/Read réels ; 0 résidu bloquant ; sweep 10/10 mérité |
 | 2026-07-20 | 3→2 | @fullstack | correctifs techniques SEO/AEO (canonicals, sitemap lastModified, mot-clé title/H1/desc, mainEntityOfPage, FAQPage /divulgation) | build vert + smoke curl | 3 P0 Bing levés ; url_parrainage=0 partout ; mapping DB conforme 00-index ; ISR/OG image différés (P1) |
 | 2026-07-20 | 3 | @copywriter + session | 18e Q/R attribution + sync code faq-enrichie.ts | build vert | Écart 17/18 détecté par @fullstack corrigé (Option A, ajout Q authentique), doc=code=18 |
+| 2026-07-20 | Deploy-A | @fullstack | port DB better-sqlite3 → D1 (getDb env-aware + runAtomic/batch, 34 fichiers) | 36/36 tests + build verts | Compat Workers ; caveat concurrence quota documenté (négligeable cercle fermé V1) |
+| 2026-07-20 | Deploy-B | @infrastructure | OpenNext + wrangler.jsonc + D1 + seed + CI + runbook | **opennextjs-cloudflare build SUCCÈS** | Repo déployable en 1 push ; reste 3 ops compte-CF (create D1, connect Workers Builds, secrets) côté Thomas |
 
 ### Décision fondateur (Thomas, 2026-07-20 #3) : PILOTE EXHAUSTIF
 Garder un maximum de codes/liens ACTIFS pour tester (9 offres, TR + Kraken inclus). Revue juridique reportée à la TOUTE FIN (avant mise en ligne réelle). Mécanisme `statut` conservé comme levier, aucune offre masquée pour le pilote.
