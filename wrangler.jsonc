@@ -37,7 +37,7 @@
   // -------------------------------------------------------------------------
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://parrainly.com",
-    "MAILER_TRANSPORT": "resend",
+    "MAILER_TRANSPORT": "console",
     "NEXT_PUBLIC_POSTHOG_HOST": "https://eu.i.posthog.com",
     "POSTHOG_HOST": "https://eu.i.posthog.com",
     "AUTH_MAGIC_LINK_TTL_MINUTES": "15",
