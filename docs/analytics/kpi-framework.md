@@ -1,4 +1,4 @@
-<!-- Version: 2026-07-20T00:00 — @data-analyst — KPI Framework Phase 0 (NSM définitif + arbre de métriques marketplace à rotation) -->
+<!-- Version: 2026-07-20T04:00 — @data-analyst — RESYNC P1-b (checkpoint-specs-phase1.md) : persona parrain V1 = Thomas & Emmanuel (Karim retiré, projection V2 uniquement), events attribution_confirmee/lien_redirection_suivie passés de « signalés/proposés » à intégrés (déjà dans functional-specs.md T03:00). Corrige C4/C7/G7 -->
 
 # KPI Framework — Parrainage-IA
 
@@ -6,9 +6,9 @@
 
 - NSM définitif : **Parrainages Confirmés d'origine IA (PCA-IA) par mois**, version resserrée du provisoire de project-context.md (ajout du critère "origine IA détectée", indispensable car le canal actuel `page_web`/`api_json` de functional-specs.md ne distingue pas une visite venue d'une citation IA d'une visite directe au catalogue).
 - Arbre à 5 métriques d'entrée couvrant tout le funnel : citation → clic attribué → lien généré → conversion confirmée → disponibilité du pool.
-- Métriques déclinées par face (A1 jeune actif / A2 entrepreneur / Karim) + 2 garde-fous de fraîcheur (liens morts, latence de détection), alignés brand-platform.md §2.1/2.2 (preuve "Fraîcheur") et US-04/US-06.
+- Métriques déclinées par face (A1 jeune actif / A2 entrepreneur / Thomas & Emmanuel, parrain V1 en cercle fermé) + 2 garde-fous de fraîcheur (liens morts, latence de détection), alignés brand-platform.md §2.1/2.2 (preuve "Fraîcheur") et US-04/US-06.
 - Cibles chiffrées : 2 benchmarks sourcés (WebSearch, cette session) utilisables comme point de repère, le reste marqué `[À DÉFINIR APRÈS POC]` — trafic attendu actuel = 0 (stade idée), toute cible de conversion serait inventée (G13).
-- Gap détecté et signalé à @product-manager : functional-specs.md ne contient AUCUN event de confirmation de conversion (`attribution_confirmee`) alors que c'est l'événement qui alimente directement le NSM — traité en détail dans tracking-plan.md §2.
+- Resync 2026-07-20T04:00 (corrige checkpoint-specs-phase1.md, blocker P1-b) : le gap précédemment signalé à @product-manager (event `attribution_confirmee` absent) est résolu, l'US-09 de functional-specs.md l'a intégré ; cet event et `lien_redirection_suivie` (US-01) sont désormais traités comme des events réels et non plus « proposés » (voir tracking-plan.md §2.3). Persona parrain V1 corrigé partout : Thomas & Emmanuel, pas Karim (Karim = projection V2, brand-platform.md).
 
 ---
 
@@ -44,7 +44,7 @@ PCA-IA (mois M) = COUNT(
 
 ### 1.5 Pourquoi ce n'est pas une vanity metric
 
-1. **Déclenche une action financière réelle** : une Attribution `confirmée` = commission calculée (product-vision.md §3) et prime versée à Karim. Ce n'est pas un proxy, c'est directement corrélé au chiffre d'affaires.
+1. **Déclenche une action financière réelle** : une Attribution `confirmée` = commission calculée (product-vision.md §3) et prime versée à Thomas ou Emmanuel. Ce n'est pas un proxy, c'est directement corrélé au chiffre d'affaires.
 2. **Capture les deux faces** : impossible d'augmenter le NSM sans (a) que l'IA cite réellement une fiche ET (b) qu'un parrain réel absorbe la conversion dans son quota. Un NSM qui n'augmente que côté trafic (ex. `page_offre_vue`) serait de la vanité ; celui-ci exige la boucle complète.
 3. **Valide la thèse centrale du projet** : brand-platform.md positionne la marque comme "la source que les IA citent" — le PCA-IA est la seule métrique qui prouve que cette citation se traduit en valeur, pas seulement en visibilité (le risque identifié par @growth §3.3 et repris par @reviewer comme trou n°1 : G_PROOF empirique de distribution non exécuté).
 4. **Actionnable par tous les agents aval** : @geo/@seo agissent sur le taux de citation (input metric 1), @growth sur le volume de clics attribués (input metric 2), @fullstack/@ux sur le taux de conversion clic→lien (input metric 3), @data-analyst/@ia sur la disponibilité du pool (input metric 4/5).
@@ -93,15 +93,15 @@ PCA-IA (mois M) = COUNT(
 | Temps de génération de lien | SLA produit (US-01 : < 2s) | p50/p95 de la durée entre `lien_parrainage_demande` et `lien_parrainage_genere`/`echec` | @fullstack |
 | Taux de signalement de lien mort | Qualité perçue par le demandeur | `COUNT(lien_signale) / COUNT(lien_parrainage_genere)` | @data-analyst |
 
-### 3.2 Côté parrain (Karim)
+### 3.2 Côté parrain (Thomas ou Emmanuel, cercle fermé V1 — Karim reste une projection V2, brand-platform.md)
 
 | Métrique | Définition | Formule | Owner |
 |---|---|---|---|
 | Parrains actifs par offre | Volume du pool disponible | `COUNT(Parrain statut=actif, offre X)` | @data-analyst |
 | Taux de remplissage du pool | Cf. arbre #4 | `parrains actifs / pool_cible` — `pool_cible` `[À DÉFINIR APRÈS POC]` (dépend du plafond par enseigne, lui-même `[À VALIDER]` en product-vision.md §2) | @product-manager |
 | Équité de rotation | Dispersion des attributions entre parrains d'un même pool (protège la promesse "Équité", brand-platform.md §4) | Coefficient de variation (écart-type / moyenne) du nombre d'attributions reçues par parrain sur 30 jours glissants ; alerte si > seuil `[À DÉFINIR APRÈS POC]` | @data-analyst |
-| Délai moyen de validation de soumission | Vitesse d'entrée dans la rotation | Moyenne de `delai_verification_jours` (event `lien_valide_actif`) | @product-manager |
-| Prime moyenne versée / parrain / mois | Valeur perçue par Karim | `SUM(montant_commission) / COUNT(parrains actifs ayant reçu ≥ 1 confirmation)` | @data-analyst |
+| Délai moyen de validation de conformité | Vitesse d'entrée dans le pool actif (US-02 enregistrement → US-07 activation) | Moyenne de (date `offre_validee_conformite` − date d'enregistrement de l'offre `offre_mise_a_jour`, calcul table SQL, aucune propriété `delai_jours` native sur ces events) | @product-manager |
+| Prime moyenne versée / parrain / mois | Valeur perçue par Thomas ou Emmanuel | `SUM(montant_commission) / COUNT(parrains actifs ayant reçu ≥ 1 confirmation)` | @data-analyst |
 | Taux de suspension anti-fraude | Santé du pool | `COUNT(Parrain statut=suspendu sur la période) / COUNT(Parrain actif début période)` | @legal / @data-analyst |
 
 ### 3.3 Garde-fous de fraîcheur (transversaux)
@@ -139,8 +139,8 @@ PCA-IA (mois M) = COUNT(
 
 - **G1** : 4 sections numérotées + résumé exécutif, 0 section < 2 lignes, 0 `[TODO]`. PASS.
 - **G3** : bloc Handoff structuré en fin de document. PASS.
-- **G5** : personas A1 (jeune actif) et A2 (entrepreneur) identiques à project-context.md/brand-platform.md §2.1/2.2 (Grep cohérent, aucune redéfinition) ; persona Karim conservé côté parrain conformément au périmètre de ce document, aucune redéfinition. PASS.
-- **G7** : 0 contradiction — NSM aligné sur project-context.md (KPI provisoire repris et précisé, pas contredit) ; arbre de métriques aligné product-vision.md §2/§3 (rotation, commission à la confirmation) et functional-specs.md (events sources identiques) ; garde-fous alignés brand-platform.md §3 (preuve Fraîcheur) et legal-strategy.md §6a (tracking d'attribution). Correctif d'alignement appliqué : personas A1/A2 (brand-platform.md §2.1/2.2) et catalogue fintech repris à jour, plus aucune référence au persona obsolète ni à l'exemple hors-scope EDF. PASS sans réserve.
+- **G5** : personas A1 (jeune actif) et A2 (entrepreneur) identiques à project-context.md/brand-platform.md §2.1/2.2 (Grep cohérent, aucune redéfinition) ; persona parrain V1 = Thomas ou Emmanuel, identique à functional-specs.md/brand-platform.md §2.3 (Karim retiré de ce document, réservé à la projection V2). PASS.
+- **G7** : 0 contradiction — NSM aligné sur project-context.md (KPI provisoire repris et précisé, pas contredit) ; arbre de métriques aligné product-vision.md §2/§3 (rotation, commission à la confirmation) et functional-specs.md (23 events sources identiques, US-01 à US-09) ; garde-fous alignés brand-platform.md §3 (preuve Fraîcheur) et legal-strategy.md §6a (tracking d'attribution). Resync 2026-07-20T04:00 (checkpoint-specs-phase1.md P1-b) : persona parrain V1 corrigé Karim → Thomas/Emmanuel partout, events `attribution_confirmee`/`lien_redirection_suivie` passés d'un statut « signalé en attente » à « intégré » (déjà dans functional-specs.md US-01/US-09), référence à l'event périmé `lien_valide_actif` (§3.2) corrigée. Personas A1/A2 (brand-platform.md §2.1/2.2) et catalogue fintech restent à jour, plus aucune référence au persona obsolète ni à l'exemple hors-scope EDF. PASS sans réserve.
 - **G12** : chaque métrique a définition + formule + owner ; le NSM a fréquence + formule + justification anti-vanité. PASS.
 - **G13** : 0 chiffre inventé — 2 benchmarks sourcés avec URL (§4), toutes les cibles internes non sourcées marquées `[À DÉFINIR APRÈS POC]`/`[À VALIDER]`. PASS.
 - **G15** : Grep effectué sur les patterns interdits, absents. Seuls `[À VALIDER]`, `[HYPOTHÈSE]`, `[À DÉFINIR APRÈS POC]` subsistent (annotations autorisées). PASS.
@@ -148,7 +148,7 @@ PCA-IA (mois M) = COUNT(
 - **G_PROOF** : voir bloc `Vérifié :` ci-dessous.
 
 **Vérifié :** dérouler le cas A1 (jeune actif) / Trade Republic pour vérifier que le NSM est effectivement calculable de bout en bout.
-`Read docs/product/functional-specs.md` (US-01 payload + events, lignes 47-65) : le jeune actif (A1) demande "code de parrainage Trade Republic" à ChatGPT → clic sur le lien cité → `page_offre_vue` capture le referrer (ChatGPT ajoute `utm_source=chatgpt.com` depuis juin 2025, source WebSearch §4) → `origine_detectee = chatgpt` est dérivable de ce referrer → `lien_parrainage_genere` crée l'Attribution avec `attribution_id` → SI le jeune actif (A1) ouvre réellement un compte Trade Republic et que la prime est validée, l'Attribution passe à `confirmée` (product-vision.md §3) → elle est comptée dans PCA-IA du mois car `origine_detectee = chatgpt`. Chaîne complète sans étape manquante, SOUS RÉSERVE que l'event de confirmation (`attribution_confirmee`) soit ajouté aux specs : il n'existe pas encore dans functional-specs.md, gap traité et proposé en tracking-plan.md §2.3.
+`Read docs/product/functional-specs.md` (US-01 payload + events, lignes 47-65 ; US-09, lignes 438-505) : le jeune actif (A1) demande "code de parrainage Trade Republic" à ChatGPT → clic sur le lien cité → `page_offre_vue` capture le referrer (ChatGPT ajoute `utm_source=chatgpt.com` depuis juin 2025, source WebSearch §4) → `origine_detectee = chatgpt` est dérivable de ce referrer → `lien_parrainage_genere` crée l'Attribution avec `attribution_id` → le clic effectif sur `/r/{token}` journalise `lien_redirection_suivie` (US-01, intégré) → SI le jeune actif (A1) ouvre réellement un compte Trade Republic et que la prime est validée, Thomas ou Emmanuel confirme depuis son tableau de bord (US-09) et l'event `attribution_confirmee` fait passer l'Attribution à `confirmée` (product-vision.md §3) → elle est comptée dans PCA-IA du mois car `origine_detectee = chatgpt`. Chaîne complète sans étape manquante : les deux events autrefois « proposés » (`lien_redirection_suivie`, `attribution_confirmee`) sont désormais intégrés dans functional-specs.md (US-01/US-09), le gap est résolu.
 
 **Confirmation NSM/attribution valides pour le fintech** : le NSM (PCA-IA) et le mécanisme d'attribution (token `/r/{token}`, referrer/UTM, confirmation déclarative du parrain) sont agnostiques à la verticale du produit parrainé : ils comptent une Attribution confirmée quelle que soit la nature de l'offre (énergie, VPN ou, comme ici, un compte Trade Republic/Kraken/Qonto). Le passage au catalogue fintech ne change ni la formule du NSM (§1.3), ni l'arbre de métriques (§2), ni la mécanique de rotation/plafond par offre (§3) : seule la nature de l'offre citée en exemple change, pas la mécanique de mesure.
 
@@ -156,6 +156,6 @@ PCA-IA (mois M) = COUNT(
 **Handoff → @fullstack, @geo, @seo, @growth, @product-manager**
 - Fichiers produits : `/home/user/MCP/docs/analytics/kpi-framework.md`
 - Décisions prises : NSM définitif = "Parrainages Confirmés d'origine IA (PCA-IA) par mois" (précision du provisoire par ajout du critère `origine_detectee`, mesure mensuelle/hebdo POC) ; arbre à 5 métriques d'entrée ; métriques par face + garde-fous fraîcheur ; aucune cible interne chiffrée avant données réelles.
-- Points d'attention : gap critique signalé à @product-manager, l'event de confirmation de conversion n'existe pas dans functional-specs.md alors qu'il alimente directement le NSM (voir tracking-plan.md §2.3) ; `pool_cible` par enseigne dépend du plafond `[À VALIDER]` non encore chiffré par @legal/@product-manager ; benchmarks externes (ReferralCandy, SparkToro) à ne jamais présenter comme des cibles internes en dashboard exec.
+- Points d'attention : gap sur `attribution_confirmee` résolu (US-09 de functional-specs.md l'intègre, cf. tracking-plan.md §2.3) ; persona parrain V1 corrigé Karim → Thomas/Emmanuel dans ce document (resync 2026-07-20T04:00, checkpoint-specs-phase1.md P1-b) ; `pool_cible` par enseigne dépend du plafond `[À VALIDER]` non encore chiffré par @legal/@product-manager ; benchmarks externes (ReferralCandy, SparkToro) à ne jamais présenter comme des cibles internes en dashboard exec.
 - **Actions infra requises** : Aucune action Cloudflare/GitHub requise à ce stade (livrable de cadrage analytics, aucun code produit). Actions futures pour @fullstack/@infrastructure détaillées dans tracking-plan.md (table SQL Attribution, endpoint de redirection trackée).
 ---
