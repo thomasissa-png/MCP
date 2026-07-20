@@ -2,10 +2,14 @@
 import type { Metadata } from 'next';
 import { LegalShell } from '@/components/legal/LegalShell';
 import { LegalContact } from '@/components/legal/LegalContact';
+import { absUrl } from '@/lib/ai/site';
+import { faqPageJsonLd, jsonLdString } from '@/lib/ai/jsonld';
+import { FAQ_ENRICHIE } from '@/lib/content/faq-enrichie';
 
 export const metadata: Metadata = {
   title: 'Comment ça marche : divulgation de l\'affiliation',
   description: "Comment Parrainly gagne de l'argent et pourquoi cela ne change rien pour vous.",
+  alternates: { canonical: absUrl('/divulgation') },
 };
 
 export default function DivulgationPage() {
@@ -49,6 +53,25 @@ export default function DivulgationPage() {
         du produit financier lui-même.
       </p>
       <p>Une question, un désaccord avec une fiche ? Contactez-nous via <LegalContact />.</p>
+
+      {/* FAQ enrichie (18 Q/R) — contenu extractible visible + FAQPage JSON-LD (geo-strategy §6 action 1-2).
+          Le JSON-LD reflete le texte affiche ci-dessous (conforme aux regles Rich Results de Google). */}
+      <section aria-labelledby="faq-divulgation" className="mt-xl">
+        <h2 id="faq-divulgation">Questions fréquentes sur le fonctionnement et la vérification</h2>
+        <div className="mt-md flex flex-col gap-sm">
+          {FAQ_ENRICHIE.map((f) => (
+            <details key={f.q} className="rounded-lg border border-line bg-surface-card p-lg">
+              <summary className="cursor-pointer font-medium text-content-primary">{f.q}</summary>
+              <p className="mt-sm text-sm text-content-secondary">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdString(faqPageJsonLd(FAQ_ENRICHIE)) }}
+      />
     </LegalShell>
   );
 }

@@ -3,8 +3,12 @@ import type { Metadata } from 'next';
 import { LegalShell } from '@/components/legal/LegalShell';
 import { LegalContact } from '@/components/legal/LegalContact';
 import { LEGAL_EDITOR_NAME, LEGAL_PUBLICATION_DIRECTOR, LEGAL_HOST } from '@/config/socle';
+import { absUrl } from '@/lib/ai/site';
 
-export const metadata: Metadata = { title: 'Mentions légales' };
+export const metadata: Metadata = {
+  title: 'Mentions légales',
+  alternates: { canonical: absUrl('/mentions-legales') },
+};
 
 export default function MentionsLegalesPage() {
   return (

@@ -17,16 +17,56 @@ export function offreSlug(o: Pick<Offre, 'nomProgramme'>): string {
 }
 
 /**
- * Métadonnées des catégories actives (descriptions réelles reprises du Referentiel_Categories de
- * data/base-parrainage.json). Ordre d'affichage de la grille accueil.
+ * Métadonnées des catégories actives (source unique de vérité SEO/contenu). Ordre d'affichage de la
+ * grille accueil. Chaque entrée porte :
+ *   - `motCle`   : mot-clé principal EXACT de docs/seo/keyword-map.md §3 (title des pages catégorie),
+ *   - `h1`       : H1 éditorial FINAL de docs/copy/fiches-categories.md (lignes **H1**, câblé tel quel),
+ *   - `description` : meta-description + paragraphe catégorie + miroir JSON, contient le mot-clé exact.
+ * Toute évolution de mot-clé/H1 se fait ICI, pas dans les composants (Grep « CATEGORY_META »).
  */
-export const CATEGORY_META: { nom: string; description: string }[] = [
-  { nom: 'Finance personnelle', description: 'Comptes bancaires, néobanques, courtage grand public.' },
-  { nom: 'Investissement', description: "Plateformes d'investissement long terme (assurance-vie, PER, SCPI, private equity)." },
-  { nom: 'Gestion de patrimoine', description: 'Agrégation, suivi et pilotage du patrimoine global.' },
-  { nom: 'Placement trésorerie', description: "Rémunération de la trésorerie (perso ou d'entreprise) : fonds monétaires, comptes rémunérés." },
-  { nom: 'Services entrepreneur', description: "Outils de gestion d'entreprise : banque pro, comptabilité, juridique." },
-  { nom: 'Crypto', description: 'Exchanges, staking, produits Web3.' },
+export const CATEGORY_META: { nom: string; motCle: string; h1: string; description: string }[] = [
+  {
+    nom: 'Finance personnelle',
+    motCle: 'parrainage néobanque vérifié',
+    h1: 'Finance personnelle : parrainage néobanque vérifié (banque en ligne et courtage)',
+    description:
+      'Parrainage néobanque vérifié : comptes bancaires, néobanques et courtage grand public, avec date de contrôle et statut affichés sur chaque offre du registre Parrainly.',
+  },
+  {
+    nom: 'Investissement',
+    motCle: "parrainage plateforme d'investissement",
+    h1: "Investissement : parrainage plateforme d'investissement (assurance vie, PER, gestion pilotée)",
+    description:
+      "Parrainage plateforme d'investissement (assurance-vie, PER, SCPI, private equity), vérifié à date, avec conditions et statut affichés sur chaque fiche.",
+  },
+  {
+    nom: 'Gestion de patrimoine',
+    motCle: 'parrainage agrégateur de patrimoine',
+    h1: "Gestion de patrimoine : parrainage agrégateur de patrimoine et suivi d'actifs",
+    description:
+      'Parrainage agrégateur de patrimoine : agrégation, suivi et pilotage du patrimoine global, avec date de vérification sur chaque offre.',
+  },
+  {
+    nom: 'Placement trésorerie',
+    motCle: 'parrainage placement de trésorerie',
+    h1: 'Placement trésorerie : parrainage placement de trésorerie pour compte pro',
+    description:
+      "Parrainage placement de trésorerie (perso ou d'entreprise) : fonds monétaires et comptes rémunérés, vérifiés à date avec statut affiché par offre.",
+  },
+  {
+    nom: 'Services entrepreneur',
+    motCle: 'parrainage banque pro',
+    h1: 'Services entrepreneur : parrainage banque pro et comptabilité',
+    description:
+      "Parrainage banque pro, comptabilité et outils de gestion d'entreprise, vérifiés à date, avec conditions et statut affichés par fiche.",
+  },
+  {
+    nom: 'Crypto',
+    motCle: 'parrainage plateforme crypto',
+    h1: 'Crypto : parrainage plateforme crypto et épargne programmée',
+    description:
+      'Parrainage plateforme crypto : exchanges, staking et épargne programmée en crypto-actifs, avec date de contrôle et statut sur chaque offre.',
+  },
 ];
 
 /** Catégories déclenchant le bandeau de risque (règle exacte wireframes.md zone 5 / design-system §3.3). */

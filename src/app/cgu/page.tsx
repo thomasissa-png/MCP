@@ -3,8 +3,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LegalShell } from '@/components/legal/LegalShell';
 import { LegalContact } from '@/components/legal/LegalContact';
+import { absUrl } from '@/lib/ai/site';
 
-export const metadata: Metadata = { title: "Conditions d'utilisation" };
+export const metadata: Metadata = {
+  title: "Conditions d'utilisation",
+  alternates: { canonical: absUrl('/cgu') },
+};
 
 export default function CguPage() {
   return (

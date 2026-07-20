@@ -9,6 +9,7 @@ import { getAllOffres, getOffreBySlug, isServable, riskTextForOffre } from '@/li
 import { slugify } from '@/lib/slug';
 import { toPublicOffre } from '@/lib/ai/public-offre';
 import { offreJsonLd, breadcrumbJsonLd, jsonLdString } from '@/lib/ai/jsonld';
+import { absUrl } from '@/lib/ai/site';
 import { formatDateFr } from '@/lib/format';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { CategoryBadge } from '@/components/ui/CategoryBadge';
@@ -27,9 +28,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const offre = await getOffreBySlug(slug);
   if (!offre) return { title: 'Offre introuvable' };
+  const canonical = absUrl(`/offres/${slug}`);
+  // Title porte le mot-clé EXACT « parrainage {enseigne} » de keyword-map §2 (contigu, cohérent avec le H1).
+  const title = `Parrainage ${offre.nomProgramme} vérifié`;
+  const description = offre.descriptionCourte ?? undefined;
   return {
-    title: `${offre.nomProgramme} : parrainage vérifié`,
-    description: offre.descriptionCourte ?? undefined,
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: { title: `${title} · Parrainly`, description, url: canonical, type: 'website' },
+    twitter: { title: `${title} · Parrainly`, description },
   };
 }
 
@@ -79,7 +87,8 @@ export default async function OffrePage({ params }: { params: Promise<{ slug: st
       {/* Zone 3 — Bloc identité (split 70/30 desktop) */}
       <section className="animate-fade-up mt-lg grid grid-cols-1 gap-lg lg:grid-cols-[7fr_3fr]">
         <div className="flex flex-col gap-sm">
-          <h1 className="text-xl font-bold text-content-primary md:text-2xl">{offre.nomProgramme}</h1>
+          {/* H1 porte le mot-clé exact « parrainage {enseigne} » (keyword-map §2, audit §2.4). */}
+          <h1 className="text-xl font-bold text-content-primary md:text-2xl">Parrainage {offre.nomProgramme} vérifié</h1>
           <div className="flex flex-wrap items-center gap-xs">
             <CategoryBadge categorie={offre.categorie} />
             <FreshnessBadge variant={servable ? 'verified' : 'stale'} date={offre.dateVerification} />

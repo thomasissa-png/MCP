@@ -45,6 +45,9 @@ export function offreJsonLd(o: PublicOffre): Json {
     name: o.nom_programme,
     category: o.categorie,
     description,
+    // Entite principale de la page (geo-strategy §5, decision E-E-A-T : mainEntityOfPage = FAIT).
+    // Pointe vers la page canonique Parrainly, aucune donnee personnelle exposee.
+    mainEntityOfPage: { '@type': 'WebPage', '@id': o.url_offre },
     // Divulgation d'affiliation embarquee, restituable telle quelle par le modele.
     disambiguatingDescription: disclosure,
     url: o.url_offre,

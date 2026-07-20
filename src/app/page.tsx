@@ -8,12 +8,15 @@ import { getAllOffres, getCategoriesWithCount, sortForCatalogue } from '@/lib/of
 import { CatalogueSearch } from '@/components/catalogue/CatalogueSearch';
 import { listPublicOffres } from '@/lib/ai/public-offre';
 import { organizationJsonLd, webSiteJsonLd, itemListJsonLd, faqPageJsonLd, jsonLdString } from '@/lib/ai/jsonld';
+import { absUrl } from '@/lib/ai/site';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   description:
     'Parrainly vérifie chaque lien de parrainage fintech avant de le recommander : Trade Republic, Qonto, Kraken et les autres, sans lien mort ni condition expirée.',
+  alternates: { canonical: absUrl('/') },
+  openGraph: { url: absUrl('/') },
 };
 
 const STEPS = [
