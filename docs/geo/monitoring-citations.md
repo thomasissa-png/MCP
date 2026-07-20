@@ -22,7 +22,7 @@ Vérifier, requête par requête, si Parrainly est cité par les moteurs de rép
 | 3 | code parrainage Revolut Business | comparateurbanque, comparabanques, 1parrainage, parrainage.co, planparrainpromo, parraineo, parraindeconfiance, parrainplus |
 | 4 | parrainage Ramify | parraindeconfiance, parrainage.co, 1parrainage, code-parrainage.net, super-parrain, leparrainage, topparrain |
 | 5 | parrainage Finary | parrainage.co, 1parrainage, codesparrainages, super-parrain, parrainduweb, code-parrainage.net, planparrainpromo, parraineo |
-| 6 | Dougs parrainage (compta) | parraindeconfiance, planparrainpromo, 1parrainage, parrainage.co, super-parrain, codamia, dealparrainage |
+| 6 | Dougs (compta) | parraindeconfiance, planparrainpromo, 1parrainage, parrainage.co, super-parrain, codamia, dealparrainage |
 | 7 | code parrainage Kraken | 1parrainage, codes-parrain, parrainage-club, zone-parrainage, cryptoparrainage, parrainage.co, codesparrainages, super-parrain |
 | 8 | parrainage Meria | parrainage.co, codes-parrain, 1parrainage |
 | 9 | parrainage Spiko | parrainage.co, touslescashbacks, 1parrainage |
@@ -128,6 +128,7 @@ Le NSM de Parrainly est **Parrainages Confirmés d'origine IA (PCA-IA) / mois** 
 ### Vérifié (G_PROOF)
 - `Read /home/user/MCP/docs/geo/test-citation-ia.md` : les 11 requêtes et leurs résultats baseline (§2-9 de ce document) sont recopiés à l'identique depuis les tableaux §3-4 du test empirique, aucune requête reformulée ou inventée.
 - `Read /home/user/MCP/project-context.md` (lignes 108-120, tableau Performance des agents et historique) : confirmé le NSM PCA-IA/mois et le mécanisme d'attribution `/r/{token}` + `attribution_confirmee` produits par @data-analyst, réutilisés sans redéfinition en §7.
+- **Re-vérification correction 2026-07-20 (audit `docs/reviews/audit-phase3.md`)** : `Read /home/user/MCP/docs/geo/test-citation-ia.md` §3/§4 comparé ligne à ligne au tableau §2 de ce document : les 11 libellés de requête concordent verbatim (« Dougs (compta) » corrigé de « Dougs parrainage (compta) » pour requête #6, les 10 autres déjà identiques). Aucun autre écart détecté.
 
 ---
 **Handoff → @orchestrator**

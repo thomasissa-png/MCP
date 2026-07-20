@@ -19,7 +19,7 @@ La bonne nouvelle pour Parrainly : la structure technique qui permet d'être cit
 
 **Le canal existe** (thèse validée, `test-citation-ia.md` §7) : sur 9/9 requêtes d'intention « parrainage {enseigne} », des agrégateurs structurés sont cités. Parrainly ne crée pas un comportement, il prend une place dans un comportement établi.
 
-**Le terrain est occupé.** Un incumbent (1parrainage.com) apparaît sur les 9/9 requêtes testées, un second (parrainage.co) sur 8/9. Avant de pousser du volume, Parrainly doit dépasser leur standard de citabilité actuel sur le terrain qu'ils occupent moins bien : la fraîcheur vérifiée et la divulgation.
+**Le terrain est occupé.** Deux incumbents dominent à égalité : 1parrainage.com (9/9 requêtes testées) et parrainage.co (9/9 également, présent sur les 9 lignes du tableau `test-citation-ia.md` §3). Avant de pousser du volume, Parrainly doit dépasser leur standard de citabilité actuel sur le terrain qu'ils occupent moins bien : la fraîcheur vérifiée et la divulgation.
 
 **Standard de citabilité observé chez les incumbents** (WebSearch de recoupement, 2026-07-20, sur les pages Qonto et Trade Republic) :
 - Titre daté au **mois** (« Code Parrainage Qonto, 160€ offerts, Mars 2026 », « Parrainage Trade Republic, Action Offerte, Juillet 2026 ») : signal de fraîcheur au niveau du titre, mais pas de date exacte structurée en donnée machine-readable.
@@ -128,6 +128,7 @@ Pas de conflit de mots-clés à arbitrer à ce stade : GEO et SEO ciblent la mê
 - `Read /home/user/MCP/src/lib/ai/jsonld.ts` : confirmé `priceValidUntil`, `disambiguatingDescription`, `faqPageJsonLd` déjà implémentés (lignes 38-129).
 - `Read /home/user/MCP/src/app/page.tsx` : confirmé `faqPageJsonLd(FAQ)` déjà injecté sur l'accueil (ligne 49), absent des pages-offres individuelles (`offres/[slug]/page.tsx` n'injecte que `offreJsonLd` + `breadcrumbJsonLd`, lignes 52-61).
 - `WebSearch` (2026-07-20) « 1parrainage.com Qonto parrainage code page structure » et « parrainage.co Trade Republic parrainage date mise à jour » : confirmé titres datés au mois (« Juillet 2026 »), absence de structure `Offer`/date exacte détectée dans les résultats retournés, cohérent avec l'angle de différenciation §1.
+- **Re-vérification correction 2026-07-20 (audit `docs/reviews/audit-phase3.md`)** : `Read /home/user/MCP/docs/geo/test-citation-ia.md` §3 (tableau) : parrainage.co apparaît sur les 9 lignes du tableau (Qonto, Trade Republic, Revolut Business, Ramify, Finary, Dougs, Kraken, Meria, Spiko) au même titre que 1parrainage.com, confirmé aussi par §6 (« 1parrainage.com (9/9) et parrainage.co (9/9) sont les deux incumbents dominants »). §1 de ce document corrigé de « 8/9 » à « 9/9 » en conséquence.
 
 ---
 **Handoff → @orchestrator**
