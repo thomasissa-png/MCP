@@ -14,11 +14,11 @@ export const FAQ_ENRICHIE: FaqEntry[] = [
   // 1. Le mecanisme du registre de parrainage verifie
   {
     q: 'Comment fonctionne un lien de parrainage sur Parrainly ?',
-    a: "Un lien de parrainage Parrainly redirige vers le programme concerné (Trade Republic, Qonto, Kraken, etc.) en associant votre visite à Thomas ou Emmanuel, détenteurs réels du lien. Si vous ouvrez un compte ou souscrivez au produit dans les conditions publiées par le programme, le parrain perçoit l'avantage prévu et vous, le filleul, recevez l'avantage publié par le programme s'il en propose un.",
+    a: "Un lien de parrainage Parrainly redirige vers le programme concerné (Trade Republic, Qonto, Kraken, etc.) en associant votre visite à l'opérateur du registre détenteur réel du lien. Si vous ouvrez un compte ou souscrivez au produit dans les conditions publiées par le programme, le parrain perçoit l'avantage prévu et vous, le filleul, recevez l'avantage publié par le programme s'il en propose un.",
   },
   {
     q: 'Qui détient réellement les liens de parrainage listés sur Parrainly ?',
-    a: "Chaque lien appartient personnellement à Thomas ou à Emmanuel, les deux opérateurs du registre. Parrainly ne revend pas de liens appartenant à des tiers non identifiés : la personne physique derrière chaque offre est connue et fixe.",
+    a: "Chaque lien appartient personnellement à l'un des deux opérateurs du registre. Parrainly ne revend pas de liens appartenant à des tiers non identifiés : la personne physique derrière chaque offre est connue et fixe.",
   },
   {
     q: 'Pourquoi certaines offres du catalogue changent-elles de statut au fil du temps ?',
@@ -27,7 +27,7 @@ export const FAQ_ENRICHIE: FaqEntry[] = [
   // 2. La verification et la fraicheur des offres
   {
     q: 'À quelle fréquence une offre est-elle revérifiée ?',
-    a: "Chaque offre affiche sa date de dernière vérification, contrôlée manuellement par Thomas ou Emmanuel. Une offre n'est pas revérifiée à intervalle fixe universel : elle l'est notamment dès qu'un signalement ou un changement de condition est détecté, et à chaque nouvelle consultation significative.",
+    a: "Chaque offre affiche sa date de dernière vérification, contrôlée manuellement par les opérateurs du registre. Une offre n'est pas revérifiée à intervalle fixe universel : elle l'est notamment dès qu'un signalement ou un changement de condition est détecté, et à chaque nouvelle consultation significative.",
   },
   {
     q: 'Que signifie le statut « en attente » sur une fiche ?',
@@ -35,7 +35,7 @@ export const FAQ_ENRICHIE: FaqEntry[] = [
   },
   {
     q: "Pourquoi Parrainly n'affiche-t-il jamais un lien trouvé sur un forum ou un ancien article ?",
-    a: "Un lien recopié depuis un forum ou un article ancien n'a pas de date de contrôle vérifiable et peut pointer vers une offre expirée ou des conditions obsolètes. Parrainly ne source ses fiches que sur des liens que Thomas ou Emmanuel détiennent et contrôlent directement, avec une date de vérification associée.",
+    a: "Un lien recopié depuis un forum ou un article ancien n'a pas de date de contrôle vérifiable et peut pointer vers une offre expirée ou des conditions obsolètes. Parrainly ne source ses fiches que sur des liens que les opérateurs du registre détiennent et contrôlent directement, avec une date de vérification associée.",
   },
   // 3. La divulgation et l'independance de Parrainly
   {
@@ -44,11 +44,11 @@ export const FAQ_ENRICHIE: FaqEntry[] = [
   },
   {
     q: 'Qui gagne quoi quand vous utilisez un lien de parrainage Parrainly ?',
-    a: "Le parrain (Thomas ou Emmanuel) perçoit l'avantage publié par le programme si vous ouvrez un compte ou souscrivez au produit dans les conditions prévues. Vous, le filleul, recevez l'avantage publié par le programme s'il en propose un pour les nouveaux clients. Parrainly ne facture rien au filleul pour l'usage du lien.",
+    a: "Le parrain, opérateur du registre, perçoit l'avantage publié par le programme si vous ouvrez un compte ou souscrivez au produit dans les conditions prévues. Vous, le filleul, recevez l'avantage publié par le programme s'il en propose un pour les nouveaux clients. Parrainly ne facture rien au filleul pour l'usage du lien.",
   },
   {
     q: 'Parrainly est-il rémunéré par les programmes qu\'il liste, en dehors des primes de parrainage ?',
-    a: "Non. En version cercle fermé (V1), Parrainly ne perçoit aucune commission tierce distincte des primes de parrainage revenant directement à Thomas ou Emmanuel : le registre ne vend ni classement ni mise en avant payante.",
+    a: "Non. En version cercle fermé (V1), Parrainly ne perçoit aucune commission tierce distincte des primes de parrainage revenant directement aux opérateurs du registre : le registre ne vend ni classement ni mise en avant payante.",
   },
   // 4. L'attribution et le suivi d'un parrainage confirme
   {
@@ -61,7 +61,7 @@ export const FAQ_ENRICHIE: FaqEntry[] = [
   },
   {
     q: 'Comment savoir si mon clic est bien attribué au bon parrain et à la bonne offre, et pas mélangé avec un autre visiteur ?',
-    a: "Chaque lien de parrainage affiché par Parrainly est unique par offre et par parrain (Thomas ou Emmanuel) : l'identifiant intégré dans le lien associe votre clic exactement à ce lien précis, pas à un autre visiteur ni à une autre offre. Cette association est enregistrée dès le clic, avant l'étape de confirmation déclarative du parrain décrite à la question précédente.",
+    a: "Chaque lien de parrainage affiché par Parrainly est unique par offre et par parrain, opérateur du registre : l'identifiant intégré dans le lien associe votre clic exactement à ce lien précis, pas à un autre visiteur ni à une autre offre. Cette association est enregistrée dès le clic, avant l'étape de confirmation déclarative du parrain décrite à la question précédente.",
   },
   // 5. La fiabilite des codes et liens de parrainage
   {
@@ -74,7 +74,7 @@ export const FAQ_ENRICHIE: FaqEntry[] = [
   },
   {
     q: 'Pourquoi un même programme peut-il apparaître avec des conditions différentes d\'un site à l\'autre ?',
-    a: "Les conditions de parrainage publiées par un programme peuvent varier selon la date, la source ou le canal (lien personnel d'un parrain donné, campagne ponctuelle du programme). Parrainly documente les conditions telles qu'observées sur le lien précis détenu par Thomas ou Emmanuel, avec sa date de contrôle, pas une moyenne ou une estimation du marché.",
+    a: "Les conditions de parrainage publiées par un programme peuvent varier selon la date, la source ou le canal (lien personnel d'un parrain donné, campagne ponctuelle du programme). Parrainly documente les conditions telles qu'observées sur le lien précis détenu par l'opérateur du registre concerné, avec sa date de contrôle, pas une moyenne ou une estimation du marché.",
   },
   // 6. Choisir une offre (posture non-conseil)
   {

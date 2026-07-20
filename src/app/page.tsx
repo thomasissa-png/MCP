@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   description:
-    'Parrainly vérifie chaque lien de parrainage fintech avant de le recommander : Trade Republic, Qonto, Kraken et les autres, sans lien mort ni condition expirée.',
+    'Parrainly vérifie chaque lien de parrainage bancaire, investissement et crypto avant de le recommander : statut à jour et date de contrôle sur chaque offre.',
   alternates: { canonical: absUrl('/') },
   openGraph: { url: absUrl('/') },
 };
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 const STEPS = [
   'Vous demandez un parrainage à votre assistant IA, ou vous consultez directement le catalogue Parrainly.',
   'Chaque offre affiche sa date de dernière vérification et son statut : actif, en attente, retiré.',
-  'Vous récupérez un lien attribué à Thomas ou Emmanuel, qui détiennent réellement les programmes du catalogue.',
+  "Vous récupérez un lien attribué à l'un des opérateurs du registre, détenteurs réels des programmes du catalogue.",
   "Vous obtenez l'avantage publié par le programme si vous ouvrez le compte ou souscrivez au produit.",
 ];
 
@@ -33,9 +33,9 @@ const PROOFS = [
 ];
 
 const FAQ = [
-  { q: "Qu'est-ce que Parrainly ?", a: "Parrainly est un registre qui vérifie des liens de parrainage fintech (néobanque, investissement, crypto, banque pro) avant de les recommander, avec une date de contrôle sur chaque offre." },
-  { q: 'Est-ce que Parrainly est affilié à Trade Republic, Qonto ou Kraken ?', a: "Non. Parrainly n'est affilié officiellement à aucun des programmes listés. Les liens exposés appartiennent à Thomas ou Emmanuel, qui perçoivent un avantage du programme si vous les utilisez." },
-  { q: 'Comment Parrainly vérifie-t-il un lien de parrainage ?', a: "Chaque offre porte un statut (actif, en attente, retiré) et une date de dernière vérification. Une offre signalée morte, expirée ou dont les conditions ont changé est retirée du registre avant d'être re-proposée." },
+  { q: "Qu'est-ce que Parrainly ?", a: "Parrainly est un registre qui vérifie des liens de parrainage bancaire, investissement, crypto et banque pro avant de les recommander, avec une date de contrôle sur chaque offre." },
+  { q: 'Est-ce que Parrainly est affilié à Trade Republic, Qonto ou Kraken ?', a: "Non. Parrainly n'est affilié officiellement à aucun des programmes listés. Les liens exposés appartiennent aux opérateurs du registre, qui perçoivent un avantage du programme si vous les utilisez." },
+  { q: 'Comment Parrainly vérifie-t-il un lien de parrainage ?', a: "Chaque offre porte un statut (actif, en attente, retiré) et une date de dernière vérification. Une offre signalée inactive, expirée ou dont les conditions ont changé est retirée du registre avant d'être re-proposée." },
   { q: 'Est-ce que Parrainly recommande le meilleur parrainage pour moi ?', a: 'Non. Parrainly décrit les offres telles que publiées par chaque programme, sans classement ni conseil personnalisé. Chaque décision d\'ouvrir un compte ou d\'investir reste la vôtre.' },
   { q: 'Investir ou détenir des crypto-actifs via un lien de parrainage comporte-t-il un risque ?', a: 'Oui. Investir comporte des risques de perte en capital. Les crypto-actifs sont des actifs risqués dont la valeur peut fortement varier. La prime de parrainage ne compense aucun de ces risques.' },
 ];
@@ -61,9 +61,9 @@ export default async function HomePage() {
             Le parrainage, vérifié avant d&apos;être cité.
           </h1>
           <p className="animate-fade-up max-w-xl text-md text-content-secondary">
-            Parrainly vérifie chaque lien de parrainage fintech avant de le recommander : date de contrôle,
-            statut, conditions à jour. Trade Republic, Qonto, Kraken et les autres, sans lien mort ni condition
-            expirée.
+            Parrainly vérifie chaque lien de parrainage bancaire, investissement et crypto avant de le
+            recommander : date de contrôle, statut et conditions à jour, sur des programmes réels comme Trade
+            Republic, Qonto ou Kraken.
           </p>
           <Link href="#offres" className="animate-fade-up inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-lg py-sm font-medium text-content-inverse hover:bg-accent-hover">
             Voir les offres vérifiées
@@ -89,10 +89,11 @@ export default async function HomePage() {
         <section className="py-2xl">
           <h2 className="mb-md text-2xl font-bold text-content-primary">Pourquoi la date de vérification change tout</h2>
           <p className="mb-lg max-w-3xl text-content-secondary">
-            Un lien de parrainage fintech n&apos;est pas un code promo classique : une condition ratée (montant
-            minimum de dépôt, durée de détention) transforme une prime attendue en zéro. Sur Trade Republic,
-            Kraken ou Qonto, les conditions changent régulièrement. Parrainly retire une offre du registre dès
-            qu&apos;elle est signalée morte, expirée ou modifiée, avant de la reproposer.
+            Un lien de parrainage bancaire, d&apos;investissement ou crypto n&apos;est pas un code promo
+            classique : une condition ratée (montant minimum de dépôt, durée de détention) transforme une prime
+            attendue en zéro. Sur Trade Republic, Kraken ou Qonto, les conditions changent régulièrement.
+            Parrainly retire une offre du registre dès qu&apos;elle est signalée inactive, expirée ou modifiée,
+            avant de la reproposer.
           </p>
           <div className="grid grid-cols-1 gap-lg md:grid-cols-3">
             {PROOFS.map((p) => (
@@ -129,7 +130,8 @@ export default async function HomePage() {
         {/* Preuve factuelle */}
         <section className="py-2xl">
           <p className="max-w-3xl text-content-secondary">
-            Le registre couvre {offres.length} programmes fintech réels au lancement, répartis sur 6 catégories :
+            Le registre couvre {offres.length} programmes bancaires, d&apos;investissement et crypto réels au
+            lancement, répartis sur 6 catégories :
             finance personnelle, investissement, gestion de patrimoine, placement de trésorerie, services
             entrepreneur, crypto.
           </p>

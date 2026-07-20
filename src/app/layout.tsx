@@ -4,6 +4,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CookieBanner } from '@/components/layout/CookieBanner';
 import { AnalyticsScripts } from '@/components/analytics/AnalyticsScripts';
+import { SITE_DESCRIPTION } from '@/lib/ai/site';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
@@ -11,8 +12,7 @@ export const metadata: Metadata = {
     default: 'Parrainly · Le parrainage, vérifié avant d\'être cité',
     template: '%s · Parrainly',
   },
-  description:
-    "Parrainly vérifie chaque lien de parrainage fintech avant de le recommander : date de contrôle, statut, conditions à jour.",
+  description: SITE_DESCRIPTION,
   applicationName: 'Parrainly',
   icons: {
     icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
@@ -23,8 +23,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Parrainly',
     title: 'Parrainly · Le parrainage, vérifié avant d\'être cité',
-    description:
-      'Un registre qui vérifie les liens de parrainage fintech avant de les recommander, avec une date de contrôle sur chaque offre.',
+    description: SITE_DESCRIPTION,
   },
   twitter: { card: 'summary_large_image' },
   // Verification de propriete pour Google Search Console et Bing Webmaster Tools.
