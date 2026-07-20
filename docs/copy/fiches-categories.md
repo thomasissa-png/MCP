@@ -13,7 +13,7 @@ Texte éditorial des 6 pages catégorie (`/categories/{slug}`). Chaque catégori
 
 ## 1. Finance personnelle (néobanque/courtage)
 
-**H1** : "Finance personnelle : parrainage néobanque et courtage vérifiés" [MOT-CLÉ SEO INTÉGRÉ : `parrainage néobanque vérifié`, cf. `docs/seo/keyword-map.md` §3]
+**H1** : "Finance personnelle : parrainage néobanque vérifié (banque en ligne et courtage)" [MOT-CLÉ SEO INTÉGRÉ : `parrainage néobanque vérifié`, cf. `docs/seo/keyword-map.md` §3]
 
 **Chapô factuel** : "Cette catégorie regroupe les parrainages néobanque et courtage du registre Parrainly. Elle concerne en priorité le jeune actif qui ouvre un compte pour gérer ses finances personnelles au quotidien ou pour investir en bourse. Un programme y est référencé à ce jour : Trade Republic."
 
@@ -122,7 +122,7 @@ R : "Cela dépend du programme : certaines offres de parrainage incluent une ré
 
 ## 6. Crypto
 
-**H1** : "Crypto : parrainage plateforme crypto et épargne programmée" [MOT-CLÉ SEO INTÉGRÉ : `parrainage exchange crypto` / `parrainage plateforme crypto vérifié`, cf. `docs/seo/keyword-map.md` §3]
+**H1** : "Crypto : parrainage plateforme crypto et épargne programmée" [MOT-CLÉ SEO INTÉGRÉ : `parrainage plateforme crypto`, cf. `docs/seo/keyword-map.md` §3]
 
 **Chapô factuel** : "Cette catégorie regroupe les parrainages liés à l'achat, la conservation ou l'épargne en crypto-actifs. Elle s'adresse au jeune actif qui souhaite s'exposer aux crypto-actifs via une plateforme d'échange ou un service d'épargne programmée. Deux programmes y sont référencés à ce jour : Kraken et Meria."
 
@@ -156,6 +156,8 @@ R : "Une plateforme d'échange permet l'achat, la vente et la conservation direc
 - **G_PROOF** : voir bloc `Vérifié :` ci-dessous.
 
 **Vérifié :** `Grep "le meilleur|n°1|top|rendement|garanti|exclusif|recommandé pour vous" docs/copy/fiches-categories.md` : 0 occurrence hors mentions de risque légitimes ("rendement" absent du fichier, vérifié par relecture manuelle du texte final). Mapping programme/catégorie recoupé ligne à ligne avec le tableau de `docs/legal/fiches-conformite/00-index.md` : 9/9 programmes correctement classés, 0 écart.
+
+**Vérifié (correctif audit-phase3.md, 2026-07-20) :** `Grep "parrainage néobanque vérifié|parrainage plateforme d'investissement|parrainage agrégateur de patrimoine|parrainage placement de trésorerie|parrainage banque pro|parrainage plateforme crypto" docs/copy/fiches-categories.md` : les 6 mots-clés principaux apparaissent chacun de façon contiguë dans leur ligne `**H1**` respective (lignes 16, 39, 62, 82, 102, 125), 6/6 conforme (vs 5/6 relevé par l'audit). Correction ciblée : §1 Finance personnelle, H1 réécrit pour rendre `parrainage néobanque vérifié` contigu (au lieu de « parrainage néobanque et courtage vérifiés ») ; §6 Crypto, annotation corrigée sur la valeur tranchée par le fondateur `parrainage plateforme crypto` (au lieu de `parrainage exchange crypto`, jamais reprise dans le H1 lui-même qui contenait déjà la bonne valeur).
 
 ---
 **Handoff → @seo, @geo, @fullstack**
