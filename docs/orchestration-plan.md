@@ -71,6 +71,8 @@
 | 2026-07-20 | 3-audit | @reviewer | audit-phase3.md (scorecard /10) | 8,7/10 GO | 4 P1 + 3 P2 inédits (décompte parrainage.co 9/9, mot-clé crypto, 6/6 H1, règle title, libellé Dougs, faq handoff, E-E-A-T) |
 | 2026-07-20 | 3-audit | session + @seo/@geo/@copywriter | 7 actions correctives → 10/10 | VERT | crypto=plateforme crypto, 6/6 H1 contigus, parrainage.co 9/9, title source unique, note Dougs, faq à jour, décision mainEntityOfPage/Person |
 | 2026-07-20 | 3-audit | @reviewer | re-audit ciblé audit-phase3.md | **10/10 les 9 livrables, GO franc** | Corrections vérifiées Grep/Read réels ; 0 résidu bloquant ; sweep 10/10 mérité |
+| 2026-07-20 | 3→2 | @fullstack | correctifs techniques SEO/AEO (canonicals, sitemap lastModified, mot-clé title/H1/desc, mainEntityOfPage, FAQPage /divulgation) | build vert + smoke curl | 3 P0 Bing levés ; url_parrainage=0 partout ; mapping DB conforme 00-index ; ISR/OG image différés (P1) |
+| 2026-07-20 | 3 | @copywriter + session | 18e Q/R attribution + sync code faq-enrichie.ts | build vert | Écart 17/18 détecté par @fullstack corrigé (Option A, ajout Q authentique), doc=code=18 |
 
 ### Décision fondateur (Thomas, 2026-07-20 #3) : PILOTE EXHAUSTIF
 Garder un maximum de codes/liens ACTIFS pour tester (9 offres, TR + Kraken inclus). Revue juridique reportée à la TOUTE FIN (avant mise en ligne réelle). Mécanisme `statut` conservé comme levier, aucune offre masquée pour le pilote.
