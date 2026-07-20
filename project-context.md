@@ -62,7 +62,7 @@
 ---
 
 ## Modèle économique et juridique
-- **Modèle économique** : [ ] SaaS  [ ] E-commerce  [x] Marketplace (annuaire deux faces demandeurs/parrains)  [ ] API/produit technique (dimension MCP)  [x] Autre : affiliation / parrainage
+- **Modèle économique** : [ ] SaaS  [ ] E-commerce  [x] Marketplace (deux faces demandeurs/parrains, **rotation de parrains**)  [x] Autre : affiliation / parrainage. **Revenu = commission sur les primes de parrainage générées** `[HYPOTHÈSE ORCHESTRATEUR 2026-07-20 — à valider au checkpoint Phase 0]`
 - **Pays de commercialisation** : `[HYPOTHÈSE]` France d'abord, UE ensuite
 - **Données sensibles collectées** : [x] Non (à confirmer selon le tracking d'attribution)
 - **Utilisation d'IA générative** : [ ] Non  [x] Oui — usage prévu : distribution via assistants IA ; potentiellement génération/vérification de fiches codes
@@ -132,3 +132,12 @@
 - **Pas de MCP** (confirmé, aligné avec @geo/@ia).
 - **Conséquence directe à instruire** : ces verticales (banque/finance/assurance) sont **réglementées** — la promotion de produits financiers peut relever d'un statut (apporteur d'affaires / IOBSP, ORIAS, règles ACPR/AMF sur la publicité financière) EN PLUS des CGU de parrainage. Angle NON couvert par la vague 1 → @legal à relancer spécifiquement.
 - **Conséquence modèle** : un lien de parrainage bancaire est **plafonné par personne** (ex : nombre de filleuls/an limité) → pour scaler au-delà de T&E, le modèle DOIT être une **place de marché / rotation** de parrains (comme les agrégateurs existants), pas un simple annuaire de 2 codes.
+
+**[HYPOTHÈSE ORCHESTRATEUR — 2026-07-20] Décisions de cadrage pour lancer l'autopilot (AskUserQuestion non délivrable, session non-interactive) — À VALIDER AU CHECKPOINT PHASE 0 :**
+1. **Modèle de revenu = commission sur les primes** de parrainage générées (aligné valeur, zéro friction, modèle des agrégateurs viables). Alternatives écartées provisoirement : abonnement parrains, mix.
+2. **Périmètre = marketplace à rotation de parrains**, architecture ouverte dès le départ, **amorcée** par les codes de Thomas & Emmanuel (résout le plafond = risque n°1 de l'étude). Le POC peut être seedé T&E mais le système est construit ouvert (soumission + rotation).
+3. **Verticales de départ = HORS secteur régulé** (énergie type EDF, apps, VPN, box, e-commerce). La **banque/fintech est ajoutée en V1** une fois le statut d'intermédiaire (IOBSP/ORIAS/ACPR) instruit par @legal en parallèle. Objectif : livrer un POC propre et rapide sans friction réglementaire bloquante.
+4. **KPI North Star provisoire** : nombre de parrainages confirmés attribués à une réponse IA / mois (à confirmer/formuler précisément par @data-analyst avec formule de calcul).
+5. **Ton de marque** : direction "fiable, instantané, IA-natif" (Option A creative-strategy) — à finaliser par @creative-strategy dans brand-platform.md.
+
+**Mode d'exécution** : AUTOPILOT (phases 0→5), checkpoint OBLIGATOIRE après Phase 0 pour validation des fondations + de ces 5 hypothèses. Dégradation gracieuse si un agent échoue. Multi-sessions : état vivant dans docs/orchestration-plan.md.
