@@ -9,7 +9,7 @@ export function DisclosureBanner({ nomProgramme }: { nomProgramme: string }) {
   return (
     <div className="rounded-md border border-line border-l-4 border-l-accent bg-surface-muted p-md text-sm text-content-secondary">
       <p>
-        Lien de parrainage {nomProgramme} : Parrainly (Thomas et Emmanuel) perçoit un avantage si vous
+        Lien de parrainage {nomProgramme} : l&apos;éditeur de ce site perçoit un avantage si vous
         l&apos;utilisez pour vous inscrire. Aucun frais supplémentaire pour vous. Non affilié officiellement à{' '}
         {nomProgramme}.{' '}
         <Link href="/divulgation" className="font-medium text-accent underline">

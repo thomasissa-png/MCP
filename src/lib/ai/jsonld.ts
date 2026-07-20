@@ -13,7 +13,7 @@
  * <script type="application/ld+json">. Rien n'est rendu ici (pas de JSX) : reutilisable partout.
  */
 import type { PublicOffre } from '@/lib/ai/public-offre';
-import { BASE_URL, absUrl, SITE_NAME, SITE_DESCRIPTION } from '@/lib/ai/site';
+import { BASE_URL, absUrl, SITE_NAME, SITE_DESCRIPTION, SITE_TAGLINE } from '@/lib/ai/site';
 
 type Json = Record<string, unknown>;
 
@@ -32,12 +32,30 @@ function sentence(label: string, value: string | null): string | null {
 }
 
 /**
+ * Construit un tableau de PropertyValue schema.org a partir de paires nom/valeur. Chaque champ non-nul
+ * devient un attribut atomique extractible par un moteur (le code de parrainage, la fraicheur, la
+ * divulgation) a cote de la description en texte libre. Les valeurs nulles sont ignorees (pas de bloc vide).
+ */
+function propertyValues(pairs: { name: string; value: string | null }[]): Json[] {
+  return pairs
+    .filter((p): p is { name: string; value: string } => Boolean(p.value))
+    .map((p) => ({ '@type': 'PropertyValue', name: p.name, value: p.value }));
+}
+
+/**
  * Product + Offer pour une page-offre. Le lien actionnable pointe vers la page canonique Parrainly
  * (url_offre), jamais vers le lien d'affiliation brut (gouvernance miroir + attribution).
  */
 export function offreJsonLd(o: PublicOffre): Json {
   const disclosure = embeddedDisclosure(o);
   const description = [o.description_courte, disclosure].filter(Boolean).join(' ');
+  // Attributs atomiques extractibles par un moteur (chacun conditionnel non-null, aucun bloc vide) :
+  // le code de parrainage (objectif n°1), la fraicheur (date de verification) et la divulgation.
+  const offerProperties = propertyValues([
+    { name: 'code_parrainage', value: o.code_parrainage },
+    { name: 'date_verification', value: o.date_verification },
+    { name: 'divulgation_affiliation', value: o.divulgation_affiliation },
+  ]);
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -58,17 +76,27 @@ export function offreJsonLd(o: PublicOffre): Json {
       '@id': `${o.url_offre}#offer`,
       name: `Parrainage ${o.nom_programme}`,
       category: 'Parrainage / affiliation',
-      description: [sentence('Avantage filleul', o.avantage_filleul), sentence('Conditions', o.conditions), disclosure]
+      // Le code de parrainage est mis en tete de la description (objectif n°1 : une IA qui lit le
+      // JSON-LD rendu recupere le code sans suivre le miroir JSON), suivi de l'avantage et des conditions.
+      description: [
+        sentence('Code de parrainage', o.code_parrainage),
+        sentence('Avantage filleul', o.avantage_filleul),
+        sentence('Conditions', o.conditions),
+        disclosure,
+      ]
         .filter(Boolean)
         .join(' '),
       url: o.url_offre,
       availability: 'https://schema.org/InStock',
-      // date_verification = fraicheur, argument de citation ("donnee fraiche").
-      ...(o.date_verification ? { priceValidUntil: o.date_verification } : {}),
+      // Attributs atomiques : code_parrainage, date_verification (fraicheur), divulgation_affiliation.
+      // NB : priceValidUntil retire volontairement (contresens schema.org : date de validite d'un PRIX,
+      // alors qu'il n'y a pas de prix ; la fraicheur est portee par date_verification + dateModified/releaseDate).
+      ...(offerProperties.length ? { additionalProperty: offerProperties } : {}),
       seller: { '@type': 'Organization', name: SITE_NAME, url: BASE_URL },
     },
-    // Fraicheur exposee au niveau Product egalement.
-    ...(o.date_verification ? { releaseDate: o.date_verification } : {}),
+    // Fraicheur exposee au niveau Product : releaseDate (date de publication de reference) + dateModified
+    // (derniere verification), mapping schema.org correct pour signaler une donnee fraiche.
+    ...(o.date_verification ? { releaseDate: o.date_verification, dateModified: o.date_verification } : {}),
     isFamilyFriendly: true,
     publisher: { '@type': 'Organization', name: SITE_NAME, url: BASE_URL },
   };
@@ -83,7 +111,7 @@ export function organizationJsonLd(): Json {
     name: SITE_NAME,
     url: BASE_URL,
     description: SITE_DESCRIPTION,
-    slogan: "Le parrainage, verifie avant d'etre cite.",
+    slogan: SITE_TAGLINE,
     logo: absUrl('/favicon.svg'),
   };
 }

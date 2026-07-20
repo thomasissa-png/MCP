@@ -18,11 +18,11 @@ export default function DivulgationPage() {
       <p>
         Parrainly référence des programmes de parrainage réels (banques, plateformes d&apos;investissement,
         plateformes crypto, services aux entreprises). Chaque fiche que vous consultez contient un lien de
-        parrainage personnel appartenant à Thomas ou à Emmanuel, les deux personnes qui construisent Parrainly.
+        parrainage personnel appartenant à l&apos;éditeur de ce site.
       </p>
       <p>
         <strong>Ce que ça signifie concrètement :</strong> si vous vous inscrivez à un programme via un des liens
-        présentés sur ce site, Thomas ou Emmanuel reçoit un avantage (prime en argent, mois offert, selon le
+        présentés sur ce site, l&apos;éditeur de ce site reçoit un avantage (prime en argent, mois offert, selon le
         programme), exactement comme n&apos;importe quel parrainage personnel entre proches. Il n&apos;y a aucun
         frais supplémentaire pour vous, et aucune commission n&apos;est prélevée sur votre argent : c&apos;est le
         programme tiers qui verse la prime, pas vous.

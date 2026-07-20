@@ -51,9 +51,9 @@ export function Footer() {
           ))}
         </div>
         <p className="mt-xl border-t border-line pt-lg text-xs text-content-tertiary">
-          Parrainly référence des liens de parrainage réels appartenant à Thomas ou Emmanuel, qui perçoivent
-          un avantage si vous les utilisez. Parrainly n&apos;est affilié officiellement à aucun des programmes
-          listés. Investir comporte des risques de perte en capital.
+          Parrainly référence des liens de parrainage réels appartenant à l&apos;éditeur de ce site, qui
+          perçoit un avantage si vous les utilisez. Parrainly n&apos;est affilié officiellement à aucun des
+          programmes listés. Investir comporte des risques de perte en capital.
         </p>
       </div>
     </footer>

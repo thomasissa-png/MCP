@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LegalShell } from '@/components/legal/LegalShell';
 import { LegalContact } from '@/components/legal/LegalContact';
+import { LEGAL_EDITOR_NAME } from '@/config/socle';
 import { absUrl } from '@/lib/ai/site';
 
 export const metadata: Metadata = {
@@ -15,9 +16,16 @@ export default function ConfidentialitePage() {
     <LegalShell title="Politique de confidentialité">
       <section>
         <h2>1. Qui sommes-nous</h2>
+        {/* TODO : raison sociale à poser via LEGAL_EDITOR_NAME avant lancement public (revue juridique
+            finale). Même mécanisme que mentions-legales/page.tsx pour éviter toute désynchronisation
+            de l'identité du responsable de traitement entre les deux pages (cf. legal-audit-2.md, P0-2). */}
         <p>
-          Parrainly est édité par Thomas et Emmanuel. Le responsable de traitement des données collectées sur le
-          site est cette même entité, à confirmer selon la structure juridique retenue.
+          {LEGAL_EDITOR_NAME
+            ? `Parrainly est édité par ${LEGAL_EDITOR_NAME}.`
+            : "Parrainly est édité par l'éditeur du site, identité définitive à préciser avant la mise en ligne publique."}{' '}
+          Le responsable de traitement des données collectées sur le site est cette même entité, dont
+          l&apos;identité complète figure dans les{' '}
+          <Link href="/mentions-legales" className="text-accent underline">Mentions légales</Link>.
         </p>
       </section>
       <section>

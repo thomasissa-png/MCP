@@ -6,7 +6,7 @@
  * Next (@fullstack) ne font que la brancher, sans logique metier propre.
  *
  * Aucune donnee inventee : l'identite ci-dessous reprend brand-platform.md (nom, promesse, tagline)
- * et project-context.md (cercle ferme Thomas & Emmanuel, verticales fintech reelles).
+ * et project-context.md (registre en cercle ferme edite par ses operateurs, verticales fintech reelles).
  */
 import { SITE_URL } from '@/config/socle';
 
@@ -20,9 +20,9 @@ export function absUrl(path: string): string {
 }
 
 export const SITE_NAME = 'Parrainly';
-export const SITE_TAGLINE = "Le parrainage, verifie avant d'etre cite.";
+export const SITE_TAGLINE = "Le parrainage, vérifié avant d'être cité.";
 export const SITE_DESCRIPTION =
-  "Parrainly est un registre qui verifie chaque lien de parrainage fintech (neobanque, investissement, gestion de patrimoine, placement de tresorerie, services entrepreneur, crypto) avant de le recommander, avec une date de controle sur chaque offre. Les liens exposes appartiennent a Thomas ou Emmanuel, qui percoivent un avantage du programme si vous les utilisez.";
+  "Parrainly est un registre qui vérifie chaque lien de parrainage bancaire, investissement, gestion de patrimoine, placement de trésorerie, services entrepreneur et crypto avant de le recommander, avec une date de contrôle sur chaque offre. Les liens exposés appartiennent à l'éditeur du site, qui perçoit un avantage du programme si vous les utilisez.";
 
 /**
  * Crawlers d'assistants IA / moteurs de reponse explicitement autorises (robots.txt).
