@@ -41,6 +41,12 @@
 | 2026-07-20 | 0 | @product-manager | product-vision + roadmap + functional-specs | 9/9 PASS | 8 épics, mécanique rotation FIFO pondérée, hors V1 = banque/MCP |
 | 2026-07-20 | 0 | @data-analyst | kpi-framework + tracking-plan | 9/9 PASS | NSM = PCA-IA/mois ; attribution via /r/{token} + confirmation déclarative |
 | 2026-07-20 | 0 | @product-manager (corrective) | functional-specs US-09 + events | 9/9 PASS | Confirmation de conversion + /r/{token} ; cohérence n°4 bidirectionnelle PASS |
+| 2026-07-20 | 0-refresh | @legal / @creative-strategy / @product-manager | legal-strategy, brand-platform, product×3 (corrections Thomas) | 9/9 PASS | Parrainly, banques incluses, V1 cercle fermé, personas A1/A2, schéma Emmanuel |
+| 2026-07-20 | 0-align | @product-manager / @data-analyst | alignment C7 (Léa/EDF → A1/A2 fintech) | PASS | 0 résidu actif ; git history reset-author (committer noreply) |
+| 2026-07-20 | 1 | @copywriter | docs/copy ×3 (voix, page-offre, homepage) | 9/9 PASS | Mots interdits classement/rendement ; fiche Trade Republic auto-auditée |
+| 2026-07-20 | 1 | @orchestrator | data/base-parrainage.json + programmes.csv + lessons-learned.md | OK | Résout L1 (xlsx binaire illisible par agents) |
+| 2026-07-20 | 1 | @ux | docs/ux ×3 (IA, flows, wireframes) | 9/9 PASS | URL mono-offre + JSON miroir ; 4 parcours ; page-offre 10 zones |
+| 2026-07-20 | 1 | @design (en cours) | design-tokens, design-system, page-compositions | — | Vague B lancée |
 
 ## Reprise (multi-sessions)
 Commande : « Lis project-context.md et docs/orchestration-plan.md, continue où on s'est arrêté. »
