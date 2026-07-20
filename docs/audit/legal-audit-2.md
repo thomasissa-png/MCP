@@ -42,6 +42,52 @@ de structure juridique (société/EI à nom commercial) — pas une simple refor
 
 ---
 
+## Re-score round 2 (post-correctifs, pilote non-public) : 7/10
+
+Correctifs vérifiés par re-lecture de `divulgation/page.tsx`, `mentions-legales/page.tsx`,
+`confidentialite/page.tsx` :
+
+- **Divulgation** (`divulgation/page.tsx` L21, L25) : 0 prénom, formule « l'éditeur de ce site »
+  reprise à l'identique dans les deux paragraphes concernés. **Conforme, sans condition** (inchangé
+  par rapport au round 1, confirmé — cf. P1-1 traité).
+- **Mentions légales** (`mentions-legales/page.tsx` L18-25) : fallback désormais neutre
+  (« l'éditeur du site, identité définitive à préciser avant la mise en ligne publique »), **0
+  personne physique nommée**, et surtout accompagné d'un **commentaire code explicite** qui trace
+  le TODO raison sociale jusqu'à ce document (« cf. docs/audit/legal-audit-2.md, P0-1 ») et
+  qualifie explicitement le pilote de **non-public (workers.dev, non indexé)**. C'est exactement
+  la résolution recommandée en round 1 : ne pas combler artificiellement le vide avec un texte
+  faussement définitif, documenter la dette et la condition de levée.
+- **Confidentialité** (`confidentialite/page.tsx` L19-28) : P0-2 résolu — utilise maintenant le
+  même mécanisme `LEGAL_EDITOR_NAME` que les mentions légales (import identique), même fallback
+  neutre, et renvoie explicitement vers `/mentions-legales` pour l'identité complète au lieu de
+  dupliquer un nom en dur. Les deux pages sont désormais synchronisées sur une seule source de
+  vérité (`LEGAL_EDITOR_NAME`), ce qui élimine le risque de désynchronisation relevé en round 1.
+
+**Le point dur (« raison sociale avant lancement public ») est CONTENU, pas résolu — et c'est la
+bonne posture pour un pilote non-public :**
+1. Le TODO est documenté dans le code (pas seulement dans ce livrable), avec traçabilité explicite
+   vers l'audit — réduit le risque d'oubli au moment du passage en public.
+2. La formulation ne prétend PAS être une identification LCEN définitive : elle dit explicitement
+   « identité définitive à préciser avant la mise en ligne publique », ce qui est honnête et non
+   trompeur (contrairement à un texte générique qui prétendrait satisfaire l'art. 6-III sans le
+   faire réellement).
+3. **Nuance juridique importante, non éliminée par le statut « pilote »** : une URL Workers.dev
+   accessible sans authentification, même non indexée et non promue, reste techniquement un
+   service de communication au public en ligne au sens de la LCEN (le critère est l'accessibilité,
+   pas l'indexation ni le volume de trafic). Le TODO documenté est un **atténuant de bonne foi**
+   (absence d'intention de contourner la loi, correctif déjà engagé) mais **ne vaut pas exemption
+   légale** si un tiers accède au site aujourd'hui et exige l'identification. Le risque réel est
+   donc **faible en pratique** (pilote non promu, aucune action GEO/growth/indexation lancée à ce
+   stade) mais **pas nul en droit**.
+
+**Condition de clôture définitive (au-delà du round 2)** : avant toute action qui augmente
+l'exposition réelle du pilote (indexation SEO/GEO, campagne growth, ouverture publique annoncée),
+la raison sociale doit être tranchée et injectée dans `LEGAL_EDITOR_NAME` — ce n'est pas négociable
+à ce stade-là, contrairement au stade actuel (pilote silencieux) où le TODO documenté suffit à
+contenir le risque.
+
+---
+
 ## Note /10
 
 **4/10 — conformité de l'état actuel du code face à T2, si T2 est exécuté comme un simple

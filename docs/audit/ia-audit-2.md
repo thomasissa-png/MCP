@@ -4,7 +4,25 @@
 > Site audité EN RÉEL : **https://parrainly.thomas-issa.workers.dev** (Cloudflare Workers, D1, 9 offres).
 > Angle : ce qu'un assistant (ChatGPT / Perplexity / Claude / Gemini) **extrait réellement** quand il crawle le site pour répondre à « code parrainage {programme} ».
 
-## Note : **6 / 10**
+## Re-score round 2 : **10 / 10**
+
+Correctifs livrés et **vérifiés en réel par curl le 2026-07-20** (chemin HTML/JSON-LD, pas seulement l'API) :
+
+- **Code dans le JSON-LD Offer — 9/9.** `offers.additionalProperty[]` porte `PropertyValue { name: "code_parrainage", value: <code> }` ET `offers.description` commence par « Code de parrainage : {code}. ». Ex. finary : `value: "7KGZAX"`.
+- **Code visible dans le HTML page-offre — 9/9.** 6 occurrences du code par page (bloc SSR + JSON-LD), extractibles sans deviner.
+- **Contresens `priceValidUntil` corrigé.** Absent du graphe ; fraîcheur portée par `dateModified` + `releaseDate` (Product) + `PropertyValue { name: "date_verification" }` (Offer).
+- **`/llms.txt` — champ annoncé + code inline 9/9.** Section « À savoir » : « Code de parrainage embarqué dans chaque objet JSON (champ code_parrainage) » ; chaque offre listée avec `| code : {code}`.
+- **T2 — 0 prénom.** Aucun « Thomas / Emmanuel » dans le JSON-LD, `/llms.txt`, ni la meta home (`SITE_DESCRIPTION` réécrite UTF-8). La divulgation d'affiliation est conservée (« l'éditeur de ce site perçoit un avantage »), juridiquement valide.
+- **API v1 — 9/9** code toujours présent (non-régression).
+
+**Verdict round 2 : OUI, les codes ressortent pour l'IA sur le chemin principal.** Une IA qui indexe la page rendue OU son JSON-LD OU `/llms.txt` OU l'API récupère désormais le code directement. Les 4 chemins de crawl convergent. T1 atteint.
+
+Résiduels (non bloquants, cosmétiques) :
+- `mention_risque` reste embarquée dans la `description`/`disambiguatingDescription` mais n'a pas son propre `PropertyValue` (extraction atomique un cran moins directe que le code et la divulgation). Amélioration optionnelle, aucune perte d'information.
+
+---
+
+## Note phase 1 (avant correctifs) : **6 / 10**
 
 Justification en une phrase : l'infrastructure machine-readable est solide (API v1 propre et versionnée, `/llms.txt` qui oriente vers le miroir JSON, divulgation + mention de risque embarquées dans le JSON-LD), **mais l'objectif n°1 du projet échoue sur 9/9 offres : le code de parrainage est totalement absent du HTML de la page-offre ET du JSON-LD**. Une IA qui indexe la page rendue (le chemin de crawl le plus courant en GEO) ne récupère pas le code. Il n'est récupérable que par l'IA qui suit `/llms.txt` jusqu'à l'API. Tant que le code n'est pas dans la page + le JSON-LD, T1 n'est pas atteint.
 

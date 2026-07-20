@@ -29,7 +29,49 @@ Finary" avec ce que Parrainly publie aujourd'hui. Pour le persona humain, c'est 
 cliquer, attendre un spinner, pour obtenir un lien (pas même le code lui-même en clair). Ce défaut
 d'affichage annule une bonne partie de la valeur du design system par ailleurs bien construit.
 
-## Findings P0 (bloquants)
+## Re-score round 2 : 8/10
+
+Vérification faite sur `src/components/ui/CodeBadge.tsx`, `src/app/offres/[slug]/page.tsx` et le
+snapshot rafraîchi `scratchpad/audit/offre-finary.html`.
+
+- **P0-1 RÉSOLU (preuve directe).** `<code class="...">7KGZAX</code>` est présent en clair dans le HTML
+  statique (section `id="S:2"`, rendu SSR avant hydratation), dans un bloc dédié `CodeBadge` cohérent
+  avec les tokens du `FreshnessBadge` (bordure `border-line`, fond `bg-accent-subtle` pour se distinguer,
+  police mono `text-lg font-bold tracking-wider`, bouton copier `h-11 min-w-11` donc cible ≥ 44px,
+  `aria-label` qui change selon l'état, `select-all` en repli si le presse-papiers est indisponible,
+  et `return null` propre si le code est absent — conforme au principe "No Manufacturing Defaults").
+  Le code est en plus dupliqué dans le JSON-LD `Offer` : `"description":"Code de parrainage : 7KGZAX. ..."`
+  ET `"additionalProperty":[{"name":"code_parrainage","value":"7KGZAX"}, ...]`. Double encodage texte +
+  structuré : largement suffisant pour la lecture IA (T1). Résiduel design mineur seulement : le
+  `CodeBadge` est visuellement correct mais pas encore *le* point le plus dominant de la zone identité
+  (le H1 reste le plus gros élément) — acceptable, le code n'a pas besoin d'écraser le nom de l'offre.
+
+- **P0-2 RÉSOLU (structurel), à confirmer par capture.** Ordre désormais : identité (+ CodeBadge) →
+  divulgation → risque → **CTA** → conditions → aide → offres proches (`page.tsx` L91-171, commentaire
+  L133-135 explicite le choix). Le CTA gagne une position (5ᵉ → 4ᵉ) et surtout n'a plus le bloc
+  "Conditions et avantages" entre le risque et lui, ce qui réduit la distance de scroll et supprime un
+  bandeau de texte entre le risque et l'action. L'ordre légal (divulgation et risque toujours au-dessus
+  du CTA) reste respecté, donc c'est la position la plus haute atteignable sans casser la conformité.
+  Non re-vérifié par capture d'écran cette manche (aucune nouvelle image fournie) : à confirmer que le
+  CTA tombe bien dans le premier viewport desktop 1280px avant clôture définitive.
+
+- **P0-3 RÉSOLU sur cette page, partiellement re-vérifié ailleurs.** Sur `offre-finary.html` : plus
+  aucune occurrence de "Thomas"/"Emmanuel" — disclosure banner ("l'éditeur de ce site"), liste
+  conditions ("Ce que reçoit l'éditeur du site"), footer ("appartenant à l'éditeur de ce site"), et
+  JSON-LD (`description`, `disambiguatingDescription`, `additionalProperty.divulgation_affiliation`)
+  tous neutralisés. Le correctif annoncé pour le back-office ("Bonjour Emmanuel" → "Espace opérateur")
+  n'a **pas** été re-vérifié par cet audit design (aucune capture ou snapshot du dashboard fourni dans
+  ce round) — à confirmer par un nouveau `parrain-dashboard-desktop.png` avant de considérer T2 100% clos
+  côté design.
+
+**Résiduels (P1, aucun bloquant) :** H1 page-offre (24-30px) toujours nettement plus petit que le H1
+accueil (36-48px) — cohérence de marque cross-page toujours pas alignée (voir P1-1 ci-dessous) ;
+contraste de l'anneau de focus sur fond accent toujours pas mesuré (P1-3) ; absence persistante de
+preuve visuelle dark mode (P1-4) ; disclosure + risque restent deux bandeaux visuellement proches en
+teinte juste avant le CTA (P1-5, atténué mais pas éliminé par le retrait des conditions entre les deux).
+Aucun nouveau résiduel P0 identifié.
+
+## Findings P0 (bloquants) — état initial (round 1, pour mémoire)
 
 **P0-1 — Rendre le code de parrainage visible en HTML statique dès le chargement de la page offre.**
 Critère de done : `codeParrainage` (ex. `7KGZAX`) apparaît en texte brut dans le HTML SSR de
@@ -109,7 +151,12 @@ identiques) aiderait à hiérarchiser divulgation légale vs. risque financier v
 
 ## Bloc Vérifié (G_PROOF)
 
-Fichiers et captures réellement lus pour cet audit :
+Round 2 (re-score) : `src/components/ui/CodeBadge.tsx`, `src/app/offres/[slug]/page.tsx` (version
+corrigée), `scratchpad/audit/offre-finary.html` (snapshot rafraîchi post-correctifs). Non re-vérifié :
+back-office (`parrain-dashboard-desktop.png` non rafraîchi ce round), rendu visuel réel du nouvel ordre
+de zones (aucune nouvelle capture desktop/mobile fournie).
+
+Round 1 — fichiers et captures réellement lus pour cet audit :
 - `docs/audit/AUDIT-BRIEF.md`
 - Squelette existant `docs/audit/design-audit-2.md` (écrasé par cette version)
 - Snapshots : `scratchpad/audit/offre-finary.html`, `scratchpad/audit/home.html` (recherche confirmée :

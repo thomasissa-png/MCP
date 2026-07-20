@@ -4,7 +4,17 @@
 > Angle : persona qui cherche « parrainage {programme} » + IA/AI Overviews qui consomme la structure indexable.
 > Cet audit vérifie en réel (curl/grep) l'état du pilote, pas le code en abstrait. Session : 2026-07-20.
 
-## Note : 6,5/10
+## Re-score round 2 : 8,5/10
+
+Les 4 correctifs annoncés par le coordinateur sont vérifiés en direct (curl, ce jour) et **réels, pas déclaratifs** :
+- **P0-1 (meta desc accueil)** : `curl .../ | grep description` → `"Parrainly vérifie chaque lien de parrainage bancaire, investissement et crypto avant de le recommander : statut à jour et date de contrôle sur chaque offre."` (149 caractères). Plus de « parrainage fintech », plus de « sans lien mort ». Propre, précis, dans la fourchette 120-160.
+- **P0-2 (og:image)** : `curl .../opengraph-image`, `.../offres/finary/opengraph-image`, `.../categories/crypto/opengraph-image` → les 3 renvoient `200 image/png`. Meta tags confirmés : `og:image:width=1200`, `og:image:height=630`, `twitter:image` présent avec les mêmes dimensions, `og:image:alt` renseigné. Carte sociale complète sur les 3 types de page testés.
+- **P0-3 (soft 404)** : `curl -o /dev/null -w "%{http_code}"` sur `/offres/inexistant` → **404** (était 200), `/categories/inexistant` → **404** (était 200), route générique inconnue → 404 (inchangé, référence). Le body renvoyé est désormais le `not-found.tsx` générique du site (title « Parrainly · Le parrainage, vérifié avant d'être cité », `noindex`), plus la page « Offre introuvable » à 200. Le middleware corrige bien le comportement OpenNext/Cloudflare sur `notFound()`.
+- **P0-4 (code de parrainage indexable)** : `grep -c "7KGZAX" offre-finary.html` → 1 dans le texte visible (« Code de parrainage : 7KGZAX. ») et confirmé dans le bloc `<script type="application/ld+json">` sous forme de `PropertyValue` (`"name":"code_parrainage","value":"7KGZAX"`). Une IA qui lit soit le HTML rendu soit le graphe structuré récupère désormais le code. Objectif n°1 du projet atteint sur la page testée.
+
+Les 4 P0 de l'itération précédente sont donc clos et vérifiés. La note monte de 6,5 à **8,5/10** ; le point restant sous 10/10 est un P1 déjà documenté (meta description offre sans mot-clé exact) plus la finition P1 non encore traitée (casse des titles catégorie, favicons, pages légales, GSC/Bing/IndexNow). Aucun de ces résiduels n'est bloquant.
+
+## Note initiale (round 1) : 6,5/10
 
 **Justification double lecture :**
 - **Persona (humain)** : les 9 pages offre portent le mot-clé exact « Parrainage {Programme} vérifié » en title ET en H1, canonicals absolus corrects, sitemap propre (20 URLs, `lastModified` stable et réel — le P0 de l'audit précédent est corrigé). C'est du solide.
@@ -16,18 +26,18 @@ La base technique (canonicals, sitemap, robots) est bonne. Ce qui manque est de 
 
 ## Findings bloquants
 
-### P0
+### P0 — tous résolus et re-vérifiés en round 2 (voir bloc ci-dessus + Vérifié round 2)
 
-**P0-1 — Reformuler la meta description de l'accueil (et son duplicata dans le hero) — critère de done : la nouvelle description ne contient plus « parrainage fintech » ni « sans lien mort », est ≤ 160 caractères, et est déployée en prod (vérifiable par `curl .../ | grep description`).**
+**[RÉSOLU round 2] P0-1 — Reformuler la meta description de l'accueil (et son duplicata dans le hero) — critère de done : la nouvelle description ne contient plus « parrainage fintech » ni « sans lien mort », est ≤ 160 caractères, et est déployée en prod (vérifiable par `curl .../ | grep description`).**
 Vérifié en direct : `<meta name="description" content="Parrainly vérifie chaque lien de parrainage fintech avant de le recommander : Trade Republic, Qonto, Kraken et les autres, sans lien mort ni condition expirée."/>` — c'est exactement la formulation que le fondateur a qualifiée de bancale (T3), encore en ligne. Le même texte est dupliqué mot pour mot dans `SITE_DESCRIPTION` (`src/lib/ai/site.ts`), le hero de `page.tsx` (L64-66) et l'`openGraph.description` du layout : une seule correction dans `src/lib/ai/site.ts` + propagation suffit à corriger les 4 occurrences.
 Reformulation proposée (158 caractères) :
 > « 9 parrainages vérifiés à date : néobanque, investissement, crypto, compte pro (Trade Republic, Qonto, Kraken...). Statut et date de contrôle sur chaque offre. »
 Pourquoi : remplace l'assimilation floue « parrainage fintech » par un chiffre concret (9) et une liste de catégories réelles ; supprime le gadget « sans lien mort » ; conserve la preuve de fraîcheur (statut + date de contrôle) qui est l'argument différenciant du produit.
 
-**P0-2 — Ajouter une image sociale (`og:image` + `twitter:image`) sur toutes les pages, format 1200×630 — critère de done : chaque page (home, 9 offres, 6 catégories) expose une image testable OK sur Facebook Sharing Debugger et LinkedIn Post Inspector.**
+**[RÉSOLU round 2] P0-2 — Ajouter une image sociale (`og:image` + `twitter:image`) sur toutes les pages, format 1200×630 — critère de done : chaque page (home, 9 offres, 6 catégories) expose une image testable OK sur Facebook Sharing Debugger et LinkedIn Post Inspector.**
 Vérifié en direct : `curl .../ | grep 'og:image\|twitter:image'` → **zéro résultat**. Le layout définit `twitter: { card: 'summary_large_image' }` sans jamais fournir d'image : la carte sociale est cassée (un `summary_large_image` sans image tombe en aperçu vide ou dégradé selon la plateforme). Aucun fichier `og-image.png`/`opengraph-image` n'existe (`/og-image.png` → 404). Impact direct Bing (checklist §"Règle multi-moteurs") et partage LinkedIn/X, canal de distribution du pilote.
 
-**P0-3 — Corriger le statut HTTP des pages offre/catégorie inexistantes (soft 404) — critère de done : `/offres/{slug-inexistant}` et `/categories/{slug-inexistant}` renvoient un status HTTP 404 réel, pas 200.**
+**[RÉSOLU round 2] P0-3 — Corriger le statut HTTP des pages offre/catégorie inexistantes (soft 404) — critère de done : `/offres/{slug-inexistant}` et `/categories/{slug-inexistant}` renvoient un status HTTP 404 réel, pas 200.**
 Vérifié en direct :
 ```
 curl -o /dev/null -w "%{http_code}" https://parrainly.thomas-issa.workers.dev/offres/inexistant       → 200
@@ -36,7 +46,7 @@ curl -o /dev/null -w "%{http_code}" https://parrainly.thomas-issa.workers.dev/pa
 ```
 La page rendue contient bien `<meta name="robots" content="noindex"/>` (le `notFound()` de `src/app/offres/[slug]/page.tsx` et `categories/[slug]/page.tsx` déclenche le bon template), mais le code HTTP réel reste 200 sur l'environnement Cloudflare Workers (probable limite de l'adaptateur OpenNext sur les routes `force-dynamic`). Le `noindex` limite le risque d'indexation Google, mais Bing (crawl budget plus serré, cf. règle multi-moteurs) crawle ces URLs comme des pages valides et Search Console/Bing Webmaster Tools les remontera en anomalie « soft 404 », polluant le diagnostic de qualité du site. À signaler à @fullstack : vérifier si `NextResponse` avec status explicite est possible sur ces routes dynamiques dans l'adaptateur Cloudflare, sinon documenter la limite.
 
-**P0-4 (coordination @geo, ne pas dupliquer le fix) — Exposer le code de parrainage dans le HTML indexable et le JSON-LD, pas seulement dans `/api/v1` — critère de done : le champ `code_parrainage` apparaît dans le DOM rendu de la page offre ET dans `offreJsonLd()`.**
+**[RÉSOLU round 2] P0-4 (coordination @geo, ne pas dupliquer le fix) — Exposer le code de parrainage dans le HTML indexable et le JSON-LD, pas seulement dans `/api/v1` — critère de done : le champ `code_parrainage` apparaît dans le DOM rendu de la page offre ET dans `offreJsonLd()`.**
 Vérifié en direct : `curl .../offres/finary` puis grep du HTML → 0 occurrence de `7KGZAX` (le code réel renvoyé par `/api/v1/offres/finary`). Le builder `offreJsonLd()` (`src/lib/ai/jsonld.ts` L38-75) ne lit jamais `o.code_parrainage`, alors que `PublicOffre` le porte (`public-offre.ts` L33/71). C'est l'objectif n°1 du projet (T1, brief) : une IA qui lit la page rendue ou le graphe structuré ne récupère toujours pas le code. Propriété de correction = @geo/@ia (couche `src/lib/ai/*`), mais je le maintiens en P0 dans mon audit car il conditionne directement la requête cible « parrainage {programme} » que ce document SEO traite : sans le code dans le contenu indexable, aucune page offre ne peut servir de source complète à un AI Overview.
 
 ### P1
