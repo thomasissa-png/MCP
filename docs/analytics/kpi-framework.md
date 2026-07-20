@@ -6,7 +6,7 @@
 
 - NSM définitif : **Parrainages Confirmés d'origine IA (PCA-IA) par mois**, version resserrée du provisoire de project-context.md (ajout du critère "origine IA détectée", indispensable car le canal actuel `page_web`/`api_json` de functional-specs.md ne distingue pas une visite venue d'une citation IA d'une visite directe au catalogue).
 - Arbre à 5 métriques d'entrée couvrant tout le funnel : citation → clic attribué → lien généré → conversion confirmée → disponibilité du pool.
-- Métriques déclinées par face (Léa / Karim) + 2 garde-fous de fraîcheur (liens morts, latence de détection), alignés brand-platform.md (preuve "Fraîcheur") et US-04/US-06.
+- Métriques déclinées par face (A1 jeune actif / A2 entrepreneur / Karim) + 2 garde-fous de fraîcheur (liens morts, latence de détection), alignés brand-platform.md §2.1/2.2 (preuve "Fraîcheur") et US-04/US-06.
 - Cibles chiffrées : 2 benchmarks sourcés (WebSearch, cette session) utilisables comme point de repère, le reste marqué `[À DÉFINIR APRÈS POC]` — trafic attendu actuel = 0 (stade idée), toute cible de conversion serait inventée (G13).
 - Gap détecté et signalé à @product-manager : functional-specs.md ne contient AUCUN event de confirmation de conversion (`attribution_confirmee`) alors que c'est l'événement qui alimente directement le NSM — traité en détail dans tracking-plan.md §2.
 
@@ -16,7 +16,7 @@
 
 ### 1.1 Le provisoire, challengé
 
-Version project-context.md : "nombre de parrainages confirmés attribués à une réponse IA / mois". Le principe est bon (valeur réelle, pas de vanité) mais la formule manque un élément opérationnel : **rien dans le modèle de données (Attribution, product-vision.md §4) ne code aujourd'hui "attribué à une réponse IA"** — le seul champ disponible est `canal_source` (`page_web` | `api_json`, US-01 payload), qui dit COMMENT la requête est arrivée techniquement, pas SI elle vient d'une citation IA. Une visite directe au catalogue (Léa tape l'URL sans passer par une IA) passerait aussi par `page_web`.
+Version project-context.md : "nombre de parrainages confirmés attribués à une réponse IA / mois". Le principe est bon (valeur réelle, pas de vanité) mais la formule manque un élément opérationnel : **rien dans le modèle de données (Attribution, product-vision.md §4) ne code aujourd'hui "attribué à une réponse IA"** — le seul champ disponible est `canal_source` (`page_web` | `api_json`, US-01 payload), qui dit COMMENT la requête est arrivée techniquement, pas SI elle vient d'une citation IA. Une visite directe au catalogue (le jeune actif A1 tape l'URL sans passer par une IA) passerait aussi par `page_web`.
 
 **Correction apportée** : ajouter une propriété dérivée `origine_detectee` (voir tracking-plan.md §1) calculée à la génération du lien à partir du referrer/UTM capturés sur `page_offre_vue`. C'est ce qui rend le NSM mesurable, pas juste désirable.
 
@@ -35,7 +35,7 @@ PCA-IA (mois M) = COUNT(
 )
 ```
 
-`ia_non_identifiee` = detection heuristique positive (mention explicite "code de parrainage EDF" dans un paramètre de requête interne, session sans referrer mais token cliqué dans une fenêtre de temps cohérente avec une réponse IA) sans plateforme formellement identifiée — cf. limites de l'attribution en tracking-plan.md §2.4.
+`ia_non_identifiee` = detection heuristique positive (mention explicite "code de parrainage Trade Republic" dans un paramètre de requête interne, session sans referrer mais token cliqué dans une fenêtre de temps cohérente avec une réponse IA) sans plateforme formellement identifiée — cf. limites de l'attribution en tracking-plan.md §2.4.
 
 ### 1.4 Fréquence de mesure
 
@@ -65,7 +65,7 @@ PCA-IA (mois M) = COUNT(
 
 | # | Métrique d'entrée | Définition | Formule | Owner |
 |---|---|---|---|---|
-| 1 | Taux de citation IA | % de requêtes-test (prompts type "code de parrainage EDF") où une IA cite une fiche du registre | `COUNT(prompts-test avec citation) / COUNT(prompts-test envoyés)` — mesuré par audit manuel/outil de citation tracking, pas par un event produit (l'IA est hors de notre système) | @geo / @seo |
+| 1 | Taux de citation IA | % de requêtes-test (prompts type "code de parrainage Trade Republic") où une IA cite une fiche du registre | `COUNT(prompts-test avec citation) / COUNT(prompts-test envoyés)` — mesuré par audit manuel/outil de citation tracking, pas par un event produit (l'IA est hors de notre système) | @geo / @seo |
 | 2 | Clics attribués depuis IA | Volume de `page_offre_vue` avec `origine_detectee` ≠ direct/autre, par semaine | `COUNT(page_offre_vue WHERE origine_detectee = IA)` | @growth |
 | 3 | Taux de conversion clic → confirmée | % des sessions d'origine IA qui aboutissent à une Attribution confirmée | `COUNT(Attribution confirmée, origine IA) / COUNT(page_offre_vue, origine IA)` | @product-manager / @fullstack (funnel produit) |
 | 4 | Taille et remplissage du pool de parrains actifs | Nombre de parrains au statut `actif` par offre / cible de pool (cf. métriques par face §3) | `COUNT(Parrain actif, offre X) / pool_cible(offre X)` | @data-analyst / @ia |
@@ -83,7 +83,7 @@ PCA-IA (mois M) = COUNT(
 
 ## 3. Métriques par face (marketplace deux faces)
 
-### 3.1 Côté demandeur (Léa)
+### 3.1 Côté demandeur (A1 jeune actif / A2 entrepreneur)
 
 | Métrique | Définition | Formule | Owner |
 |---|---|---|---|
@@ -139,16 +139,18 @@ PCA-IA (mois M) = COUNT(
 
 - **G1** : 4 sections numérotées + résumé exécutif, 0 section < 2 lignes, 0 `[TODO]`. PASS.
 - **G3** : bloc Handoff structuré en fin de document. PASS.
-- **G5** : personas Léa/Karim identiques à project-context.md/brand-platform.md (Grep cohérent, aucune redéfinition). PASS.
-- **G7** : 0 contradiction — NSM aligné sur project-context.md (KPI provisoire repris et précisé, pas contredit) ; arbre de métriques aligné product-vision.md §2/§3 (rotation, commission à la confirmation) et functional-specs.md (events sources identiques) ; garde-fous alignés brand-platform.md §3 (preuve Fraîcheur) et legal-strategy.md §6a (tracking d'attribution). PASS.
+- **G5** : personas A1 (jeune actif) et A2 (entrepreneur) identiques à project-context.md/brand-platform.md §2.1/2.2 (Grep cohérent, aucune redéfinition) ; persona Karim conservé côté parrain conformément au périmètre de ce document, aucune redéfinition. PASS.
+- **G7** : 0 contradiction — NSM aligné sur project-context.md (KPI provisoire repris et précisé, pas contredit) ; arbre de métriques aligné product-vision.md §2/§3 (rotation, commission à la confirmation) et functional-specs.md (events sources identiques) ; garde-fous alignés brand-platform.md §3 (preuve Fraîcheur) et legal-strategy.md §6a (tracking d'attribution). Correctif d'alignement appliqué : personas A1/A2 (brand-platform.md §2.1/2.2) et catalogue fintech repris à jour, plus aucune référence au persona obsolète ni à l'exemple hors-scope EDF. PASS sans réserve.
 - **G12** : chaque métrique a définition + formule + owner ; le NSM a fréquence + formule + justification anti-vanité. PASS.
 - **G13** : 0 chiffre inventé — 2 benchmarks sourcés avec URL (§4), toutes les cibles internes non sourcées marquées `[À DÉFINIR APRÈS POC]`/`[À VALIDER]`. PASS.
 - **G15** : Grep effectué sur les patterns interdits, absents. Seuls `[À VALIDER]`, `[HYPOTHÈSE]`, `[À DÉFINIR APRÈS POC]` subsistent (annotations autorisées). PASS.
 - **G17** : la combinaison NSM corrigé par `origine_detectee` + arbre calé sur les objets métier exacts (Attribution/Parrain/Offre) + garde-fous de fraîcheur sourcés sur ce projet précis n'est pas réutilisable telle quelle par un concurrent sans son propre modèle de rotation. PASS.
 - **G_PROOF** : voir bloc `Vérifié :` ci-dessous.
 
-**Vérifié :** dérouler le cas Léa/EDF pour vérifier que le NSM est effectivement calculable de bout en bout.
-`Read docs/product/functional-specs.md` (US-01 payload + events, lignes 47-65) : Léa demande "code de parrainage EDF" à ChatGPT → clic sur le lien cité → `page_offre_vue` capture le referrer (ChatGPT ajoute `utm_source=chatgpt.com` depuis juin 2025, source WebSearch §4) → `origine_detectee = chatgpt` est dérivable de ce referrer → `lien_parrainage_genere` crée l'Attribution avec `attribution_id` → SI Léa souscrit réellement chez EDF et que la prime est validée, l'Attribution passe à `confirmée` (product-vision.md §3) → elle est comptée dans PCA-IA du mois car `origine_detectee = chatgpt`. Chaîne complète sans étape manquante, SOUS RÉSERVE que l'event de confirmation (`attribution_confirmee`) soit ajouté aux specs : il n'existe pas encore dans functional-specs.md, gap traité et proposé en tracking-plan.md §2.3.
+**Vérifié :** dérouler le cas A1 (jeune actif) / Trade Republic pour vérifier que le NSM est effectivement calculable de bout en bout.
+`Read docs/product/functional-specs.md` (US-01 payload + events, lignes 47-65) : le jeune actif (A1) demande "code de parrainage Trade Republic" à ChatGPT → clic sur le lien cité → `page_offre_vue` capture le referrer (ChatGPT ajoute `utm_source=chatgpt.com` depuis juin 2025, source WebSearch §4) → `origine_detectee = chatgpt` est dérivable de ce referrer → `lien_parrainage_genere` crée l'Attribution avec `attribution_id` → SI le jeune actif (A1) ouvre réellement un compte Trade Republic et que la prime est validée, l'Attribution passe à `confirmée` (product-vision.md §3) → elle est comptée dans PCA-IA du mois car `origine_detectee = chatgpt`. Chaîne complète sans étape manquante, SOUS RÉSERVE que l'event de confirmation (`attribution_confirmee`) soit ajouté aux specs : il n'existe pas encore dans functional-specs.md, gap traité et proposé en tracking-plan.md §2.3.
+
+**Confirmation NSM/attribution valides pour le fintech** : le NSM (PCA-IA) et le mécanisme d'attribution (token `/r/{token}`, referrer/UTM, confirmation déclarative du parrain) sont agnostiques à la verticale du produit parrainé : ils comptent une Attribution confirmée quelle que soit la nature de l'offre (énergie, VPN ou, comme ici, un compte Trade Republic/Kraken/Qonto). Le passage au catalogue fintech ne change ni la formule du NSM (§1.3), ni l'arbre de métriques (§2), ni la mécanique de rotation/plafond par offre (§3) : seule la nature de l'offre citée en exemple change, pas la mécanique de mesure.
 
 ---
 **Handoff → @fullstack, @geo, @seo, @growth, @product-manager**
