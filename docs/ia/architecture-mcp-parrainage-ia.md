@@ -135,7 +135,13 @@ Calibration équipe 100 % IA (2 humains T&E pour valider) : la "complexité" n'e
 
 ## 5. Verdict MCP : oui / non / quand
 
-[SECTION_5]
+**MCP : NON comme interface grand public, OUI comme brique de V1.5 pour un segment avancé.**
+
+- **NON, maintenant, comme canal grand public** : personne ne branche un MCP tiers par défaut ; "Léa" ne nous atteindra jamais par ce biais. En faire le pilier du POC serait une erreur de priorisation dictée par le hype.
+- **OUI, plus tard, à coût marginal** : une fois l'API JSON stable, exposer un MCP est rapide (2-4 j), donne un actif de positionnement "IA-native" réel, touche les power users et permet une App ChatGPT listée au directory (canal d'install volontaire).
+- **QUAND** : après que le canal web structuré (schema.org) ait prouvé qu'une IA en browsing cite nos codes, et que l'attribution des conversions fonctionne. Déclencheur = API publique en place + premiers signaux de citation.
+
+**À dire à Emmanuel en une phrase** : le MCP est un bon pari de fond, mais il ne remplace pas la distribution ; on gagne d'abord en étant la page **structurée et fraîche** que les IA lisent et citent, puis on ajoute le MCP par-dessus la même API, sans le mettre sur le chemin critique du POC.
 
 ---
 

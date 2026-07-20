@@ -52,3 +52,39 @@ Sources section 1 :
 - [Answer Engine Optimization Statistics (Omnibound)](https://www.omnibound.ai/blog/answer-engine-optimization-aeo-statistics)
 - [How smart shoppers use ChatGPT to find coupons (ConsumerAffairs)](https://www.consumeraffairs.com/news/how-smart-shoppers-use-chatgpt-to-find-coupons-and-other-hidden-discounts-060326.html)
 - [How I used ChatGPT to find discount codes (Substack)](https://jimtheaiwhisperer.substack.com/p/how-i-used-chatgpt-to-find-discount)
+
+---
+
+## 2. Concurrence — cartographie
+
+Tableau des acteurs (8 familles ≥ 6 acteurs nommés requis) :
+
+| Acteur / famille | Modèle | Force | Faiblesse | Exposition au risque IA |
+|---|---|---|---|---|
+| **Dealabs** (FR, communauté UGC deals) | Affiliation + pub display, contenu crowdsourcé | Communauté très active, volume de deals, confiance pair-à-pair | Qualité variable, bruit publicitaire fort, contenu peu structuré (mauvais candidat à la citation IA propre) | Élevée — contenu UGC désorganisé, difficile à citer proprement par une IA, mais gros corpus = déjà probablement absorbé dans les données d'entraînement des IA sans lui rapporter de revenu |
+| **RetailMeNot** (US/global) | Affiliation, agrégateur pure player de codes | Marque installée, SEO ancien, volume | Codes expirés fréquents — **cité explicitement dans nos recherches comme la source que ChatGPT scrape et sur laquelle il arrive à halluciner par-dessus** | Très élevée — déjà court-circuité par les IA elles-mêmes, sans en tirer de revenu |
+| **iGraal** (FR, cashback + codes) | Reversement 50-70% de la commission d'affiliation au filleul, garde 2-3% | 12M membres, 1 500+ marchands, confiance/paiement réel tracké | Nécessite un compte + tracking cookie navigateur : modèle pensé pour un clic humain intermédié, pas pour une réponse d'IA | Moyenne-élevée — l'intermédiation par cookie est précisément ce qu'un agent IA-natif contourne |
+| **Poulpeo / Capital Koala** (FR, cashback) | Identique iGraal, notoriété moindre | Simplicité, niches spécifiques | Différenciation faible vs iGraal/Rakuten | Élevée — mêmes limites qu'iGraal, sans l'avantage de taille |
+| **Rakuten** (ex Ebates, cashback global) | Cashback + codes, réseau > 2 500 enseignes | Marque mondiale, volume, taux souvent compétitifs | Même dépendance au clic + cookie humain | Élevée — idem iGraal, à plus grande échelle |
+| **Honey / PayPal** (extension navigateur) | Auto-application de codes au checkout + **captation de commission d'affiliation par remplacement de cookie** | Automatisation au moment du paiement, distribution installée (extension) | Scandale 2024-2025 : accusé de voler la commission des créateurs de contenu en remplaçant leur cookie par celui de PayPal ; perte de ~3M d'utilisateurs sur 20M en 2 semaines après la controverse ; Google a changé sa politique Chrome Web Store en mars 2025 pour l'interdire | **Très élevée** — modèle bâti sur l'extension navigateur humaine ; si le checkout se fait directement dans l'IA (agentic commerce), l'extension devient structurellement obsolète |
+| **Agrégateurs de parrainage bancaire FR** (ComparaBanques, Parrainage.co, Codes-Parrain.com, 1parrainage.com, Parrainage-Club.fr) | Comparateur de primes de parrainage banques/fintech, liens de parrainage propres aux rédacteurs du site | Déjà positionnés sur le mot "parrainage", contenu mensuel à jour, SEO installé, primes chiffrées (ex. Monabanq jusqu'à 280€ filleul / 50€ parrain, Fortuneo 160€/120€, Hello bank! 280€/120€) | Modèle repose sur le fait d'ÊTRE le parrain cité (un seul lien gagnant par visiteur) — même limite structurelle que notre projet (voir section 3) ; périmètre limité aux banques, pas multi-secteurs | **Très élevée — ce sont nos concurrents directs les plus proches sur le volet parrainage.** Ils ont déjà le contenu, le volume et l'ancienneté SEO ; s'ils pivotent vers le GEO avant nous, ils nous prennent la place naturellement |
+| **Les IA elles-mêmes (OpenAI/ChatGPT, Perplexity)** | Commerce agentique direct : OpenAI a lancé "Instant Checkout" (29/09/2025, ~30 marchands Shopify), prend une commission transaction ~4% + ~2% affiliation en modèle redirect ; a suspendu le in-chat checkout début mars 2026 pour repartir sur des apps marchands dédiées. Perplexity fait du checkout in-chat via PayPal avec 5000+ marchands, sans frais marchand | Distribution captive (l'utilisateur est déjà dans le chat), capacité à devenir directement l'apporteur d'affaire sans intermédiaire | Modèle encore instable (OpenAI a dû reculer sur Instant Checkout), dépendant des deals marchands directs | **Risque maximal de désintermédiation totale** — si OpenAI/Perplexity nouent des accords d'affiliation directs avec les marchands, ils n'ont structurellement plus besoin d'un annuaire tiers pour "citer" un code : ils SONT le canal ET le parrain |
+
+### Qui pourrait faire ça mieux/plus vite que nous ?
+
+1. **Les agrégateurs de parrainage bancaire existants** (ComparaBanques, Parrainage.co, Codes-Parrain.com) : ils ont déjà le catalogue, la mise à jour mensuelle et l'ancienneté SEO. Un pivot GEO de leur part (structurer leurs pages en JSON-LD/llms.txt, exposer un flux MCP) est un chantier de quelques semaines pour eux, pas une création ex nihilo. **C'est la menace la plus concrète et la plus proche.**
+2. **OpenAI et Perplexity eux-mêmes** : en intégrant le paiement d'affiliation direct dans l'agentic commerce (Instant Checkout, Perplexity Shopping), ils captent la commission sans avoir besoin d'un tiers qui leur "souffle" le bon code. Menace structurelle à moyen terme, pas immédiate (Instant Checkout vient d'être mis en pause en mars 2026 — le modèle cherche encore sa forme).
+3. **iGraal/Rakuten** s'ils décidaient d'exposer leur catalogue existant (des dizaines de milliers de codes déjà vérifiés) via un flux structuré pour IA : volume et fiabilité déjà là, il ne leur manque qu'une couche d'exposition GEO/MCP — plus rapide pour eux que pour nous de partir de zéro avec un Google Sheet.
+
+**Notre avantage relatif documenté nulle part ailleurs dans les résultats de recherche** : aucun des acteurs listés ne semble aujourd'hui exposer ses données via un serveur MCP dédié (recherché explicitement, aucun résultat trouvé) — la fenêtre d'opportunité est réelle mais étroite et copiable vite par des acteurs mieux dotés en catalogue.
+
+Sources section 2 :
+- [PayPal Honey - Wikipedia](https://en.wikipedia.org/wiki/PayPal_Honey)
+- [Honey Influencer Scam (Washington Post)](https://www.washingtonpost.com/business/2025/05/16/honey-coupons-paypal-creators-controversy/)
+- [Honey commission theft lawsuit (Seeger Weiss)](https://www.seegerweiss.com/class-actions/browser-coupon-extension-commission-theft-lawsuit/)
+- [Parrainage banque : meilleures offres 2026 (ComparaBanques)](https://www.comparabanques.fr/comparatif-banque/parrainage)
+- [Primes de parrainage Banque et Fintech 2026 (ComparateurBanque)](https://www.comparateurbanque.com/guides/prime-parrainage-banque/)
+- [ChatGPT Instant Checkout: ACP Protocol Retailer Guide (Ekamoira)](https://www.ekamoira.com/blog/chatgpt-instant-checkout-agentic-commerce-protocol-2026)
+- [Buy it in ChatGPT: Instant Checkout (OpenAI)](https://openai.com/index/buy-it-in-chatgpt/)
+- [OpenAI's E-Commerce Bet: What Went Wrong (Lengow Blog)](https://blog.lengow.com/chatgpt-wanted-to-become-the-worlds-biggest-shop/)
+- [Perplexity Shopping — Buy with Pro (Stellagent)](https://stellagent.ai/insights/perplexity-shopping-buy-with-pro)
