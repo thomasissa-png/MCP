@@ -16,7 +16,18 @@ export type SocleEvent =
   | 'offre_expiree_auto'
   | 'offre_en_attente_parrain'
   | 'lien_invalide_detecte'
-  | 'lien_signale';
+  | 'lien_signale'
+  // Espace parrain (US-02/05/07/09 + auth magic-link)
+  | 'connexion_lien_demande'
+  | 'connexion_lien_ouvert'
+  | 'session_parrain_ouverte'
+  | 'session_parrain_expiree'
+  | 'offre_mise_a_jour'
+  | 'offre_mise_a_jour_echec'
+  | 'offre_activee'
+  | 'offre_validee_conformite'
+  | 'offre_bloquee_conformite'
+  | 'attribution_confirmee';
 
 export function emitEvent(event: SocleEvent, properties: Record<string, unknown> = {}): void {
   // Structure stable : { ts, event, ...props }. Le prefixe permet un filtrage cote log.

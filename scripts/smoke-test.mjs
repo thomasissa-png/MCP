@@ -40,10 +40,14 @@ async function waitForServer(timeoutMs = 30000) {
 }
 
 async function main() {
+  // Capture stdout du serveur pour lire le lien magique emis par le mailer console (pilote).
+  let serverLog = '';
   const server = spawn('npx', ['next', 'start', '-p', PORT], {
-    stdio: 'ignore',
+    stdio: ['ignore', 'pipe', 'pipe'],
     env: { ...process.env },
   });
+  server.stdout.on('data', (d) => { serverLog += d.toString(); });
+  server.stderr.on('data', (d) => { serverLog += d.toString(); });
 
   try {
     const up = await waitForServer();
@@ -112,6 +116,79 @@ async function main() {
       fresh.status === 200 && typeof freshBody.offres_expirees === 'number',
       JSON.stringify(freshBody),
     );
+
+    // 6) auth magic-link : email non autorise -> 403
+    const denied = await fetch(`${BASE}/api/v1/auth/magic-link`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: 'intrus@exemple.com' }),
+    });
+    check('magic-link email non autorise -> 403', denied.status === 403, `status=${denied.status}`);
+
+    // 7) auth magic-link : email T&E autorise -> 200 + lien emis dans les logs
+    const emmanuelEmail = process.env.AUTH_EMMANUEL_EMAIL ?? 'emmanuel@parrainly.test';
+    const ask = await fetch(`${BASE}/api/v1/auth/magic-link`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: emmanuelEmail }),
+    });
+    check('magic-link email autorise -> 200', ask.status === 200, `status=${ask.status}`);
+
+    // Recupere le token du lien magique depuis les logs du mailer console.
+    let magicToken = null;
+    for (let i = 0; i < 20 && !magicToken; i += 1) {
+      const m = serverLog.match(/\/api\/v1\/auth\/verify\?token=([A-Za-z0-9]+)/);
+      if (m) magicToken = m[1];
+      else await new Promise((r) => setTimeout(r, 200));
+    }
+    check('lien magique emis (log mailer console)', !!magicToken, magicToken ? 'token capture' : 'token introuvable');
+
+    // 8) verification du lien -> 307 vers le tableau de bord + cookie de session
+    let sessionCookie = null;
+    if (magicToken) {
+      const verify = await fetch(`${BASE}/api/v1/auth/verify?token=${magicToken}`, { redirect: 'manual' });
+      const setCookie = (verify.headers.getSetCookie ? verify.headers.getSetCookie() : [verify.headers.get('set-cookie') ?? '']).join(';');
+      const cm = setCookie.match(/parrainly_session=([^;]+)/);
+      if (cm) sessionCookie = `parrainly_session=${cm[1]}`;
+      const loc = verify.headers.get('location') ?? '';
+      check(
+        'verify -> 307 tableau-de-bord + cookie session',
+        verify.status === 307 && loc.includes('/parrain/tableau-de-bord') && !!sessionCookie,
+        `status=${verify.status} loc=${loc} cookie=${!!sessionCookie}`,
+      );
+    }
+
+    // 9) lien consomme (usage unique) -> 307 vers /parrain/verifier?error=consumed
+    if (magicToken) {
+      const reuse = await fetch(`${BASE}/api/v1/auth/verify?token=${magicToken}`, { redirect: 'manual' });
+      const loc = reuse.headers.get('location') ?? '';
+      check('lien magique usage unique -> error=consumed', loc.includes('error=consumed'), `loc=${loc}`);
+    }
+
+    // 10) confirmation d'une attribution (US-09) avec la session Emmanuel
+    if (sessionCookie && selectBody.attribution_id) {
+      const conf = await fetch(
+        `${BASE}/api/v1/parrains/PAR-EMMANUEL/attributions/${selectBody.attribution_id}/confirmation`,
+        {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', cookie: sessionCookie },
+          body: JSON.stringify({ date_conversion_declaree: new Date().toISOString().slice(0, 10), montant_commission_declare: 35 }),
+        },
+      );
+      const confBody = await conf.json();
+      check(
+        'confirmation US-09 -> 200 statut confirmee',
+        conf.status === 200 && (confBody.statut === 'confirmee' || confBody.statut === 'en_verification_manuelle'),
+        JSON.stringify(confBody),
+      );
+
+      // 11) protection : confirmer sous un autre parrain_id -> 403
+      const forbidden = await fetch(
+        `${BASE}/api/v1/parrains/PAR-THOMAS/attributions/${selectBody.attribution_id}/confirmation`,
+        { method: 'POST', headers: { 'content-type': 'application/json', cookie: sessionCookie }, body: '{}' },
+      );
+      check('confirmation autre parrain -> 403', forbidden.status === 403, `status=${forbidden.status}`);
+    }
 
     console.log(`\nResultat : ${failures === 0 ? 'TOUS LES CHECKS PASSENT' : `${failures} echec(s)`}`);
   } finally {

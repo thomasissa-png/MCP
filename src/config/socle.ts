@@ -48,5 +48,49 @@ export const NON_PUBLIC_PROGRAMS: readonly string[] = (process.env.SOCLE_NON_PUB
  */
 export const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY ?? '';
 
-/** URL publique de base pour composer les liens /r/{token}. */
+/** URL publique de base pour composer les liens /r/{token} et les liens magiques. */
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+
+/* -------------------------------------------------------------------------- */
+/* Auth magic-link (espace parrain, cercle ferme T&E) — spec auth-parrain-*.md  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Comptes autorises (allowlist stricte). Emails configurables par env (jamais de vrais emails inventes
+ * en dur : defauts `.test`, a remplacer par les vraies adresses via AUTH_THOMAS_EMAIL / AUTH_EMMANUEL_EMAIL).
+ * L'id correspond au parrain seede (PAR-THOMAS / PAR-EMMANUEL) : la session mappe email -> parrain.
+ */
+export const PARRAIN_ACCOUNTS: { email: string; nom: string; id: string }[] = [
+  { email: (process.env.AUTH_THOMAS_EMAIL ?? 'thomas@parrainly.test').toLowerCase(), nom: 'Thomas', id: 'PAR-THOMAS' },
+  { email: (process.env.AUTH_EMMANUEL_EMAIL ?? 'emmanuel@parrainly.test').toLowerCase(), nom: 'Emmanuel', id: 'PAR-EMMANUEL' },
+];
+
+export function findParrainAccount(email: string): { email: string; nom: string; id: string } | undefined {
+  const e = email.trim().toLowerCase();
+  return PARRAIN_ACCOUNTS.find((a) => a.email === e);
+}
+
+/** Validite d'un lien magique (spec §4 point 1, defaut 15 min, usage unique). */
+export const MAGIC_LINK_TTL_MINUTES = intFromEnv('AUTH_MAGIC_LINK_TTL_MINUTES', 15);
+
+/** Duree de session glissante (spec §4 point 2, defaut 30 jours), cookie httpOnly/secure/sameSite=strict. */
+export const SESSION_TTL_DAYS = intFromEnv('AUTH_SESSION_TTL_DAYS', 30);
+
+/** Cooldown entre deux demandes de lien pour un meme email (spec §4 point 3, defaut 60 s). */
+export const MAGIC_LINK_COOLDOWN_SECONDS = intFromEnv('AUTH_MAGIC_LINK_COOLDOWN_SECONDS', 60);
+
+/** Nombre maximum de demandes de lien par heure glissante et par email (spec §4 point 3, defaut 5). */
+export const MAGIC_LINK_MAX_PER_HOUR = intFromEnv('AUTH_MAGIC_LINK_MAX_PER_HOUR', 5);
+
+/** Nom du cookie de session. */
+export const SESSION_COOKIE = 'parrainly_session';
+
+/** Transport d'envoi d'email : 'console' (pilote, log le lien) ou 'resend' (prod, RESEND_API_KEY). */
+export const MAILER_TRANSPORT = process.env.MAILER_TRANSPORT ?? 'console';
+
+/* -------------------------------------------------------------------------- */
+/* Confirmation de conversion (US-09) — seuils configurables                    */
+/* -------------------------------------------------------------------------- */
+
+/** Fenetre de plausibilite (jours glissants) : confirmations <= redirections suivies (tracking §2.7). */
+export const PLAUSIBILITY_WINDOW_DAYS = intFromEnv('SOCLE_PLAUSIBILITY_WINDOW_DAYS', 30);

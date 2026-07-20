@@ -113,8 +113,12 @@ function main() {
   const upsertParrain = db.prepare(`
     INSERT INTO parrain (id, nom, email, statut, created_at)
     VALUES (@id, @nom, @email, @statut, @created_at)
-    ON CONFLICT(id) DO UPDATE SET nom=excluded.nom
+    ON CONFLICT(id) DO UPDATE SET nom=excluded.nom, email=excluded.email
   `);
+
+  // Emails de l'allowlist auth (config/socle.ts). Defauts .test, surchargeables par env.
+  const THOMAS_EMAIL = (process.env.AUTH_THOMAS_EMAIL ?? 'thomas@parrainly.test').toLowerCase();
+  const EMMANUEL_EMAIL = (process.env.AUTH_EMMANUEL_EMAIL ?? 'emmanuel@parrainly.test').toLowerCase();
 
   const upsertLien = db.prepare(`
     INSERT INTO lien_parrainage (
@@ -134,8 +138,8 @@ function main() {
 
   const run = db.transaction(() => {
     // Cercle ferme T&E.
-    upsertParrain.run({ id: EMMANUEL, nom: 'Emmanuel', email: null, statut: 'actif', created_at: now });
-    upsertParrain.run({ id: THOMAS, nom: 'Thomas', email: null, statut: 'actif', created_at: now });
+    upsertParrain.run({ id: EMMANUEL, nom: 'Emmanuel', email: EMMANUEL_EMAIL, statut: 'actif', created_at: now });
+    upsertParrain.run({ id: THOMAS, nom: 'Thomas', email: THOMAS_EMAIL, statut: 'actif', created_at: now });
 
     for (const p of programmes) {
       const statut = normalizeStatut(p.statut, p.nom_programme);

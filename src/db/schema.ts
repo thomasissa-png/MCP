@@ -75,8 +75,14 @@ export const ORIGINES = [
   'direct_autre',
 ] as const;
 
-/** Cycle de vie d'une attribution (tracking-plan §2.4). */
-export const ATTRIBUTION_STATUTS = ['en_attente', 'confirmee', 'rejetee', 'expiree'] as const;
+/** Cycle de vie d'une attribution (tracking-plan §2.4 + US-09 garde-fou plausibilité). */
+export const ATTRIBUTION_STATUTS = [
+  'en_attente',
+  'confirmee',
+  'en_verification_manuelle',
+  'rejetee',
+  'expiree',
+] as const;
 
 /** Statut d'un signalement (US-06). */
 export const SIGNALEMENT_STATUTS = ['ouvert', 'traite', 'rejete'] as const;
@@ -214,6 +220,43 @@ export const signalement = sqliteTable(
 );
 
 /* -------------------------------------------------------------------------- */
+/* Auth magic-link (espace parrain, cercle ferme T&E)                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Token de connexion a usage unique (magic link). On stocke le HASH SHA-256 du token, jamais le token
+ * brut (le token brut ne vit que dans l'URL envoyee par email). Validite courte (config), usage unique.
+ */
+export const magicLinkToken = sqliteTable(
+  'magic_link_token',
+  {
+    tokenHash: text('token_hash').primaryKey(),
+    email: text('email').notNull(),
+    returnTo: text('return_to'), // page a rejoindre apres connexion (facultatif)
+    createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().$defaultFn(() => new Date()),
+    expiresAt: integer('expires_at', { mode: 'timestamp_ms' }).notNull(),
+    consumedAt: integer('consumed_at', { mode: 'timestamp_ms' }), // NULL = jamais utilise
+  },
+  (t) => ({ emailIdx: index('magic_link_email_idx').on(t.email) }),
+);
+
+/**
+ * Session parrain. Stocke le HASH du token de session (le brut est dans le cookie httpOnly).
+ * Duree glissante (config) : `expiresAt` repousse a chaque acces valide.
+ */
+export const session = sqliteTable(
+  'session',
+  {
+    tokenHash: text('token_hash').primaryKey(),
+    email: text('email').notNull(),
+    createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().$defaultFn(() => new Date()),
+    expiresAt: integer('expires_at', { mode: 'timestamp_ms' }).notNull(),
+    lastSeenAt: integer('last_seen_at', { mode: 'timestamp_ms' }).notNull().$defaultFn(() => new Date()),
+  },
+  (t) => ({ emailIdx: index('session_email_idx').on(t.email) }),
+);
+
+/* -------------------------------------------------------------------------- */
 /* Types inferes (consommes par lib/ et les route handlers)                     */
 /* -------------------------------------------------------------------------- */
 
@@ -224,3 +267,5 @@ export type LienParrainage = typeof lienParrainage.$inferSelect;
 export type Attribution = typeof attribution.$inferSelect;
 export type NewAttribution = typeof attribution.$inferInsert;
 export type Signalement = typeof signalement.$inferSelect;
+export type MagicLinkToken = typeof magicLinkToken.$inferSelect;
+export type Session = typeof session.$inferSelect;

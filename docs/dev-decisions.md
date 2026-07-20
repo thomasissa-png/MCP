@@ -75,3 +75,31 @@ Toute la logique métier est dans `src/lib/` (`attribution.ts`, `freshness.ts`, 
 
 ### Boucle visuelle
 6 baselines dans `tests/screenshots/` (accueil + page-offre Trade Republic × mobile 375 / tablette 768 / desktop 1280), consentement cookies pré-enregistré pour des captures propres. Comparées à page-compositions.md : conformes (Variante A, ordre des zones, grilles responsive, hiérarchie). Script rejouable : `node scripts/screenshots.mjs` (Chromium `/opt/pw-browsers`).
+
+## Vague 3 : espace parrain (US-02/05/07/09) + auth magic-link
+
+### Auth magic-link (cercle fermé T&E)
+- **Tables** : `magic_link_token` (hash SHA-256 du token, jamais le brut, TTL 15 min config, usage unique) et `session` (hash du token de session, durée glissante 30 j). Migration `drizzle/0001_*.sql`.
+- **`src/lib/auth.ts`** : token opaque Web Crypto (compatible D1), `hashToken` SHA-256, `createMagicLinkToken` (cooldown 60 s + plafond 5/h, invalide les tokens antérieurs), `consumeMagicLinkToken` (usage unique), `createSession`/`getSessionUser` (glissante, mappe email → compte T&E via config)/`destroySession`.
+- **Allowlist** : `PARRAIN_ACCOUNTS` dans `config/socle.ts`, emails via `AUTH_THOMAS_EMAIL`/`AUTH_EMMANUEL_EMAIL` (défauts `.test`, jamais de vrai email inventé). Le seed renseigne `parrain.email` depuis ces mêmes variables.
+- **Mailer pluggable** (`src/lib/mailer.ts`) : transport `console` par défaut (log le lien magique, pilote sans SMTP) ou `resend` (prod, `RESEND_API_KEY`/`MAILER_FROM`, garde-fou placeholder). Jamais bloquant sur un provider externe.
+- **`middleware.ts`** : protège `/parrain/*` (présence cookie uniquement, Edge-safe), exempte `/parrain/connexion` et `/parrain/verifier`. Validation DB réelle dans `requireUser()` (`lib/session-server.ts`) côté Server Component. `/internal/*` restent protégés par `INTERNAL_API_KEY` (non matchés par le middleware).
+- **Endpoints** : `POST /api/v1/auth/magic-link` (403 non_autorise neutre, 429 cooldown/rate + retry_after), `GET /api/v1/auth/verify` (consomme, pose cookie httpOnly/secure/sameSite=strict, redirige), `POST /api/v1/auth/logout`.
+- **Cookie** : `parrainly_session`, httpOnly, secure en prod, sameSite=strict, maxAge = SESSION_TTL_DAYS.
+
+### Pages parrain
+`/parrain/connexion` (12 états, copy exact spec, cooldown timer), `/parrain/verifier` (3 erreurs), `/parrain/tableau-de-bord` (US-05 : prime mono, coaching, table liens), `/parrain/catalogue` + `/parrain/catalogue/[id]` (US-02, PATCH, garde-fou plafond avant activation) + `/parrain/catalogue/[id]/validation` (US-07, référence fiche obligatoire), `/parrain/attributions` (US-09, modal fermable X/clic dehors/Escape, focus initial).
+
+### US-09 garde-fou plausibilité
+`src/lib/conversion.ts` : transaction, idempotence (déjà confirmée → renvoi statut), fenêtre 60 j (`SOCLE_CONVERSION_WINDOW_DAYS`), plausibilité (`SOCLE_PLAUSIBILITY_WINDOW_DAYS`, défaut 30 j) : si confirmations+1 > redirections sur la fenêtre → statut `en_verification_manuelle` + signalement créé (sans exposer le motif). Nouveau statut `en_verification_manuelle` ajouté à l'enum `ATTRIBUTION_STATUTS` (colonne text, pas de migration SQL).
+
+### Events câblés (`lib/analytics.ts`)
+`connexion_lien_demande` (résultat envoye/non_autorise/frequence_depassee), `connexion_lien_ouvert` (succes/expired/consumed/invalid), `session_parrain_ouverte`, `offre_mise_a_jour(_echec)`, `offre_activee`, `offre_validee_conformite`, `offre_bloquee_conformite`, `attribution_confirmee` (resultat confirme_direct/en_verification_manuelle). `session_parrain_expiree` : type prêt, émission à câbler sur un job de purge (non déclenché en flux nominal).
+
+### Écarts assumés
+- Modal de connexion rendu comme page centrée `/parrain/connexion` (pas overlay sur la page courante) : simplification via middleware redirect, fonctionnellement équivalent.
+- Focus-trap du modal US-09 : Escape + clic dehors + focus initial implémentés ; boucle Tab complète non piégée (amélioration a11y à finaliser).
+- US-08 RGPD parrain (accès/rectification via dashboard) : hors périmètre de cette vague (le formulaire public `/rgpd/demande` existe déjà).
+
+### Boucle visuelle parrain
+7 baselines : `parrain-dashboard-{mobile,tablet,desktop}.png`, `parrain-attributions-{mobile,tablet,desktop}.png`, `parrain-attributions-modal-desktop.png`. Script `scripts/screenshots-parrain.mjs` (injecte session + attribution de démo en base, pose le cookie). Conformes compositions §3 (carte prime mono, coaching, table montants à droite, modal centré §3.7).
