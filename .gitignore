@@ -1,0 +1,35 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+
+# Production
+/build
+
+# Environnement (secrets — jamais commites)
+.env
+.env.*
+!.env.example
+
+# Base de donnees locale (SQLite dev) — les migrations dans /drizzle/*.sql SONT versionnees
+/drizzle/*.db
+/drizzle/*.db-shm
+/drizzle/*.db-wal
+*.sqlite
+*.sqlite3
+
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
+
+# Logs & divers
+*.log
+npm-debug.log*
+.DS_Store
+/coverage
+*.tsbuildinfo

@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Un seul run par ref : annule les runs obsoletes sur push successifs.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint · Types · Build · Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install (npm ci)
+        run: npm ci
+
+      - name: Typecheck (tsc --noEmit)
+        run: npm run typecheck
+
+      - name: Lint (next lint)
+        run: npm run lint
+
+      - name: Build (next build)
+        run: npm run build
+
+      - name: Test (placeholder)
+        run: npm test
+
+# Note @infrastructure : la CI s'arrete au build (commandement 6 : tsc + lint + build verts).
+# Deploiement Cloudflare (Pages/Workers via cloudflare/wrangler-action, preview par PR, prod sur
+# merge main) a ajouter dans un workflow deploy.yml distinct une fois la cible CF provisionnee
+# (token scope projet + secrets GitHub Actions). Ne pas modifier .github/workflows/ sans verifier
+# la coherence avec la strategie @qa (CLAUDE.md).

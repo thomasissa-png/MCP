@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Variables CSS semantiques — resolues depuis docs/design/design-tokens.json (semantic.light / semantic.dark).
+ * Les valeurs ci-dessous sont les primitives pointees par chaque token semantique (aucune valeur inventee).
+ * Strategie de theme :
+ *   :root                              -> light (defaut)
+ *   :root:not(.light):not(.dark) @media -> suit la preference systeme sans JS (rendu correct au premier paint)
+ *   .dark / .light sur <html>          -> override manuel (toggle a cabler par @fullstack, design-system.md §5)
+ * Le variant Tailwind `dark:` est pilote par la classe .dark (darkMode: 'class').
+ */
+
+:root {
+  /* Fonds / surfaces */
+  --color-background-primary: #F8F9FB;   /* paper.50 */
+  --color-background-secondary: #F1F3F6; /* paper.100 */
+  --color-surface-card: #FFFFFF;         /* paper.0 */
+  /* Bordures */
+  --color-border-default: #DCE1E7;       /* paper.300 */
+  --color-border-strong: #A6AEB8;        /* ink.300 */
+  /* Texte */
+  --color-text-primary: #10151C;         /* ink.900 */
+  --color-text-secondary: #3A4552;       /* ink.600 */
+  --color-text-tertiary: #54606E;        /* ink.500 */
+  --color-text-inverse: #F8F9FB;         /* paper.50 */
+  /* Accent */
+  --color-accent-primary: #1F3A5F;       /* cobalt.700 */
+  --color-accent-primary-hover: #152A47; /* cobalt.900 */
+  --color-accent-primary-subtle: #DCE7F2;/* cobalt.100 */
+  /* Verifie / fraicheur */
+  --color-verified-fg: #0F7B6C;          /* verified.700 */
+  --color-verified-bg: #DEF5EE;          /* verified.100 */
+  --color-verified-border: #8FDCC9;      /* verified.300 */
+  /* Neutre expire */
+  --color-stale-fg: #54606E;             /* stale.700 */
+  --color-stale-bg: #E7EAEE;             /* stale.100 */
+  --color-stale-border: #A6AEB8;         /* stale.300 */
+  /* Attention / risque */
+  --color-attention-fg: #6B3E10;         /* attention.800 */
+  --color-attention-bg: #F6E9D8;         /* attention.100 */
+  --color-attention-border: #E3C193;     /* attention.300 */
+  /* Erreur fonctionnelle */
+  --color-error-fg: #7A241D;             /* error.700 */
+  --color-error-bg: #F7DEDB;             /* error.100 */
+  --color-error-border: #B3261E;         /* error.500 */
+  /* Focus */
+  --color-focus-ring: #3E6699;           /* cobalt.500 */
+  /* Ombres */
+  --shadow-card: 0 1px 2px rgba(16, 21, 28, 0.06), 0 1px 8px rgba(16, 21, 28, 0.05);
+  --shadow-modal: 0 8px 32px rgba(16, 21, 28, 0.16);
+}
+
+/* Remapping dark (design-tokens.json semantic.dark) — applique manuellement via .dark sur <html>. */
+.dark {
+  --color-background-primary: #10151C;   /* ink.900 */
+  --color-background-secondary: #1B222B; /* ink.800 */
+  --color-surface-card: #28313D;         /* ink.700 */
+  --color-border-default: #3A4552;       /* ink.600 */
+  --color-border-strong: #78838F;        /* ink.400 */
+  --color-text-primary: #F8F9FB;         /* paper.50 */
+  --color-text-secondary: #A6AEB8;       /* ink.300 */
+  --color-text-tertiary: #78838F;        /* ink.400 */
+  --color-text-inverse: #10151C;         /* ink.900 */
+  --color-accent-primary: #6E93BE;       /* cobalt.400 */
+  --color-accent-primary-hover: #9DBBDA; /* cobalt.300 */
+  --color-accent-primary-subtle: #152A47;/* cobalt.900 */
+  --color-verified-fg: #8FDCC9;          /* verified.300 */
+  --color-verified-bg: #0A5449;          /* verified.800 */
+  --color-verified-border: #14957F;      /* verified.600 */
+  --color-stale-fg: #A6AEB8;             /* stale.300 */
+  --color-stale-bg: #1B222B;             /* ink.800 */
+  --color-stale-border: #78838F;         /* stale.500 */
+  --color-attention-fg: #E3C193;         /* attention.300 */
+  --color-attention-bg: #6B3E10;         /* attention.800 */
+  --color-attention-border: #A9723A;     /* attention.600 */
+  --color-error-fg: #F7DEDB;             /* error.100 */
+  --color-error-bg: #7A241D;             /* error.700 */
+  --color-error-border: #B3261E;         /* error.500 */
+  --color-focus-ring: #6E93BE;           /* cobalt.400 */
+  /* En dark : ombres remplacees par des bordures 1px sur cartes/modals (design-tokens.json border-card-dark-note). */
+  --shadow-card: none;
+  --shadow-modal: none;
+}
+
+/* Preference systeme sans JS : dark si aucun override manuel n'est pose sur <html>. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    --color-background-primary: #10151C;
+    --color-background-secondary: #1B222B;
+    --color-surface-card: #28313D;
+    --color-border-default: #3A4552;
+    --color-border-strong: #78838F;
+    --color-text-primary: #F8F9FB;
+    --color-text-secondary: #A6AEB8;
+    --color-text-tertiary: #78838F;
+    --color-text-inverse: #10151C;
+    --color-accent-primary: #6E93BE;
+    --color-accent-primary-hover: #9DBBDA;
+    --color-accent-primary-subtle: #152A47;
+    --color-verified-fg: #8FDCC9;
+    --color-verified-bg: #0A5449;
+    --color-verified-border: #14957F;
+    --color-stale-fg: #A6AEB8;
+    --color-stale-bg: #1B222B;
+    --color-stale-border: #78838F;
+    --color-attention-fg: #E3C193;
+    --color-attention-bg: #6B3E10;
+    --color-attention-border: #A9723A;
+    --color-error-fg: #F7DEDB;
+    --color-error-bg: #7A241D;
+    --color-error-border: #B3261E;
+    --color-focus-ring: #6E93BE;
+    --shadow-card: none;
+    --shadow-modal: none;
+  }
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Focus-visible AA obligatoire partout (design-system.md §5), jamais outline:none sans remplacement. */
+  :focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
