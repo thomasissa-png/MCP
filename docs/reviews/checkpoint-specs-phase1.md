@@ -139,6 +139,30 @@ Re-vérification @reviewer ciblée UNIQUEMENT sur C4/C7/G7 après le resync anal
 - `Read docs/product/functional-specs.md` US-01/US-09 : `lien_redirection_suivie` et `attribution_confirmee` présents comme events réels des specs, alors que tracking-plan.md les liste encore « à valider » (§2.3).
 
 ---
+
+## Addendum de re-vérification ciblée (2026-07-20T04:00, @reviewer) — levée du FAIL P1-b
+
+Re-vérification LIMITÉE (protocole checkpoint, itération 1/3) sur les seuls C4/C7/G7 après resync analytics P1-b par @data-analyst (tracking-plan.md + kpi-framework.md repassés en T04:00). Le reste du checkpoint n'est PAS rejugé.
+
+| # | Critère | Verdict T00:00 | Verdict T04:00 | Évidence |
+|---|---|---|---|---|
+| C4 | Correspondance 1:1 events tracking §1 ↔ inline functional-specs | NON | **OUI (PASS)** | 23 events inline functional-specs (US-01=6, US-02=3, US-03=2, US-04=3, US-05=2, US-06=2, US-07=2, US-08=2, US-09=1) = 23 events du tableau §1 tracking-plan.md (l.21-43), même naming, correspondance bidirectionnelle complète. Events actuels US-02/US-07 présents (`offre_mise_a_jour` l.27, `offre_mise_a_jour_echec` l.28, `offre_activee` l.29, `offre_validee_conformite` l.39, `offre_bloquee_conformite` l.40). `lien_redirection_suivie` (l.26) et `attribution_confirmee` (l.43) intégrés comme events réels. Les 6 events périmés onboarding V2 n'apparaissent qu'en l.162 (texte de la commande Grep du bloc Vérifié), jamais dans le tableau §1. |
+| C7 | Persona parrain V1 = Thomas & Emmanuel partout, Karim absent comme persona V1 actif | NON | **OUI (PASS)** | kpi-framework.md : « prime versée à Thomas ou Emmanuel » (l.47), §3.2 titre « Côté parrain (Thomas ou Emmanuel, cercle fermé V1 — Karim reste une projection V2) » (l.96), « Valeur perçue par Thomas ou Emmanuel » (l.104). tracking-plan.md idem. Toutes les occurrences résiduelles de « Karim » (kpi l.1/11/96/142/143/159 ; tracking l.1/8/152/153/164/171) sont des notes de version, gates ou mentions V2 explicites, aucune comme persona V1 actif. Référence à l'event périmé `lien_valide_actif` en §3.2 corrigée (absente au Grep). |
+| G7 | 0 contradiction inter-livrables (events + persona) entre les 2 fichiers analytics et functional-specs | **FAIL** | **PASS** | Events : 23 ↔ 23 alignés (cf. C4). Persona : parrain = Thomas/Emmanuel et demandeur A1/A2 cohérents dans les 3 fichiers. Fraîcheur OK : analytics T04:00 postérieur à functional-specs T03:00 (amont non modifié après l'aval). Plus aucun event fantôme ni persona obsolète. |
+
+**Conséquence** : le seul FAIL de gate du checkpoint (G7, §3) est LEVÉ. Les 2 critères de cohérence en échec (C4, C7, §2) sont désormais OUI. Blocker P1-b (§4) résolu. Aucune itération supplémentaire nécessaire (1/3 suffit).
+
+Les blockers P1-a (auth parrain par lien email, @fullstack/@ux) et P1-c (textes juridiques + fiches de conformité, @legal) restent ouverts et inchangés : ils n'étaient pas des FAIL de gate mais des trous à lever en parallèle du dev, hors périmètre de cette re-vérification.
+
+**Vérifié (G_PROOF) :**
+- `Read docs/product/functional-specs.md` (events inline US-01 l.84-89, US-02 l.163-165, US-03 l.220-221, US-04 l.262-264, US-05 l.306-307, US-06 l.346-347, US-07 l.391-392, US-08 l.430-431, US-09 l.491) : 23 events, dénombrés et nommés.
+- `Read docs/analytics/tracking-plan.md` (tableau §1, l.21-43) : 23 events, mêmes noms, mêmes stories que functional-specs → correspondance 1:1 confirmée dans les deux sens.
+- `Grep "Karim|formulaire_soumission_vu|lien_soumis|soumission_validee|lien_soumission_echec|lien_valide_actif|soumission_rejetee" docs/analytics` : les 6 events périmés n'apparaissent qu'en tracking-plan l.162 (texte de commande Grep du bloc Vérifié) ; « Karim » uniquement en notes de version/gates/handoff, 0 occurrence comme persona V1 actif.
+- Contrôle de fraîcheur : en-têtes `Version:` → analytics = 2026-07-20T04:00, functional-specs = 2026-07-20T03:00. L'aval (analytics) est postérieur à l'amont (specs), pas de resync inverse à redéclencher.
+
+**Verdict addendum : GO — FAIL G7 levé. C4 = PASS, C7 = PASS, G7 = PASS.**
+
+---
 **Handoff → @orchestrator**
 - Fichiers produits : `/home/user/MCP/docs/reviews/checkpoint-specs-phase1.md`
 - Décisions prises : GO CONDITIONNEL Phase 2 (démarrage socle demandeur immédiat, 0 blocker P0) ; NO-GO temporaire espace parrain + mise en ligne tant que 3 P1 non levés ; 2 critères de cohérence en échec (C4, C7) + 1 gate FAIL (G7), tous localisés dans la couche analytics.
