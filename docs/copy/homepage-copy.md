@@ -26,7 +26,7 @@ Copy de la page d'accueil, calibrée sur brand-platform.md (tagline, promesse, t
 
 **Titre de section** : "Comment ça marche"
 
-1. "Vous demandez un parrainage à votre assistant IA, ou vous consultez directement le catalogue Parrainly." [MOT-CLÉ SEO À INTÉGRER : `docs/seo/keyword-map.md` absent à ce jour, signalé à @seo]
+1. "Vous demandez un parrainage à votre assistant IA, ou vous consultez directement le catalogue de parrainages vérifiés Parrainly." [MOT-CLÉ SEO INTÉGRÉ : requête chapeau `parrainage fintech vérifié`, cf. `docs/seo/keyword-map.md` §1 ; formulation choisie pour rester lisible humain sans forcer la répétition]
 2. "Chaque offre affiche sa date de dernière vérification et son statut : actif, en attente, retiré."
 3. "Vous récupérez un lien attribué à Thomas ou Emmanuel, qui détiennent réellement les 9 programmes du catalogue."
 4. "Vous obtenez l'avantage publié par le programme si vous ouvrez le compte ou souscrivez au produit."
@@ -93,7 +93,7 @@ R : "Oui. Investir comporte des risques de perte en capital. Les crypto-actifs s
 - **G7** : H1 = tagline exacte de brand-platform.md §5 ; 3 preuves reprises identiques à brand-platform.md §3 ; mention de risque conforme legal-strategy.md §4bis. PASS.
 - **G12** : chaque section a un titre + un texte directement intégrable par @fullstack/@design, sans réécriture nécessaire. PASS.
 - **G13** : 0 chiffre inventé (9 programmes et 6 catégories confirmés par project-context.md/brand-platform.md ; aucune métrique de trafic ou avis fictif). PASS.
-- **G15** : Grep `[À REMPLIR`, `[PLACEHOLDER`, `[TODO`, `[XX`, `[INSÉRER` : 0 occurrence. Seule annotation volontaire : `[MOT-CLÉ SEO À INTÉGRER]` (signalement légitime, keyword-map.md absent). PASS.
+- **G15** : Grep `[À REMPLIR`, `[PLACEHOLDER`, `[TODO`, `[XX`, `[INSÉRER` : 0 occurrence. Slot SEO §2 rempli le 2026-07-20 depuis `docs/seo/keyword-map.md` §1 (annotation `[MOT-CLÉ SEO INTÉGRÉ]`), 0 placeholder résiduel. PASS.
 - **G17** : le combo H1 tagline + FAQ structurée AEO + zéro classement n'est pas copiable par un agrégateur SEO-first sans renoncer à son registre de superlatifs. PASS.
 - **G_PROOF** : voir bloc `Vérifié :` ci-dessous.
 
@@ -104,6 +104,6 @@ R : "Oui. Investir comporte des risques de perte en capital. Les crypto-actifs s
 **Handoff → @seo, @geo, @fullstack, @design**
 - Fichiers produits : `/home/user/MCP/docs/copy/homepage-copy.md`
 - Décisions prises : H1 = tagline exacte de la marque (cohérence maximale) ; FAQ structurée en 5 questions dont 1 question-piège ("le meilleur parrainage pour moi") volontairement posée pour affirmer la posture non-conseil ; CTA final adressant l'objection de confiance A1/A2 sans argument de vente.
-- Points d'attention : zone `[MOT-CLÉ SEO À INTÉGRER]` en §2 point 1, `docs/seo/keyword-map.md` absent à ce jour, à produire par @seo puis à réintégrer ici ; @geo : structurer la FAQ en schema.org FAQPage dès l'implémentation (cohérent avec `docs/geo/faisabilite-geo-parrainage-ia.md`).
+- Points d'attention : slot SEO §2 point 1 rempli le 2026-07-20 par @seo (`docs/seo/keyword-map.md` §1, requête chapeau `parrainage fintech vérifié`) ; @geo : la FAQ est déjà structurée en schema.org FAQPage côté code (`src/lib/ai/jsonld.ts` `faqPageJsonLd`, cohérent avec `docs/geo/faisabilite-geo-parrainage-ia.md`).
 - **Actions infra requises** : Aucune action Cloudflare/GitHub requise (livrable éditorial).
 ---

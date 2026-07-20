@@ -13,7 +13,7 @@ Texte éditorial des 6 pages catégorie (`/categories/{slug}`). Chaque catégori
 
 ## 1. Finance personnelle (néobanque/courtage)
 
-**H1** : "Finance personnelle : parrainage néobanque et courtage" [MOT-CLÉ SEO À INTÉGRER : `docs/seo/keyword-map.md` absent à ce jour, signalé à @seo]
+**H1** : "Finance personnelle : parrainage néobanque et courtage vérifiés" [MOT-CLÉ SEO INTÉGRÉ : `parrainage néobanque vérifié`, cf. `docs/seo/keyword-map.md` §3]
 
 **Chapô factuel** : "Cette catégorie regroupe les parrainages néobanque et courtage du registre Parrainly. Elle concerne en priorité le jeune actif qui ouvre un compte pour gérer ses finances personnelles au quotidien ou pour investir en bourse. Un programme y est référencé à ce jour : Trade Republic."
 
@@ -36,7 +36,7 @@ R : "Une néobanque gère un compte courant et des opérations bancaires quotidi
 
 ## 2. Investissement
 
-**H1** : "Investissement : parrainage assurance vie, PER et gestion pilotée" [MOT-CLÉ SEO À INTÉGRER]
+**H1** : "Investissement : parrainage plateforme d'investissement (assurance vie, PER, gestion pilotée)" [MOT-CLÉ SEO INTÉGRÉ : `parrainage plateforme d'investissement`, cf. `docs/seo/keyword-map.md` §3]
 
 **Chapô factuel** : "Cette catégorie regroupe les parrainages liés à des plateformes d'investissement (assurance vie, plan d'épargne retraite, gestion pilotée). Elle s'adresse au jeune actif et à l'entrepreneur qui souhaitent placer une épargne personnelle. Un programme y est référencé à ce jour : Ramify."
 
@@ -59,7 +59,7 @@ R : "La plupart des programmes de cette catégorie conditionnent l'avantage à u
 
 ## 3. Gestion de patrimoine
 
-**H1** : "Gestion de patrimoine : parrainage suivi et agrégation d'actifs" [MOT-CLÉ SEO À INTÉGRER]
+**H1** : "Gestion de patrimoine : parrainage agrégateur de patrimoine et suivi d'actifs" [MOT-CLÉ SEO INTÉGRÉ : `parrainage agrégateur de patrimoine`, cf. `docs/seo/keyword-map.md` §3]
 
 **Chapô factuel** : "Cette catégorie regroupe les parrainages liés au suivi et à la gestion de patrimoine personnel (agrégation de comptes, pilotage d'actifs). Elle s'adresse à un profil déjà investi qui centralise le suivi de ses avoirs. Un programme y est référencé à ce jour : Finary."
 
@@ -79,7 +79,7 @@ R : "Non. Un parrainage donne accès à un avantage lié à l'inscription ou à 
 
 ## 4. Placement trésorerie
 
-**H1** : "Placement trésorerie : parrainage compte pro rémunéré" [MOT-CLÉ SEO À INTÉGRER]
+**H1** : "Placement trésorerie : parrainage placement de trésorerie pour compte pro" [MOT-CLÉ SEO INTÉGRÉ : `parrainage placement de trésorerie`, cf. `docs/seo/keyword-map.md` §3]
 
 **Chapô factuel** : "Cette catégorie regroupe les parrainages liés au placement de trésorerie d'entreprise (fonds monétaires, comptes professionnels rémunérés). Elle s'adresse à l'entrepreneur qui gère la trésorerie de sa structure. Un programme y est référencé à ce jour : Spiko."
 
@@ -99,7 +99,7 @@ R : "Non. Les conditions de retrait et de disponibilité des fonds sont définie
 
 ## 5. Services entrepreneur (banque pro/compta)
 
-**H1** : "Services entrepreneur : parrainage banque pro et comptabilité" [MOT-CLÉ SEO À INTÉGRER]
+**H1** : "Services entrepreneur : parrainage banque pro et comptabilité" [MOT-CLÉ SEO INTÉGRÉ : `parrainage banque pro`, cf. `docs/seo/keyword-map.md` §3]
 
 **Chapô factuel** : "Cette catégorie regroupe les parrainages liés aux outils professionnels de l'entrepreneur : banque professionnelle et comptabilité. Elle s'adresse au dirigeant de TPE ou à l'indépendant qui choisit ou change d'outil pro. Trois programmes y sont référencés à ce jour : Qonto, Revolut Business et Dougs."
 
@@ -122,7 +122,7 @@ R : "Cela dépend du programme : certaines offres de parrainage incluent une ré
 
 ## 6. Crypto
 
-**H1** : "Crypto : parrainage plateforme d'échange et épargne programmée" [MOT-CLÉ SEO À INTÉGRER]
+**H1** : "Crypto : parrainage plateforme crypto et épargne programmée" [MOT-CLÉ SEO INTÉGRÉ : `parrainage exchange crypto` / `parrainage plateforme crypto vérifié`, cf. `docs/seo/keyword-map.md` §3]
 
 **Chapô factuel** : "Cette catégorie regroupe les parrainages liés à l'achat, la conservation ou l'épargne en crypto-actifs. Elle s'adresse au jeune actif qui souhaite s'exposer aux crypto-actifs via une plateforme d'échange ou un service d'épargne programmée. Deux programmes y sont référencés à ce jour : Kraken et Meria."
 
@@ -151,7 +151,7 @@ R : "Une plateforme d'échange permet l'achat, la vente et la conservation direc
 - **G7** : mapping programme/catégorie identique au tableau de synthèse de `docs/legal/fiches-conformite/00-index.md` (Finance personnelle → Trade Republic ; Investissement → Ramify ; Gestion de patrimoine → Finary ; Placement trésorerie → Spiko ; Services entrepreneur → Qonto/Revolut Business/Dougs ; Crypto → Meria/Kraken), 0 contradiction. Mentions de risque identiques aux gabarits de `brand-voice-guide.md` §5. PASS.
 - **G12** : chaque catégorie a un H1, un chapô, un cadrage et des Q/R directement intégrables par @fullstack/@design sans réécriture, structure identique répétable pour d'éventuelles catégories futures (Télécom & Énergie, Mobilité, cf. `project-context.md`). PASS.
 - **G13** : 0 chiffre inventé. Aucun montant de prime cité (renvoi systématique à "la fiche affiche le montant vérifié à jour") ; mapping programme/catégorie sourcé sur `00-index.md`, pas inventé. PASS.
-- **G15** : Grep `[À REMPLIR`, `[PLACEHOLDER`, `[TODO`, `[XX`, `[INSÉRER` : 0 occurrence. Seule annotation volontaire : `[MOT-CLÉ SEO À INTÉGRER]` (signalement légitime, `keyword-map.md` absent). PASS.
+- **G15** : Grep `[À REMPLIR`, `[PLACEHOLDER`, `[TODO`, `[XX`, `[INSÉRER` : 0 occurrence. Les 6 slots `[MOT-CLÉ SEO À INTÉGRER]` ont été remplis le 2026-07-20 depuis `docs/seo/keyword-map.md` §3 (annotation `[MOT-CLÉ SEO INTÉGRÉ]`), 0 placeholder résiduel. PASS.
 - **G17** : la structure (chapô factuel + cadrage neutre + Q/R sans classement, mapping catégorie/mention de risque conditionnelle) n'est pas copiable par un agrégateur SEO-first sans renoncer au vocabulaire de classement qui fait tourner son modèle de clic (cf. `docs/geo/test-citation-ia.md` §6, incumbents 1parrainage.com/parrainage.co non différenciés sur la fraîcheur ni la neutralité). PASS.
 - **G_PROOF** : voir bloc `Vérifié :` ci-dessous.
 
@@ -161,6 +161,6 @@ R : "Une plateforme d'échange permet l'achat, la vente et la conservation direc
 **Handoff → @seo, @geo, @fullstack**
 - Fichiers produits : `/home/user/MCP/docs/copy/fiches-categories.md`
 - Décisions prises : mapping programme/catégorie repris tel quel de `docs/legal/fiches-conformite/00-index.md` (source d'autorité, non réinventé) ; posture non-conseil stricte sur les 6 catégories (aucune comparaison, aucun montant cité) ; mention de risque injectée selon la même règle conditionnelle que `page-offre-template.md` (capital pour investissement/patrimoine/trésorerie, crypto pour crypto, factuelle standard pour finance personnelle/services entrepreneur).
-- Points d'attention : 6 zones `[MOT-CLÉ SEO À INTÉGRER]` (un H1 par catégorie), `docs/seo/keyword-map.md` toujours absent à ce jour (signalé une première fois par `homepage-copy.md`) ; @geo peut structurer les Q/R de chaque catégorie en `FAQPage` schema.org, cohérent avec l'angle différenciant retenu par `docs/geo/test-citation-ia.md` §8 (date de vérification + conditions exactes + divulgation) ; catégories "Télécom & Énergie" et "Mobilité" annoncées `[À VENIR]` dans `project-context.md` ne sont pas couvertes ici (aucun programme actif à ce jour, rien à documenter sans invention).
+- Points d'attention : les 6 H1 catégorie portent désormais le mot-clé principal de `docs/seo/keyword-map.md` §3 (intégration réalisée le 2026-07-20 par la session principale) ; @geo peut structurer les Q/R de chaque catégorie en `FAQPage` schema.org, cohérent avec l'angle différenciant retenu par `docs/geo/test-citation-ia.md` §8 (date de vérification + conditions exactes + divulgation) ; catégories "Télécom & Énergie" et "Mobilité" annoncées `[À VENIR]` dans `project-context.md` ne sont pas couvertes ici (aucun programme actif à ce jour, rien à documenter sans invention).
 - **Actions infra requises** : aucune action Cloudflare/GitHub directe (livrable éditorial) ; @fullstack : les pages `/categories/{slug}` doivent lire le mapping programme/catégorie depuis le futur export CSV/JSON de la base réelle (signalé bloquant par `page-offre-template.md`), pas depuis ce document (qui documente le mapping de référence mais n'est pas la source de vérité technique).
 ---
