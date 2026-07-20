@@ -24,7 +24,7 @@ export default function ConfidentialitePage() {
         <p>
           {LEGAL_EDITOR_NAME
             ? `Parrainly est édité par ${LEGAL_EDITOR_NAME}.`
-            : "Le responsable de traitement est l'éditeur de ce site, dont l'identité définitive sera précisée avant la mise en ligne publique."}{' '}
+            : "Le responsable de traitement est la société éditrice de ce site, en cours de constitution, dont la dénomination sociale sera précisée avant la mise en ligne publique."}{' '}
           Le responsable de traitement des données collectées sur le site est cette même entité, dont
           l&apos;identité complète figure dans les{' '}
           <Link href="/mentions-legales" className="text-accent underline">Mentions légales</Link>.

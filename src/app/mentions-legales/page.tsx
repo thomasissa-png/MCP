@@ -17,14 +17,15 @@ export default function MentionsLegalesPage() {
     <LegalShell title="Mentions légales">
       <section>
         <h2>1. Éditeur du site</h2>
-        {/* TODO : raison sociale à poser via LEGAL_EDITOR_NAME avant lancement public (revue juridique
-            finale). Pilote non-public (workers.dev, non indexé) : le fallback ci-dessous ne nomme
-            volontairement aucune personne physique tant que la structure juridique porteuse n'est pas
-            tranchée par le fondateur (cf. docs/audit/legal-audit-2.md, P0-1). */}
+        {/* Décision fondateur (2026-07-20) : l'éditeur sera une société, dont la création est en attente.
+            Dès son immatriculation, poser sa dénomination sociale dans LEGAL_EDITOR_NAME (var/secret) puis
+            redéployer suffit à basculer cette page en mentions complètes — aucun changement de code requis.
+            Pilote non-public (workers.dev, non indexé) : le fallback ci-dessous ne nomme volontairement
+            aucune personne physique tant que la société n'est pas immatriculée (cf. docs/audit/legal-audit-2.md). */}
         <p>
           {LEGAL_EDITOR_NAME
             ? `Le site Parrainly est édité par ${LEGAL_EDITOR_NAME}.`
-            : "Le site Parrainly est édité en cercle fermé ; l'identité définitive de l'éditeur sera précisée avant la mise en ligne publique."}{' '}
+            : "Le site Parrainly est édité en cercle fermé, dans l'attente de la constitution de la société éditrice, dont la dénomination sociale et les coordonnées complètes seront précisées avant la mise en ligne publique."}{' '}
           Le site étant à visée commerciale (perception de commissions de parrainage), une déclaration
           d&apos;activité est requise. Les coordonnées complètes de l&apos;éditeur sont précisées lors de la mise
           en ligne publique. Pour toute question, contactez-nous via <LegalContact />.
