@@ -110,6 +110,26 @@ Le NSM de Parrainly est **Parrainages Confirmés d'origine IA (PCA-IA) / mois** 
 |---|---|---|---|---|---|---|---|---|
 | [à remplir au 1er cycle post-déploiement] | | | | | | | | |
 
+### Cycle 1 — 2026-07-20 (jour 0 post-déploiement, source WebSearch)
+
+Vérification d'indexation préalable : `site:parrainly.thomas-issa.workers.dev` (WebSearch) ne retourne **aucune page du domaine** (0 page indexée observée). Les résultats renvoyés sont sans rapport (profils LinkedIn homonymes, page workers.dev générique, une autre instance `.workers.dev` non liée). Conclusion factuelle : le site n'est pas encore indexé au moment de ce test, quelques minutes après mise en ligne.
+
+| Date du test | Requête # | Modèle | Cité (o/n) | Position | Exactitude | Divulgation restituée | Fraîcheur perçue | Action si erreur |
+|---|---|---|---|---|---|---|---|---|
+| 2026-07-20 | 1 (parrainage Qonto) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 2 (code parrainage Trade Republic) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 3 (code parrainage Revolut Business) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 4 (parrainage Ramify) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 5 (parrainage Finary) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 6 (Dougs, compta) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 7 (code parrainage Kraken) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 8 (parrainage Meria) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 9 (parrainage Spiko) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 10 (meilleure néobanque jeune actif 2026) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+| 2026-07-20 | 11 (meilleure banque pro entrepreneur 2026) | WebSearch | Non | Non indexé | N/A | N/A | N/A | Aucune — attendu J0, ré-tester au cycle 2 |
+
+**Lecture cycle 1** : 0/11 requêtes citent Parrainly à ce cycle, résultat attendu à J0 et non un échec de la stratégie GEO. La cause est univoque et vérifiée en amont : le domaine `parrainly.thomas-issa.workers.dev` n'est pas indexé (`site:` vide), donc aucune surface de réponse IA ne peut matériellement le citer, indépendamment de la qualité du contenu ou de la structure Schema.org déjà en place. Ce cycle sert de **point zéro post-déploiement**, distinct du baseline concurrentiel de `test-citation-ia.md` (qui, lui, mesurait la surface existante sans Parrainly dans l'équation). La surface citée sur les 11 requêtes reste conforme au baseline pré-déploiement (mêmes incumbents : 1parrainage.com, parrainage.co, super-parrain.com, parraindeconfiance.com, moneyradar.org, codes-parrain.com, etc. ; comparateurs bancaires — meilleurtaux, comparabanques, moneyvox, top10banques, selectra, finance-heros — en tête sur les 2 requêtes génériques), aucun changement de paysage détecté depuis le baseline. **Distinction importante à ne pas perdre pour les cycles suivants** : « non cité parce que non indexé » (le cas ici, J0, pas un signal GEO exploitable) est fondamentalement différent de « indexé mais non cité » (qui serait un signal GEO réel — problème de structure, d'autorité ou de fraîcheur perçue — mais qui ne peut être diagnostiqué qu'une fois l'indexation confirmée). Le cycle 2 (semaine suivante, cf. §3) devra donc commencer par la même vérification `site:` avant de réinterpréter un éventuel 0/11 comme un signal à corriger.
+
 ---
 
 ## Gates vérifiées
