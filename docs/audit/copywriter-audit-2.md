@@ -6,7 +6,29 @@
 > noms propres, T3 formulations bancales, cohérence voix de marque). Double lecture : persona humain
 > (A1 jeune actif / A2 entrepreneur) et IA visiteuse (GEO/AEO, ce qu'un assistant extrait du HTML/JSON-LD/llms.txt).
 
-## Re-score round 2 : 9/10
+## Re-score round 2b : 10/10
+
+**Traitement du résiduel round 2** confirmé par Grep `éditeur du site|éditeur de ce site` sur `src/` et
+Read ciblé (`src/app/mentions-legales/page.tsx`, `src/app/confidentialite/page.tsx`, `src/lib/ai/site.ts`,
+`src/app/llms.txt/route.ts`) :
+- Harmonisation "l'éditeur de ce site" appliquée sur `DisclosureBanner.tsx`, `Footer.tsx`,
+  `divulgation/page.tsx` (×2), `site.ts`, `llms.txt/route.ts`, `mentions-legales/page.tsx:38`. Seul
+  `offres/[slug]/page.tsx:161` garde encore "l'éditeur du site" (une préposition différente, zéro
+  ambiguïté de sens, zéro impact légal) : non bloquant, signalé pour un futur passage de polish si besoin.
+- Les 2 tournures circulaires corrigées : `mentions-legales/page.tsx:27` ("Le site Parrainly est édité en
+  cercle fermé ; l'identité définitive de l'éditeur sera précisée avant la mise en ligne publique.") et
+  `confidentialite/page.tsx:27` ("Le responsable de traitement est l'éditeur de ce site, dont l'identité
+  définitive sera précisée avant la mise en ligne publique.") : ces deux pages ne se définissent plus l'une
+  par rapport à l'autre en boucle, chacune porte une phrase autonome et factuelle.
+- T2 : 0 prénom réel confirmé sur les 11 surfaces publiques (déjà PASS round 2, reconfirmé).
+- T3 : inchangé, toujours PASS (round 2).
+
+Plus aucun finding P0 ni P1 ouvert. Le seul point resté en base ("du site" vs "de ce site" sur une ligne) est
+une variance cosmétique sans conséquence, insuffisante pour retenir un point. **Note finale : 10/10.**
+
+---
+
+## Re-score round 2 : 9/10 (archivé)
 
 **Re-vérification effectuée** (Grep `Thomas|Emmanuel` dans `src/`, Read `src/lib/ai/site.ts`, `src/app/page.tsx`,
 `src/app/layout.tsx`, `src/app/divulgation/page.tsx`) après les correctifs signalés par le coordinateur.

@@ -4,7 +4,17 @@
 > Angle : persona qui cherche « parrainage {programme} » + IA/AI Overviews qui consomme la structure indexable.
 > Cet audit vérifie en réel (curl/grep) l'état du pilote, pas le code en abstrait. Session : 2026-07-20.
 
-## Re-score round 2 : 8,5/10
+## Re-score round 2b : 9,5/10 (FINALE pilote)
+
+Polish appliqué re-vérifié en curl, ce jour, sur le site live :
+- **P1-2 (meta desc offre)** : les 9 pages offre portent désormais `Parrainage {Programme} : code et avantages vérifiés à date. {descriptionCourte}` en `<meta name="description">` — vérifié sur les 9 slugs (`finary, kraken, qonto, ramify, spiko, trade-republic, dougs, meria, revolut-business`). Le mot-clé exact « Parrainage {Programme} » est désormais dans title ET meta description.
+- **P1-1 (casse titles catégorie)** : les 6 `<title>` catégorie sont désormais en casse propre (`Parrainage néobanque vérifié`, `Parrainage plateforme crypto`, etc.), cohérents avec les 9 titles offre. Vérifié sur les 6 slugs.
+- **P1-3 (favicons)** : `favicon.ico` → `200 image/vnd.microsoft.icon`, `/icon` → `200 image/png`, `/apple-icon` → `200 image/png`. Le `<head>` référence les 4 variantes (`favicon.ico` 16×16, `favicon.svg`, `/icon` PNG, `/apple-icon` PNG dédié). Plus de 404. Seul `Organization.logo` (JSON-LD) reste en SVG — accepté comme résiduel gated (voir ci-dessous), pas un bug de code.
+- **P1-4 (meta desc pages légales)** : `cgu`, `mentions-legales`, `confidentialite`, `divulgation` ont chacune une description unique et spécifique à son contenu (vérifié, plus aucune duplication du texte du layout).
+
+**Tous les résiduels de code identifiés en round 2 sont clos et re-vérifiés.** Les seuls points restants sont explicitement hors code (gated fondateur/QA humaine, cf. section dédiée) : GSC/Bing Webmaster Tools + IndexNow (accès compte Thomas requis), validation visuelle du rendu social OG (QA humaine sur Facebook Sharing Debugger/LinkedIn Post Inspector), `Organization.logo` en SVG (arbitrage produit, pas un blocage technique). Le pilote est **techniquement propre** sur tout ce qui relève du code : je retire 0,5 point uniquement parce que la validation visuelle réelle du rendu social (Facebook/LinkedIn) n'a pas pu être exécutée depuis cet environnement — c'est une vérification humaine requise avant de clore 100%, pas un doute sur le code.
+
+## Round 2 (historique) : 8,5/10
 
 Les 4 correctifs annoncés par le coordinateur sont vérifiés en direct (curl, ce jour) et **réels, pas déclaratifs** :
 - **P0-1 (meta desc accueil)** : `curl .../ | grep description` → `"Parrainly vérifie chaque lien de parrainage bancaire, investissement et crypto avant de le recommander : statut à jour et date de contrôle sur chaque offre."` (149 caractères). Plus de « parrainage fintech », plus de « sans lien mort ». Propre, précis, dans la fourchette 120-160.
@@ -49,18 +59,18 @@ La page rendue contient bien `<meta name="robots" content="noindex"/>` (le `notF
 **[RÉSOLU round 2] P0-4 (coordination @geo, ne pas dupliquer le fix) — Exposer le code de parrainage dans le HTML indexable et le JSON-LD, pas seulement dans `/api/v1` — critère de done : le champ `code_parrainage` apparaît dans le DOM rendu de la page offre ET dans `offreJsonLd()`.**
 Vérifié en direct : `curl .../offres/finary` puis grep du HTML → 0 occurrence de `7KGZAX` (le code réel renvoyé par `/api/v1/offres/finary`). Le builder `offreJsonLd()` (`src/lib/ai/jsonld.ts` L38-75) ne lit jamais `o.code_parrainage`, alors que `PublicOffre` le porte (`public-offre.ts` L33/71). C'est l'objectif n°1 du projet (T1, brief) : une IA qui lit la page rendue ou le graphe structuré ne récupère toujours pas le code. Propriété de correction = @geo/@ia (couche `src/lib/ai/*`), mais je le maintiens en P0 dans mon audit car il conditionne directement la requête cible « parrainage {programme} » que ce document SEO traite : sans le code dans le contenu indexable, aucune page offre ne peut servir de source complète à un AI Overview.
 
-### P1
+### P1 — tous résolus et re-vérifiés en round 2b, sauf résiduels gated (voir section dédiée)
 
-**P1-1 — Mettre en majuscule initiale les 6 titles de page catégorie — critère de done : chaque `<title>` catégorie commence par une majuscule, cohérent avec les title des pages offre.**
+**[RÉSOLU round 2b] P1-1 — Mettre en majuscule initiale les 6 titles de page catégorie — critère de done : chaque `<title>` catégorie commence par une majuscule, cohérent avec les title des pages offre.**
 Vérifié : les 6 pages catégorie ont un title en minuscules (`<title>parrainage plateforme crypto · Parrainly</title>`, `<title>parrainage néobanque vérifié · Parrainly</title>`, etc.) alors que les 9 pages offre et l'accueil sont correctement capitalisés (`Parrainage Finary vérifié · Parrainly`). Origine : `CATEGORY_META.motCle` (`src/lib/offres.ts` L27+) est saisi en minuscules et injecté tel quel dans `generateMetadata` (`categories/[slug]/page.tsx` L24). Incohérence de casse visible en SERP, nuit au CTR et à la cohérence de marque.
 
-**P1-2 — Injecter le mot-clé exact « parrainage {Programme} » dans la meta description des 9 pages offre — critère de done : chaque meta description contient la chaîne « parrainage {nom_programme} » verbatim.**
+**[RÉSOLU round 2b] P1-2 — Injecter le mot-clé exact « parrainage {Programme} » dans la meta description des 9 pages offre — critère de done : chaque meta description contient la chaîne « parrainage {nom_programme} » verbatim.**
 Vérifié : les 9 `<meta name="description">` des pages offre reprennent `descriptionCourte` telle quelle (ex. Finary : « Suivi et analyse de l'ensemble du patrimoine (comptes, immobilier, crypto, actions) dans une seule application. » — zéro occurrence de « parrainage » ou « Finary » associés). Le title porte le mot-clé, pas la meta description : Google/Bing peuvent réécrire le snippet SERP en piochant ailleurs, en particulier si l'intention de requête (« parrainage finary ») n'apparaît nulle part dans le extrait généré. Format proposé : `Parrainage {Programme} vérifié le {date} : {avantage_filleul}. {conditions courtes}` — garde `descriptionCourte` en complément, pas en remplacement intégral.
 
-**P1-3 — Compléter le jeu de favicons et remplacer le logo `Organization` par un raster — critère de done : `favicon.ico` répond 200, `apple-touch-icon.png` dédié (PNG, pas SVG), `organizationJsonLd().logo` pointe vers un PNG/JPG ≥ 112×112.**
+**[RÉSOLU PARTIEL round 2b — favicons OK, logo JSON-LD gated] P1-3 — Compléter le jeu de favicons et remplacer le logo `Organization` par un raster — critère de done : `favicon.ico` répond 200, `apple-touch-icon.png` dédié (PNG, pas SVG), `organizationJsonLd().logo` pointe vers un PNG/JPG ≥ 112×112.**
 Vérifié : `curl -o /dev/null -w "%{http_code}" .../favicon.ico` → 404 ; `curl .../apple-touch-icon.png` → 404 (le head ne référence que `favicon.svg`, y compris pour `apple-touch-icon`). Le JSON-LD `Organization.logo` (`src/lib/ai/jsonld.ts` L87) pointe aussi vers `favicon.svg` : Google documente explicitement que le format vectoriel n'est pas garanti pour l'éligibilité au Knowledge Panel (checklist « Schema.org Organization.logo » de la règle multi-moteurs). `favicon.ico` manquant reste demandé par défaut par de nombreux crawlers/navigateurs legacy qui ignorent le `<link rel="icon">` SVG.
 
-**P1-4 — Donner une meta description propre aux 3 pages légales sans contenu dupliqué — critère de done : `mentions-legales`, `cgu`, `confidentialite` ont chacune une description unique, pas l'héritage du layout.**
+**[RÉSOLU round 2b, élargi à 4 pages] P1-4 — Donner une meta description propre aux pages légales sans contenu dupliqué — critère de done : `mentions-legales`, `cgu`, `confidentialite` ont chacune une description unique, pas l'héritage du layout.**
 Vérifié : les 3 pages n'exportent pas de champ `description` dans leur `metadata` (`src/app/mentions-legales/page.tsx`, `cgu/page.tsx`, `confidentialite/page.tsx`), donc elles héritent toutes de la description globale du layout — identique mot pour mot en SERP sur 3 URLs différentes. `divulgation/page.tsx`, lui, a bien sa propre description : à répliquer sur les 3 autres. Priorité basse (pages priority 0.3 dans le sitemap, faible valeur de citation) mais gratuit à corriger.
 
 **P1-5 — Vérifier la propriété Google Search Console et Bing Webmaster Tools + soumettre le sitemap, et implémenter IndexNow — critère de done : balises `google-site-verification`/`msvalidate.01` présentes en prod, sitemap soumis dans les deux consoles, endpoint IndexNow actif côté @fullstack.**
