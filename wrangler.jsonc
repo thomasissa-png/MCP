@@ -36,7 +36,7 @@
   // ou le dashboard, JAMAIS ici. Voir runbook §3 pour la liste exacte.
   // -------------------------------------------------------------------------
   "vars": {
-    "NEXT_PUBLIC_SITE_URL": "https://parrainly.com",
+    "NEXT_PUBLIC_SITE_URL": "https://parrainly.thomas-issa.workers.dev",
     "MAILER_TRANSPORT": "console",
     "NEXT_PUBLIC_POSTHOG_HOST": "https://eu.i.posthog.com",
     "POSTHOG_HOST": "https://eu.i.posthog.com",
