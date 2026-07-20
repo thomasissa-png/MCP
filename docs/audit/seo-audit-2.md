@@ -73,8 +73,20 @@ Vérifié : `curl -o /dev/null -w "%{http_code}" .../favicon.ico` → 404 ; `cur
 **[RÉSOLU round 2b, élargi à 4 pages] P1-4 — Donner une meta description propre aux pages légales sans contenu dupliqué — critère de done : `mentions-legales`, `cgu`, `confidentialite` ont chacune une description unique, pas l'héritage du layout.**
 Vérifié : les 3 pages n'exportent pas de champ `description` dans leur `metadata` (`src/app/mentions-legales/page.tsx`, `cgu/page.tsx`, `confidentialite/page.tsx`), donc elles héritent toutes de la description globale du layout — identique mot pour mot en SERP sur 3 URLs différentes. `divulgation/page.tsx`, lui, a bien sa propre description : à répliquer sur les 3 autres. Priorité basse (pages priority 0.3 dans le sitemap, faible valeur de citation) mais gratuit à corriger.
 
-**P1-5 — Vérifier la propriété Google Search Console et Bing Webmaster Tools + soumettre le sitemap, et implémenter IndexNow — critère de done : balises `google-site-verification`/`msvalidate.01` présentes en prod, sitemap soumis dans les deux consoles, endpoint IndexNow actif côté @fullstack.**
-Vérifié : `curl .../ | grep google-site-verification` → aucun résultat, aucune balise `msvalidate.01` non plus. Le code (`layout.tsx` L34-41) est prêt (conditionné à `GOOGLE_SITE_VERIFICATION`/`BING_SITE_VERIFICATION`) mais les variables d'environnement ne sont pas positionnées en prod. Aucun fichier/route IndexNow trouvé (`/indexnow.txt` → 404, aucun fichier `indexnow` dans `src/`). Pour Bing, IndexNow compense un crawl moins fréquent que Google : sans lui, les mises à jour de fraîcheur (`date_verification`) mettent plus de temps à être recrawlées.
+**[GATED — non scoré contre le pilote] P1-5 — Vérifier la propriété Google Search Console et Bing Webmaster Tools + soumettre le sitemap, et implémenter IndexNow — critère de done : balises `google-site-verification`/`msvalidate.01` présentes en prod, sitemap soumis dans les deux consoles, endpoint IndexNow actif côté @fullstack.**
+Vérifié : `curl .../ | grep google-site-verification` → aucun résultat, aucune balise `msvalidate.01` non plus. Le code (`layout.tsx` L34-41) est prêt (conditionné à `GOOGLE_SITE_VERIFICATION`/`BING_SITE_VERIFICATION`) mais les variables d'environnement ne sont pas positionnées en prod. Aucun fichier/route IndexNow trouvé (`/indexnow.txt` → 404, aucun fichier `indexnow` dans `src/`). **Requiert un accès aux comptes Google Search Console / Bing Webmaster Tools de Thomas** : ce n'est pas un défaut de code, le coordinateur confirme ce point gated fondateur. Ne compte pas contre la note du pilote.
+
+---
+
+## Résiduels gated (hors code, non scorés contre le pilote)
+
+Confirmés par le coordinateur comme hors périmètre code, re-vérifiés ici pour mémoire :
+
+1. **GSC / Bing Webmaster Tools / IndexNow** (P1-5) : nécessite un accès au compte Thomas (variables d'environnement `GOOGLE_SITE_VERIFICATION`/`BING_SITE_VERIFICATION` + création de compte Bing Webmaster + soumission manuelle du sitemap). Le code est prêt côté `layout.tsx`, il ne manque que la configuration.
+2. **Rendu social OG réel** (QA humaine) : les 3 `opengraph-image` renvoient bien `200 image/png` 1200×630 avec les meta tags corrects (vérifié en curl), mais le rendu visuel effectif sur Facebook Sharing Debugger et LinkedIn Post Inspector n'est pas vérifiable depuis cet environnement (pas d'accès à ces outils). À faire par un humain avant diffusion sociale à grande échelle.
+3. **`Organization.logo` en SVG** (`src/lib/ai/jsonld.ts` L87, toujours `favicon.svg`) : Google recommande un raster pour l'éligibilité Knowledge Panel, mais c'est un arbitrage produit (créer/choisir un logo PNG dédié), pas un bug — laissé en l'état à la décision du fondateur.
+
+Ces 3 points ne sont **pas comptés contre la note du pilote** (hors code, confirmé par le coordinateur) ; ils restent à traiter avant une mise à l'échelle GEO/SEO complète.
 
 ---
 
@@ -84,12 +96,13 @@ Vérifié : `curl .../ | grep google-site-verification` → aucun résultat, auc
 - [x] Générer et brancher une image `og:image`/`twitter:image` 1200×630 par type de page (P0-2) — **résolu round 2**, vérifié 200 image/png sur home/offre/catégorie ; reste à valider visuellement sur Facebook Sharing Debugger + LinkedIn Post Inspector (hors périmètre outillage de cette session, à faire par un humain)
 - [x] Corriger le statut HTTP 200 sur `notFound()` (P0-3) — **résolu round 2** via middleware, vérifié 404 réel sur `/offres/inexistant` et `/categories/inexistant`
 - [x] Exposer `code_parrainage` dans le DOM + JSON-LD (P0-4) — **résolu round 2**, vérifié présent en texte visible et en `PropertyValue` JSON-LD sur `/offres/finary`
-- [ ] Capitaliser les 6 `motCle` de `CATEGORY_META` (`src/lib/offres.ts`)
-- [ ] Réécrire les 9 meta descriptions offre pour inclure « parrainage {Programme} » verbatim
-- [ ] Ajouter `favicon.ico` + `apple-touch-icon.png` (PNG dédié) ; remplacer `Organization.logo` par un PNG/JPG
-- [ ] Donner une meta description propre aux 3 pages légales restantes (`mentions-legales`, `cgu`, `confidentialite`)
-- [ ] Positionner `GOOGLE_SITE_VERIFICATION`/`BING_SITE_VERIFICATION` en prod, soumettre le sitemap dans les deux consoles, implémenter IndexNow (endpoint côté @fullstack, notification à chaque changement de `date_verification`/`statut`)
-- [ ] Revalider le maillage interne après ces corrections : home → 6 catégories (grille + ancre `#categories`) → 9 offres (cartes + recherche) → offres proches (même catégorie) + fil d'Ariane retour ; profondeur actuelle = 2 clics depuis l'accueil, conforme (≤ 3)
+- [x] Capitaliser les 6 `motCle` de `CATEGORY_META` (P1-1) — **résolu round 2b**, vérifié sur les 6 slugs catégorie
+- [x] Réécrire les 9 meta descriptions offre pour inclure « parrainage {Programme} » verbatim (P1-2) — **résolu round 2b**, vérifié sur les 9 slugs offre
+- [x] Ajouter `favicon.ico` + `/icon` + `/apple-icon` (P1-3, volet code) — **résolu round 2b**, vérifié 200 sur les 3 routes ; `Organization.logo` en SVG reste **gated** (arbitrage produit, hors code)
+- [x] Donner une meta description propre aux pages légales (P1-4) — **résolu round 2b**, vérifié sur `cgu`, `mentions-legales`, `confidentialite`, `divulgation` (4/4, au-delà des 3 initialement identifiées)
+- [ ] **GATED** : positionner `GOOGLE_SITE_VERIFICATION`/`BING_SITE_VERIFICATION` en prod, soumettre le sitemap dans les deux consoles, implémenter IndexNow — nécessite le compte Thomas, non scoré contre le pilote
+- [ ] **QA humaine hors outillage** : valider le rendu visuel des 3 `opengraph-image` sur Facebook Sharing Debugger + LinkedIn Post Inspector
+- [x] Revalider le maillage interne après ces corrections : home → 6 catégories (grille + ancre `#categories`) → 9 offres (cartes + recherche) → offres proches (même catégorie) + fil d'Ariane retour ; profondeur actuelle = 2 clics depuis l'accueil, conforme (≤ 3) — inchangé depuis round 1, aucune régression détectée
 
 ---
 

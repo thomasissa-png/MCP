@@ -71,6 +71,47 @@ preuve visuelle dark mode (P1-4) ; disclosure + risque restent deux bandeaux vis
 teinte juste avant le CTA (P1-5, atténué mais pas éliminé par le retrait des conditions entre les deux).
 Aucun nouveau résiduel P0 identifié.
 
+## Re-score round 2b : 9/10
+
+Vérification par lecture de code (limite d'environnement déclarée : Playwright headless bloqué par le
+proxy, donc pas de nouvelle capture dark/responsive possible ce round — traité comme dette de preuve,
+pas comme défaut design). Fichiers relus : `src/app/globals.css`, `src/components/ui/RiskBanner.tsx`,
+`src/components/ui/DisclosureBanner.tsx`, `src/app/offres/[slug]/page.tsx` (H1), snapshots rafraîchis
+signalés par le coordinateur.
+
+- **P1-1 (échelle H1) RÉSOLU.** H1 page-offre passé de `text-xl md:text-2xl` (24/30px) à
+  `text-2xl md:text-3xl` (30/36px, `page.tsx` L101) — nettement plus proche du H1 accueil
+  (`text-3xl md:text-4xl`, 36/48px). L'écart résiduel est cohérent avec une hiérarchie normale
+  "hero marketing > titre de page utilitaire" et n'est plus un défaut de cohérence de marque.
+
+- **P1-3 (contraste anneau de focus) RÉSOLU par une technique correcte.** `globals.css` L128-136 ajoute
+  un double indicateur : `box-shadow: 0 0 0 2px var(--color-background-primary)` (halo de la couleur de
+  fond de page, contigu à l'élément) suivi de l'`outline` existant avec `outline-offset: 2px`. Le halo
+  crée une séparation à fort contraste entre n'importe quel fond de composant (y compris `bg-accent`
+  foncé) et l'anneau, ce qui règle le risque de ratio < 3:1 identifié en round 1 sans dépendre de la
+  couleur du composant ciblé. Techniquement solide, applicable partout où `:focus-visible` s'applique.
+
+- **P1-5 (distinction disclosure/risque) RÉSOLU.** `RiskBanner.tsx` a désormais une identité propre :
+  bordure gauche épaisse `border-l-4 border-l-attention-fg`, icône triangle d'alerte (remplace l'ancien
+  cercle), libellé `uppercase` "À savoir avant de vous inscrire" au-dessus du texte. `DisclosureBanner`
+  reste volontairement neutre (gris, bordure accent, sans icône ni libellé). Les deux bandeaux sont
+  maintenant discriminables à l'œil plissé (critère Hiérarchie), avant même de lire le texte.
+
+- **P1-4 (dark mode) — statut inchangé, requalifié.** Aucune capture possible (limite d'environnement
+  confirmée par le coordinateur, pas un défaut). Les tokens dark restent corrects par lecture de code
+  (`globals.css` `.dark` L56-85, remapping sémantique inchangé depuis round 1). Reste une dette de
+  preuve visuelle, à lever dès que l'environnement de capture est disponible — je ne peux, par
+  discipline d'audit ("jamais valider un design sans preuve visuelle"), certifier le rendu réel sans
+  capture, d'où le plafond à 9/10 plutôt que 10/10.
+
+**Résiduels restants (aucun P0, aucun P1 bloquant) :**
+1. Preuve visuelle dark mode + responsive (375/768/1280) toujours absente — dette de vérification liée
+   à l'environnement, pas un défaut de conception. À lever dès que possible.
+2. Confirmation visuelle que le CTA tombe bien dans le premier viewport desktop 1280px après le
+   réordonnancement round 2 — même dette d'environnement, structure du code correcte par lecture.
+3. Correctif dashboard ("Bonjour Emmanuel" → "Espace opérateur") toujours non re-vérifié
+   indépendamment par cet audit design faute de nouveau snapshot/capture du back-office fourni.
+
 ## Findings P0 (bloquants) — état initial (round 1, pour mémoire)
 
 **P0-1 — Rendre le code de parrainage visible en HTML statique dès le chargement de la page offre.**

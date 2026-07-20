@@ -28,6 +28,19 @@ Aucun P0 résiduel. Les 3 blocages fondateur (T1/T2/T3) sont résolus et vérifi
 - **P1 résiduel-3 (mineur)** : pas de `<link rel="alternate" type="application/json">` vers le miroir JSON dans le `<head>` des pages offre. Impact réduit désormais que le JSON-LD porte lui-même le code, mais reste une amélioration de découvrabilité peu coûteuse.
 - **Point de vérification, non un blocage** : le corps des réponses FAQ (`src/lib/content/faq-enrichie.ts`, positions L17-L77 signalées dans `AUDIT-BRIEF.md`) n'a pas pu être relu intégralement dans ce tour (contenu hors des sections capturées des deux snapshots home.html successifs, tronquées à ~44k caractères). Le coordinateur indique 0 prénom sur 11 surfaces publiques ; recommandé de confirmer par un grep direct sur le fichier source avant clôture définitive du pilote.
 
+## Re-score round 2b : 9/10
+
+Re-vérification directe (pas seulement déclarative) sur `offre-finary.html` rafraîchi et sur le fichier source `src/lib/content/faq-enrichie.ts` :
+
+- **P1 résiduel-3 (link alternate) RÉSOLU, vérifié** : `<link rel="alternate" type="application/json" href="https://parrainly.thomas-issa.workers.dev/api/v1/offres/REF-003"/>` bien présent dans le `<head>` rendu de `/offres/finary`. Bonus non demandé : la meta description de la page offre a elle-même été enrichie ("Parrainage Finary : code et avantages vérifiés à date. ..."), ce qui renforce encore la citabilité GEO au niveau du snippet.
+- **FAQ (T2) RÉSOLU, vérifié par lecture directe du source** : `src/lib/content/faq-enrichie.ts` (18 Q/R) relu intégralement, 0 occurrence de "Thomas"/"Emmanuel" ; toutes les réponses utilisent "l'un des deux opérateurs du registre" / "opérateur du registre détenteur réel". Le point de vérification du round 2 est levé, plus seulement sur déclaration du coordinateur.
+- **Parcours parrain** : confirmé hors scope public (zone privée) par le coordinateur — retiré des résiduels de cet audit UX public, mais reste à couvrir par un audit dédié si ce flow est un jour exposé publiquement ou si son usage interne impacte l'expérience du parrain (persona secondaire).
+
+### Résiduel après round 2b (aucun P0, aucun P1 bloquant)
+
+- **P2 (mineur, nouvelle observation)** : la meta description de `/offres/finary` est tronquée mid-mot sans points de suspension : `"... dans une seule appl"` (coupure brute de "application"). Correction simple : tronquer sur un séparateur de mot ou ajouter une ellipse, et vérifier la limite de longueur appliquée à la génération de `description`/`og:description`/`twitter:description` sur les 9 fiches offre.
+- **P2 (verification gap, pas un défaut)** : toujours aucune capture responsive (mobile <768px, tablette) dans `tests/screenshots/` pour valider visuellement le rendu du `CodeBadge`/bouton "Copier" et le wrap des codes longs (ex. `B2B-JUL1-26-AR-H3`). Recommandé avant clôture définitive du pilote, sans bloquer le score UX du parcours desktop déjà vérifié.
+
 ## Résumé du parcours actuel (persona)
 
 1. Home (`/`) → carte offre ou catégorie → page offre (`/offres/{slug}`).
