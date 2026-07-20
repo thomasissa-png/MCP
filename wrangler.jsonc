@@ -1,0 +1,63 @@
+{
+  // Configuration Cloudflare Workers — Parrainly (Next.js 15 via @opennextjs/cloudflare).
+  // Docs de deploiement clef-en-main : docs/infra/deploy-cloudflare-runbook.md
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "parrainly",
+  // Point d'entree genere par `opennextjs-cloudflare build` (jamais editer a la main).
+  "main": ".open-next/worker.js",
+  // nodejs_compat : requis par Next 15 + OpenNext (polyfills Node dans l'isolate Workers).
+  "compatibility_date": "2025-05-05",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Assets statiques (JS/CSS/images/_next) generes par le build, servis en edge avant le Worker.
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  // -------------------------------------------------------------------------
+  // Base de donnees D1. Le binding DOIT s'appeler "DB" (lu par getDb() dans src/db/index.ts).
+  // ACTION THOMAS : creer la base puis coller son id. Voir runbook §1.
+  //   wrangler d1 create parrainly-db  ->  copier "database_id" ci-dessous.
+  // Les migrations drizzle/*.sql sont appliquees via `migrations_dir` (npm run d1:migrate:remote).
+  // -------------------------------------------------------------------------
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "parrainly-db",
+      "database_id": "REMPLACER_PAR_DATABASE_ID__voir_runbook_section_1",
+      "migrations_dir": "drizzle"
+    }
+  ],
+
+  // -------------------------------------------------------------------------
+  // Variables NON secretes (visibles cote build/dashboard). Les SECRETS
+  // (INTERNAL_API_KEY, RESEND_API_KEY, ...) se posent via `wrangler secret put`
+  // ou le dashboard, JAMAIS ici. Voir runbook §3 pour la liste exacte.
+  // -------------------------------------------------------------------------
+  "vars": {
+    "NEXT_PUBLIC_SITE_URL": "https://parrainly.com",
+    "MAILER_TRANSPORT": "resend",
+    "NEXT_PUBLIC_POSTHOG_HOST": "https://eu.i.posthog.com",
+    "POSTHOG_HOST": "https://eu.i.posthog.com",
+    "AUTH_MAGIC_LINK_TTL_MINUTES": "15",
+    "AUTH_SESSION_TTL_DAYS": "30",
+    "AUTH_MAGIC_LINK_COOLDOWN_SECONDS": "60",
+    "AUTH_MAGIC_LINK_MAX_PER_HOUR": "5",
+    "SOCLE_PLAUSIBILITY_WINDOW_DAYS": "30",
+    "SOCLE_ATTRIBUTION_RATE_MAX": "10",
+    "SOCLE_ATTRIBUTION_RATE_WINDOW_SECONDS": "60",
+    "SOCLE_ATTRIBUTION_DEDUP_WINDOW_SECONDS": "30",
+    "SOCLE_SIGNALEMENT_DEDUP_WINDOW_SECONDS": "3600",
+    "SOCLE_SIGNALEMENT_REVERIFICATION_THRESHOLD": "3",
+    "SOCLE_SIGNALEMENT_REVERIFICATION_WINDOW_SECONDS": "604800",
+    "SOCLE_TOKEN_LENGTH": "8",
+    "SOCLE_CONVERSION_WINDOW_DAYS": "60",
+    "SOCLE_FRESHNESS_MAX_DAYS": "30",
+    "SOCLE_NON_PUBLIC_PROGRAMS": ""
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}

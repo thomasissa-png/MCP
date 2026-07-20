@@ -57,13 +57,13 @@ export async function getDb(): Promise<AppDatabase> {
       import('@opennextjs/cloudflare'),
       import('drizzle-orm/d1'),
     ]);
-    // Le binding D1 `DB` est injecte par Cloudflare (declare cote wrangler en Phase B @infrastructure).
-    // On y accede via cast (pas encore dans le type CloudflareEnv) ; drizzle infere le reste.
+    // Le binding D1 `DB` est declare dans wrangler.jsonc et type via cloudflare-env.d.ts
+    // (interface globale CloudflareEnv generee par `npm run cf-typegen`). `env.DB` est donc D1Database,
+    // sans cast : getCloudflareContext() lit l'env par requete.
     const { env } = getCloudflareContext();
-    const binding = (env as unknown as { DB: unknown }).DB;
     // On type le retour comme la surface better-sqlite3 (cf. en-tete) : les terminaux sont awaited
     // partout, donc le comportement async D1 est transparent pour les appelants.
-    return drizzle(binding as Parameters<typeof drizzle>[0], { schema }) as unknown as AppDatabase;
+    return drizzle(env.DB, { schema }) as unknown as AppDatabase;
   }
 
   if (!nodeDb) {

@@ -53,6 +53,13 @@ jobs:
       - name: Build (next build)
         run: npm run build
 
+      - name: Build Worker (OpenNext -> Cloudflare) — validation deployabilite
+        # Prouve que l'app compile pour le runtime Workers (.open-next/worker.js) a chaque push.
+        # LOCAL, sans auth Cloudflare (aucun CLOUDFLARE_API_TOKEN requis). Le deploy reel est gere
+        # par Cloudflare Workers Builds (dashboard), pas ici. Ajout @infrastructure (Phase B) :
+        # additif, ne touche pas aux etapes de test @qa.
+        run: npm run cf-build
+
       - name: Tests unitaires (Vitest)
         run: npm run test:unit
 
