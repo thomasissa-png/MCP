@@ -1,14 +1,23 @@
-<!-- Version: 2026-07-20T01:00 — @product-manager — Specs fonctionnelles Phase 0 + corrective événements de conversion (retour @data-analyst, tracking-plan.md) -->
+<!-- Version: 2026-07-20T02:00 — @product-manager — REFRESH Phase 0 (corrections fondateur cercle fermé T&E) -->
 
-# Specs fonctionnelles — Parrainage-IA
+<!-- DIFF vs version 2026-07-20T01:00 :
+1. US-02 (onboarding/soumission de parrain externe) est RETIRÉE du V1 et déplacée en V2 (cf. roadmap.md section 4). Elle est remplacée par une nouvelle US-02 V1, allégée : "Gérer le catalogue des 9 offres et l'arbitrage T&E" (back-office, template allégé, pas de formulaire d'inscription tiers).
+2. Persona Parrain : "Karim" (persona marketplace fictif) est remplacé par "Thomas" ou "Emmanuel" (personnes réelles, project-context.md), conformément à l'objet Parrain=T&E en V1. C'est une réduction d'invention, pas un ajout : plus de persona fictif à imaginer côté parrain en V1.
+3. Persona demandeur : le prénom "Léa" est CONSERVÉ comme identifiant de continuité dans ce document (le renommage complet n'est pas demandé par ce corrective et est explicitement le mandat de @creative-strategy, cf. project-context.md CHOIX #2 point 4 — Léa marquée OBSOLETE en attendant le persona définitif "Jeune actif"/"Entrepreneur"). Signalé comme point à valider, pas résolu ici.
+4. Toutes les enseignes d'exemple (EDF, NordVPN, Box Repas) sont remplacées par des programmes réels de la base Emmanuel (Trade Republic, Qonto, Ramify, etc.), conformément à la correction verticales (fintech/finance/crypto/entrepreneur, banques incluses).
+5. L'objet Offre est explicitement rattaché au schéma Emmanuel (20 champs) dans les sections Données et champs concernées.
+6. Marque = Parrainly (remplace "Parrainage-IA" en usage commercial dans ce document).
+-->
+
+# Specs fonctionnelles — Parrainly (V1 cercle fermé Thomas & Emmanuel)
 
 ## Résumé exécutif
 
-- 9 user stories : 4 parcours critiques minimum (US-01 à US-04, template complet) + 5 stories de couverture du parcours marketplace (US-05 à US-09, template allégé où pertinent).
-- Triage par complexité appliqué : les stories sans UI (moteur de rotation, retrait automatique) utilisent le template allégé (JTBD + critères + payload + events).
-- **Corrective 2026-07-20T01:00** : ajout de US-09 (confirmation de conversion par le parrain) + intégration de l'étape de redirection trackée `/r/{token}` dans US-01, suite au gap signalé par @data-analyst (tracking-plan.md §2.3) — les events `lien_redirection_suivie` et `attribution_confirmee` n'avaient aucun équivalent dans cette version des specs, rendant le NSM (PCA-IA) non déclenchable côté produit.
-- Checklist de couverture du parcours (§ fin de document) : chaque point de la checklist bloquante a une story ou une exclusion documentée avec raison business.
-- Divulgation d'affiliation traitée comme exigence produit non négociable (US-01, DoD transversal), conformément à legal-strategy.md §3.
+- 9 user stories : US-01 (demandeur, template complet), US-02 REFONDUE en V1 (gestion interne du catalogue par T&E, template allégé — l'onboarding parrain externe est reporté en V2, cf. roadmap.md section 4), US-03/US-04 (moteur d'arbitrage T&E et fraîcheur, template allégé), US-05 à US-09 (couverture, template allégé où pertinent).
+- Triage par complexité appliqué : les stories sans UI (moteur d'arbitrage, retrait automatique) utilisent le template allégé (JTBD + critères + payload + events).
+- L'objet Offre de toutes les stories suit le schéma Emmanuel à 20 champs (id, nom_programme, categorie, sous_categorie, cible, pays, langue, url_parrainage, code_parrainage, description_courte, avantage_filleul, avantage_parrain, conditions, statut, priorite_affichage, tags_mcp, date_ajout, date_verification, source, notes) — détaillé en product-vision.md §4, référencé ici plutôt que dupliqué.
+- Checklist de couverture du parcours (§ fin de document) : chaque point de la checklist bloquante a une story ou une exclusion documentée avec raison business, y compris l'onboarding parrain désormais explicitement V2.
+- Divulgation d'affiliation traitée comme exigence produit non négociable (US-01, DoD transversal), conformément à legal-strategy.md §3 (à réévaluer par @legal en config cercle fermé, signalé).
 - DoR/DoD en fin de document pour que @fullstack code sans poser de question.
 
 ---
