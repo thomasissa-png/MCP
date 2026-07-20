@@ -40,6 +40,8 @@ Pour **chacun des 9 programmes**, la première page de résultats est dominée p
 | parrainage Meria | parrainage.co, codes-parrain, 1parrainage | meria.com (produit, pas parrainage) |
 | parrainage Spiko | parrainage.co, touslescashbacks, 1parrainage | spiko.io (produit) |
 
+> **Note sur les libellés** : la colonne « Requête (programme) » donne l'intention-clé de chaque recherche ; les chaînes exactes exécutées via WebSearch portaient toutes l'intention parrainage. Pour Dougs, la requête exécutée était « Dougs comptabilité parrainage code promo 2026 » (raccourci « Dougs (compta) » ici et dans `monitoring-citations.md` §2 pour éviter la redondance de « compta » et « comptabilité »). Les 9 requêtes sont donc homogènes en intention.
+
 **Constat n°1 (validant)** : sur **9/9** requêtes d'intention parrainage, la surface citée est **majoritairement composée d'agrégateurs de parrainage structurés**. La catégorie « registre de codes de parrainage cité par la couche de réponse » **existe déjà et capte la citation**. Le pari de Parrainly n'est pas de créer un comportement, il est de **prendre une place dans un comportement établi**.
 
 **Constat n°2 (format)** : le format gagnant est **une page par enseigne** (`/site/qonto`, `/offres/ramify`, `/offre_parrainage_Kraken.php`), exactement le modèle **URL mono-offre + miroir JSON** déjà retenu par @ux/@ia en Phase 2. Cohérence architecturale confirmée par le terrain.
