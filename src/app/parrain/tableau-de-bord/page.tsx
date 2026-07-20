@@ -30,7 +30,7 @@ export default async function DashboardPage() {
   return (
     <main className="mx-auto max-w-container px-md py-lg lg:px-xl">
       <TrackOnMount event="dashboard_parrain_vu" props={{ parrain_id: user.parrainId, nb_liens: liens.length }} />
-      <ParrainNav nom={user.nom} />
+      <ParrainNav />
 
       {/* Zone 2 — Carte prime estimée cumulée */}
       <section className="mx-auto mb-lg max-w-2xl rounded-lg border border-line bg-surface-card p-xl text-center shadow-card">

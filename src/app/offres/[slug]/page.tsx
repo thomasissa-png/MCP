@@ -14,6 +14,7 @@ import { formatDateFr } from '@/lib/format';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { CategoryBadge } from '@/components/ui/CategoryBadge';
 import { FreshnessBadge } from '@/components/ui/FreshnessBadge';
+import { CodeBadge } from '@/components/ui/CodeBadge';
 import { DisclosureBanner } from '@/components/ui/DisclosureBanner';
 import { RiskBanner } from '@/components/ui/RiskBanner';
 import { OfferCard } from '@/components/ui/OfferCard';
@@ -27,7 +28,10 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const offre = await getOffreBySlug(slug);
-  if (!offre) return { title: 'Offre introuvable' };
+  // Soft-404 (seo P0-3) : notFound() ici, dans generateMetadata, S'EXÉCUTE AVANT le streaming du
+  // Suspense (loading.tsx global) — le statut HTTP 404 est donc fixé avant l'envoi des en-têtes.
+  // Appelé dans le composant page (après streaming), notFound() ne renvoyait qu'un 200 « soft 404 ».
+  if (!offre) notFound();
   const canonical = absUrl(`/offres/${slug}`);
   // Title porte le mot-clé EXACT « parrainage {enseigne} » de keyword-map §2 (contigu, cohérent avec le H1).
   const title = `Parrainage ${offre.nomProgramme} vérifié`;
@@ -93,6 +97,8 @@ export default async function OffrePage({ params }: { params: Promise<{ slug: st
             <CategoryBadge categorie={offre.categorie} />
             <FreshnessBadge variant={servable ? 'verified' : 'stale'} date={offre.dateVerification} />
           </div>
+          {/* Code de parrainage en clair, SSR, au-dessus du pli (T1 — objectif n°1). Conditionnel : rien si absent. */}
+          <CodeBadge code={offre.codeParrainage} />
           {offre.sousCategorie ? <p className="text-sm text-content-secondary">{offre.sousCategorie}</p> : null}
           {tags.length > 0 ? (
             <ul className="mt-2xs flex flex-wrap gap-xs">
@@ -124,14 +130,29 @@ export default async function OffrePage({ params }: { params: Promise<{ slug: st
         </div>
       ) : null}
 
-      {/* Zone 6 — Conditions */}
-      <section className="animate-fade-up mt-lg max-w-3xl">
+      {/* Zone 6 — CTA dynamique (5 états). Action primaire dominante, remontée juste après la
+          divulgation + le risque (ordre légal conservé : divulgation TOUJOURS au-dessus du CTA),
+          avant le bloc conditions pour ne plus être diluée en 5e position (design P0-2). */}
+      <section className="animate-fade-up mt-lg flex justify-center">
+        <div className="w-full max-w-xl">
+          <OfferCta
+            offreId={offre.id}
+            nomProgramme={offre.nomProgramme}
+            dateVerification={offre.dateVerification}
+            servable={servable}
+            categorieSlug={slugify(offre.categorie)}
+          />
+        </div>
+      </section>
+
+      {/* Zone 7 — Conditions (détail complémentaire, sous le CTA) */}
+      <section className="animate-fade-up mt-xl max-w-3xl">
         <h2 className="mb-sm text-lg font-bold text-content-primary">Conditions et avantages</h2>
         {offre.descriptionCourte ? <p className="mb-md text-content-secondary">{offre.descriptionCourte}</p> : null}
         <ul className="flex flex-col gap-sm text-sm text-content-secondary">
           {offre.avantageParrain ? (
             <li>
-              <span className="font-medium text-content-primary">Ce que reçoit le parrain (Thomas ou Emmanuel) : </span>
+              <span className="font-medium text-content-primary">Ce que reçoit l&apos;éditeur du site : </span>
               {offre.avantageParrain}
             </li>
           ) : null}
@@ -147,19 +168,6 @@ export default async function OffrePage({ params }: { params: Promise<{ slug: st
             Statut actuel : {offre.statut}.
           </li>
         </ul>
-      </section>
-
-      {/* Zone 7 — CTA dynamique (5 états) */}
-      <section className="animate-fade-up mt-xl flex justify-center">
-        <div className="w-full max-w-xl">
-          <OfferCta
-            offreId={offre.id}
-            nomProgramme={offre.nomProgramme}
-            dateVerification={offre.dateVerification}
-            servable={servable}
-            categorieSlug={slugify(offre.categorie)}
-          />
-        </div>
       </section>
 
       {/* Zone 8 — Aide contextuelle */}

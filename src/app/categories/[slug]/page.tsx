@@ -17,7 +17,9 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const meta = CATEGORY_META.find((c) => slugify(c.nom) === slug);
-  if (!meta) return { title: 'Catégorie introuvable' };
+  // Soft-404 (seo P0-3) : notFound() dans generateMetadata s'exécute AVANT le streaming du Suspense
+  // (loading.tsx global), ce qui fixe le vrai statut HTTP 404 avant l'envoi des en-têtes.
+  if (!meta) notFound();
   const canonical = absUrl(`/categories/${slug}`);
   // Title = mot-clé principal EXACT de keyword-map §3 (source unique CATEGORY_META), pas de format générique.
   return {

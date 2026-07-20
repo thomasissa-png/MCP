@@ -21,7 +21,7 @@ export default async function AttributionsPage() {
 
   return (
     <main className="mx-auto max-w-container px-md py-lg lg:px-xl">
-      <ParrainNav nom={user.nom} />
+      <ParrainNav />
       <Link href="/parrain/tableau-de-bord" className="text-sm text-content-secondary underline hover:text-content-primary">
         &lt; Retour au tableau de bord
       </Link>

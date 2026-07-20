@@ -14,14 +14,14 @@ export const metadata: Metadata = { title: 'Validation de conformité', robots: 
 
 export default async function ValidationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const user = await requireUser(`/parrain/catalogue/${id}/validation`);
+  await requireUser(`/parrain/catalogue/${id}/validation`);
   const db = await getDb();
   const row = await db.select({ id: offre.id, nomProgramme: offre.nomProgramme, statut: offre.statut }).from(offre).where(eq(offre.id, id)).get();
   if (!row) notFound();
 
   return (
     <main className="mx-auto max-w-container px-md py-lg lg:px-xl">
-      <ParrainNav nom={user.nom} />
+      <ParrainNav />
       <Link href="/parrain/catalogue" className="text-sm text-content-secondary underline hover:text-content-primary">
         &lt; Retour au catalogue
       </Link>

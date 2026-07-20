@@ -13,12 +13,12 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Catalogue', robots: { index: false } };
 
 export default async function CataloguePage() {
-  const user = await requireUser('/parrain/catalogue');
+  await requireUser('/parrain/catalogue');
   const offres = await getAllOffres();
 
   return (
     <main className="mx-auto max-w-container px-md py-lg lg:px-xl">
-      <ParrainNav nom={user.nom} />
+      <ParrainNav />
       <h1 className="mb-lg text-xl font-bold text-content-primary">Catalogue des offres</h1>
       <div className="overflow-x-auto rounded-lg border border-line">
         <table className="w-full border-collapse text-sm">

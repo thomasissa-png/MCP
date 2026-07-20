@@ -13,7 +13,7 @@ const LINKS = [
   { href: '/parrain/attributions', label: 'Attributions' },
 ];
 
-export function ParrainNav({ nom }: { nom: string }) {
+export function ParrainNav() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +31,7 @@ export function ParrainNav({ nom }: { nom: string }) {
   return (
     <div className="mb-xl flex flex-col gap-md border-b border-line pb-md md:flex-row md:items-center md:justify-between">
       <div className="flex flex-wrap items-center gap-lg">
-        <span className="font-bold text-content-primary">Bonjour {nom}</span>
+        <span className="font-bold text-content-primary">Espace opérateur</span>
         <nav className="flex flex-wrap gap-md" aria-label="Navigation espace parrain">
           {LINKS.map((l) => (
             <Link key={l.href} href={l.href} className="text-sm text-content-secondary hover:text-content-primary hover:underline">
