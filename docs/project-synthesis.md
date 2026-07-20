@@ -51,6 +51,19 @@ Modèle **licite dans son principe**. Garde-fous avant toute mise à l'échelle 
 - **Thomas/Emmanuel** : (1) lancer le test de distribution Temps 0 ; (2) trancher les 3 questions ouvertes de project-context.md (modèle de revenu exact, périmètre catalogue fermé vs marketplace, qui paie) ; (3) valider le pivot « codes promo publics d'abord ».
 - **Agents à relancer ensuite** : @data-analyst (plan d'attribution/tracking, non couvert ce run), @product-manager (specs du POC contenu), @fullstack (génération site + API).
 
+## Addendum — Cadrage confirmé par Thomas (2026-07-20)
+
+`[CHOIX UTILISATEUR]` Après la vague 1, Thomas confirme la direction et écarte la reco de pivot :
+- **Cœur du modèle = liens de parrainage** (pas de pivot vers les codes promo publics). Arbitrage fondateur assumé.
+- **Verticales = primes élevées** : banques en ligne / néobanques / fintech (Boursorama, Fortuneo, BNP…), énergie (EDF…).
+- **Pas de MCP** (confirmé).
+
+**Ce que ce cadrage implique (révision du plan) :**
+1. Le risque n°1 de @growth/@legal (fragilité du lien de parrainage : plafonné, CGU, anti-fraude) n'est plus évitable → il devient **la contrainte centrale à gérer**, pas à contourner. Le modèle viable connu pour ça = **place de marché / rotation de parrains** (comme ComparaBanques, Parrainage.co), pas un annuaire de 2 codes.
+2. **Nouvel angle juridique P0 non couvert** : les verticales banque/finance/assurance sont **réglementées**. Promouvoir/orienter vers des produits financiers peut exiger un statut (apporteur d'affaires / IOBSP, immatriculation ORIAS) et respecter les règles ACPR/AMF de publicité financière, EN PLUS des CGU de parrainage. → @legal à relancer spécifiquement AVANT toute mise en ligne.
+3. Distribution (Temps 0) inchangée mais concrète : tester « meilleur parrainage Boursorama / comment être parrainé chez Fortuneo » sur les IA — citent-elles les agrégateurs ? lesquels ?
+4. Roadmap : le MCP (Temps 2) est retiré. Le reste tient (contenu structuré + API + vérification de fraîcheur), avec ajout d'un mécanisme de **rotation des parrains**.
+
 ---
 **Handoff → utilisateur (Thomas)**
 - Fichiers produits : `docs/project-synthesis.md` + 6 livrables agents + `docs/reviews/revue-coherence-parrainage-ia.md`

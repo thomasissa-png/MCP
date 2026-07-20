@@ -35,7 +35,7 @@
 - **3 mots qui DÉFINISSENT la marque** : `[À VALIDER]` (piste : fiable / instantané / IA-native)
 - **3 mots qui ne DÉFINISSENT PAS la marque** : `[À VALIDER]` (piste : spammy / bannière-pub / codes-morts)
 - **Concurrent principal** : à cartographier (Honey/PayPal, RetailMeNot, Dealabs, iGraal, Rakuten, Capital Koala, Poulpeo, ainsi que les IA elles-mêmes + extensions navigateur). À confirmer par @growth/@geo.
-- **Notre différence clé vs lui** : `[HYPOTHÈSE]` être **AEO/GEO-first** (optimisé pour être la réponse de l'IA) plutôt que SEO-first (optimisé pour le clic humain), et exposer les données via **serveur MCP** consommable directement par les assistants.
+- **Notre différence clé vs lui** : `[HYPOTHÈSE]` être **AEO/GEO-first** (optimisé pour être la réponse de l'IA) plutôt que SEO-first (optimisé pour le clic humain). `[CHOIX UTILISATEUR 2026-07-20]` : la différence ne passe PAS par un MCP (abandonné).
 
 ---
 
@@ -49,7 +49,7 @@
 
 ## Stack technique
 - **Frontend** : [ ] Next.js  [ ] React  [ ] Expo  [x] Autre : POC sans front (Google Sheet), site vitrine léger ensuite `[À VALIDER]`
-- **Backend** : [x] Autre : **serveur MCP** (piste privilégiée par Emmanuel comme couche d'interfaçage) + API de données
+- **Backend** : [x] Autre : API de données + génération de contenu web structuré. `[CHOIX UTILISATEUR 2026-07-20 : PAS de serveur MCP]` — abandonné (confirmé par @geo/@ia : non consommé par le grand public)
 - **Base de données** : [x] Autre : **Google Sheet** pour le POC, migration DB ensuite (D1/Neon) `[À VALIDER]`
 - **Authentification** : [ ] — non pertinent au POC
 - **Hébergement** : [ ] Cloudflare  [ ] Replit  [x] Autre : à définir (le serveur MCP devra être hébergé/accessible) `[À VALIDER]`
@@ -125,3 +125,10 @@
 **Questions structurantes à trancher (posées à Thomas & Emmanuel) :** modèle de revenu exact (part des gains de parrainage ? abonnement parrains ? les deux ?) ; périmètre (codes de parrainage détenus par T&E uniquement, ou place de marché ouverte à tout parrain ?) ; qui est le client qui paie.
 
 **Objet de l'étude demandée par Thomas :** (1) l'idée est-elle bonne, (2) y a-t-il un marché, (3) quelle concurrence, (4) comment procéder. + audit de la performance de l'équipe d'agents sur ce cas réel.
+
+**[CHOIX UTILISATEUR — 2026-07-20] Cadrage confirmé par Thomas après la vague 1 :**
+- Le cœur du modèle est bien **les liens de parrainage** (PAS un pivot vers les codes promo publics). Recommandation initiale @growth de pivoter vers les codes publics = **écartée par le fondateur** — arbitrage assumé.
+- Verticales cibles = **primes élevées** : banques en ligne / néobanques / fintech (Boursorama, Fortuneo, BNP, etc.), énergie (EDF, etc.), et assimilés. Ce sont les parrainages les plus rémunérateurs.
+- **Pas de MCP** (confirmé, aligné avec @geo/@ia).
+- **Conséquence directe à instruire** : ces verticales (banque/finance/assurance) sont **réglementées** — la promotion de produits financiers peut relever d'un statut (apporteur d'affaires / IOBSP, ORIAS, règles ACPR/AMF sur la publicité financière) EN PLUS des CGU de parrainage. Angle NON couvert par la vague 1 → @legal à relancer spécifiquement.
+- **Conséquence modèle** : un lien de parrainage bancaire est **plafonné par personne** (ex : nombre de filleuls/an limité) → pour scaler au-delà de T&E, le modèle DOIT être une **place de marché / rotation** de parrains (comme les agrégateurs existants), pas un simple annuaire de 2 codes.
