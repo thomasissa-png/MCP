@@ -18,7 +18,11 @@ export const metadata: Metadata = {
   // (apple-icon.tsx) et le fallback favicon.ico (src/app/favicon.ico) sont ajoutés par les
   // conventions de fichiers App Router — plus aucun chemin d'icône par défaut en 404.
   icons: {
-    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-icon', type: 'image/png' }],
   },
   manifest: '/site.webmanifest',
   openGraph: {
