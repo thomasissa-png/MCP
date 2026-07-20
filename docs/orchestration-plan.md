@@ -24,7 +24,7 @@
 ## Suivi des phases
 | Phase | Contenu | Statut |
 |---|---|---|
-| 0 — Fondations | creative-strategy → product-manager → data-analyst ; legal ‖ | **COMPLETE** (9/9 gates par livrable, cohérence 11 critères PASS) — checkpoint en attente de validation utilisateur |
+| 0 — Fondations | creative-strategy → product-manager → data-analyst ; legal ‖ | **REFRESH EN COURS** — corrections Thomas au checkpoint (marque Parrainly, banques/fintech INCLUSES, V1 cercle fermé T&E, persona jeune actif/entrepreneur, base réelle Emmanuel). Refresh parallèle : @creative-strategy + @legal + @product-manager |
 | 0b — Agents custom | @agent-factory si specs le recommandent | à évaluer |
 | 1 — Expérience | ux → design ; copywriter ‖ | à venir |
 | 2 — Développement | infrastructure → fullstack + ia → ux review → qa → infra | à venir |

@@ -147,3 +147,18 @@
 5. **Ton de marque** : direction "fiable, instantané, IA-natif" (Option A creative-strategy) — à finaliser par @creative-strategy dans brand-platform.md.
 
 **Mode d'exécution** : AUTOPILOT (phases 0→5), checkpoint OBLIGATOIRE après Phase 0 pour validation des fondations + de ces 5 hypothèses. Dégradation gracieuse si un agent échoue. Multi-sessions : état vivant dans docs/orchestration-plan.md.
+
+**[CHOIX UTILISATEUR — 2026-07-20 #2] CORRECTIONS de Thomas au checkpoint Phase 0 (AUTORITÉ, remplacent les hypothèses correspondantes) :**
+1. **Nom de marque = Parrainly** (tranché). Remplace "Parrainage-IA" comme nom commercial (Parrainage-IA reste nom de code interne).
+2. **Les banques/fintech NE sont PAS écartées** — elles sont AU CŒUR. Correction de D3 : le catalogue de départ EST fintech/finance/crypto/services entrepreneur (cf. base réelle d'Emmanuel ci-dessous). La contrainte réglementaire se gère, elle ne fait pas exclure les verticales.
+3. **V1 = cercle FERMÉ (Thomas + Emmanuel uniquement), AVANT d'ouvrir.** Correction de D2 : la marketplace ouverte multi-parrains devient **V2**. En V1, seuls les liens de T&E sont exposés (rotation entre leurs 2 jeux de liens pour respecter les plafonds). L'architecture reste pensée pour ouvrir ensuite.
+4. **Persona recalibré** (conséquence de la base réelle) : PAS "Léa achète un VPN/box repas" mais **jeune actif ET entrepreneur** évaluant néobanques, courtage, investissement, crypto régulé, banque pro, compta. Léa (shopper générique) est OBSOLÈTE → @creative-strategy produit les personas définitifs sur cette cible.
+5. **Pas de MCP** (inchangé), MAIS le **schéma de données** d'Emmanuel (onglet Schema_MCP) est adopté tel quel comme modèle de données de l'API JSON + du contenu structuré. Les "tools MCP" envisagés (search_referrals, get_referral_by_id, list_categories) deviennent des endpoints d'API.
+
+**BASE RÉELLE D'EMMANUEL** (`data/base-parrainage-emmanuel-v3.xlsx`, v3, nettoyée le 15/07/2026) :
+- **9 programmes** : Trade Republic, Qonto, Revolut Business, Ramify, Finary, Dougs, Meria, Kraken, Spiko.
+- **Catégories actives** : Finance personnelle (néobanque/courtage), Investissement, Gestion de patrimoine, Placement trésorerie, Services entrepreneur (banque pro/compta), Crypto. **À venir** : Télécom & Énergie, Mobilité.
+- **Personas cibles de la base** : "Jeune actif" et "Entrepreneur".
+- **Schéma (Schema_MCP, 20 champs)** : id, nom_programme, categorie(enum), sous_categorie, cible, pays, langue, url_parrainage, code_parrainage, description_courte, avantage_filleul, avantage_parrain, conditions, statut, priorite_affichage, tags_mcp, date_ajout, date_verification, source, notes.
+- **Canaux de contact** : LinkedIn @EmelGoez, WhatsApp, Email.
+- **IMPACT JURIDIQUE MAJEUR** : crypto (Kraken/Meria → PSAN/MiCA), investissement (Ramify/Finary/Spiko → CIF/AMF), néobanque/courtage (Trade Republic → agrément), banque pro (Qonto/Revolut Business). @legal DOIT réévaluer en configuration "cercle fermé, liens personnels de T&E" (profil de risque différent d'une marketplace à commission tierce).
