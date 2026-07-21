@@ -206,8 +206,52 @@ pas des paris autonomes prioritaires.
 
 ## Vérifié (G_PROOF)
 
-_(reads réels + WebSearch réels)_
+**Reads réels** :
+- `docs/b2ai/BRIEF-B2AI.md` (cadrage, 3 questions, état actuel)
+- `docs/ia/architecture-mcp-parrainage-ia.md` (mon archi antérieure : API pivot, MCP repoussé, fraîcheur)
+- `project-context.md` (cercle fermé V1, 9 offres, schéma 20 champs, choix « pas de MCP », NSM PCA-IA)
+
+**WebSearch réels (2026-07-21)** :
+- Protocoles paiement agentique comparés (MPP/ACP/AP2/x402) — https://www.crossmint.com/learn/agentic-payments-protocols-compared
+- AP2, mandats signés (Google Cloud) — https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol
+- ACP checkout + format feed produit (OpenAI Developers) — https://developers.openai.com/commerce
+- ACP retailer guide + format feed jsonl.gz (Ekamoira) — https://www.ekamoira.com/blog/chatgpt-instant-checkout-agentic-commerce-protocol-2026
+- OpenAI abandonne Instant Checkout, mars 2026 (DigitalCommerce360) — https://www.digitalcommerce360.com/2026/03/06/openai-shifts-checkout-plans-agentic-commerce-strategy/
+- Affiliation = jusqu'à 91 % des citations ChatGPT, trafic IA +42 % conversion (Affiverse / APMA) — https://www.affiversemedia.com/chatgpt-kills-instant-checkout-what-it-means-for-affiliate-programs/ ; https://theapma.co.uk/the-emergence-of-what-openai-is-calling-agentic-commerce-and-what-it-means-for-affiliate-marketing/
+- État llms.txt 2026 : ~10 % adoption, crawlers ne le fetchent quasi jamais, Google ne le supporte pas (Presenc AI) — https://presenc.ai/research/state-of-llms-txt-2026
+- État content authenticity / C2PA 2026 (Pixel 10, Galaxy S25, 6000+ membres) — https://contentauthenticity.org/blog/the-state-of-content-authenticity-in-2026
+
+**Projection sur notre cas (reproductible)** :
+```
+Fait 1 : OpenAI Instant Checkout arrêté (mars 2026) → parier « vendre dans le chat » = fragile.
+Fait 2 : affiliation = jusqu'à 91 % des sources citées par ChatGPT → couche découverte = durable.
+Fait 3 : trafic IA convertit +42 %, mais attribution de la découverte manquante (CJ/Forrester).
+Conclusion : Parrainly est du bon côté (découverte + attribution). Prochaines briques = signer la
+fraîcheur (B2) + rendre l'attribution temps réel (B4), transport-agnostique (API/feed/webhook/MCP).
+```
 
 ---
 
-## Handoff
+## Handoff → @orchestrator
+
+- **Fichier produit** : `/home/user/MCP/docs/b2ai/ia-b2ai.md`
+- **Décisions techniques posées** :
+  1. Couche B2AI durable = **découverte + attribution + vérifiabilité**, transport-agnostique. Ne PAS
+     coupler le revenu à un protocole/crawler unique (leçon Instant Checkout arrêté + llms.txt inefficace).
+  2. Ordre des briques post-Parrainly : **B1 contrat API agent-grade → B2 fraîcheur signée ∥ B3 schéma
+     actionnable → B4 webhook+redirect signé → B5 feed ACP / B6 MCP PRO**. B2 et B4 = priorités (moat + revenu).
+  3. Protocoles à surveiller (option, pas pari) : AP2 (mandats signés), x402 (règlement stablecoin, monétisation d'API), format feed ACP, MCP côté PRO.
+- **Points d'attention** :
+  - Pour **@fullstack** : les briques B1-B6 sont du transport/données (coût token quasi nul), le code
+    IA reste dans `src/lib/ai/` (vérification/enrichissement de fiches, déjà cappé). B2 introduit une
+    **signature cryptographique** (clé publique en `/.well-known/`) = décision infra à cadrer avec @infrastructure.
+  - Pour **@infrastructure** : B2 (signature/clé), B4 (webhook sortant + anti-rejeu), `/.well-known/`
+    de découverte sur Cloudflare Workers.
+  - Pour **@data-analyst** : B4 (webhook conversion signé temps réel) prolonge le NSM PCA-IA ; Q3-B
+    (attribution SaaS) réutilise directement le tracking-plan.
+  - Pour **@legal** : Q3-E (divulgation machine-readable) s'appuie sur les 11 textes légaux existants ;
+    la signature de fraîcheur (B2) n'expose aucune PII (attestation éditeur, pas utilisateur).
+  - Pour **@growth/@geo** : le canal reste HTML structuré cité (llms.txt confirmé inefficace) ; l'angle
+    « fraîcheur signée » (B2) devient un argument de citation à intégrer.
+- **Non fait / limite** : pas de test empirique d'ingestion par une surface agentique réelle (aucune
+  n'est en prod côté grand public en 2026) ; les briques sont dimensionnées mais pas prototypées (hors scope, pas de code demandé).
